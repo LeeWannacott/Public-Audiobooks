@@ -1,0 +1,136 @@
+*Non-fiction good
+Action & Adventure good
+Ancient good
+Animals & Nature good
+Anthologies good
+Antiquity good
+Art bad
+Asian Antiquity good
+Astronomy bad
+Atheism & Agnosticism good
+Ballads good
+Bibles good
+Biography & Autobiography good
+Business & Economics good
+Chemistry good
+Children bad
+Children's Fiction good
+Children's Non-fiction good
+Christian Fiction good
+Christianity - Biographies good
+Christianity - Commentary good
+Christianity - Other good
+Classics (Antiquity) bad
+Comedy good
+Contemporary good
+Cooking & Food bad
+Courses bad
+Crafts & Hobbies good
+Crime & Mystery Fiction good
+Culture & Heritage bad
+Design & Architecture bad
+Detective Fiction good
+Drama good
+Dramatic Readings good
+Early Modern good
+Earth Sciences good
+Education good
+Elegies & Odes good
+Epics good
+Epistolary Fiction good
+Erotica good
+Espionage bad
+Essays & Short Works good
+Exploration good
+Family & Relationships good
+Fantasy bad
+Fiction bad
+Fictional Biographies & Memoirs good
+Foreign Language Study bad
+Free Verse good
+Games good
+Gardening good
+General Fiction good
+Gothic Fiction good
+Health & Fitness good
+Historical good
+Historical Fiction good
+History good
+Horror bad
+House & Home good
+Humor good
+Humor (Fiction) bad
+Law good
+Legends & Fairy Tales bad
+Letters good
+Life Sciences good
+Literary Collections good
+Literary Criticism good
+Literary Fiction good
+Literature bad
+Lyric good
+Magical Realism bad
+Mathematics good
+Medical good
+Medieval good
+Memoirs good
+Middle Ages/Middle History good
+Modern good
+Modern (19th C) good
+Modern (20th C) good
+Music good
+Mystery bad
+Myths bad
+Narratives good
+Nature good
+Nature Fiction bad
+Nautical & Marine Fiction good
+Performing Arts good
+Philosophy good
+Physics & Mechanics bad
+Plays good
+Poetry good
+Political & Thrillers bad
+Political Science good
+Politics bad
+Psychology good
+Published 1800 -1900 good
+Published 1900 onward good
+Published before 1800 good
+Radio bad
+Reference good
+Religion good
+Religious Fiction good
+Romance good
+Sagas good
+Satire good
+School good
+Science good
+Science Fiction good
+Self Help bad
+Short Stories good
+Short non-fiction good
+Short works good
+Single Author Collections good
+Social Science bad
+Sonnets good
+Spirituality bad
+Sports & Recreation good
+Sports Fiction good
+Suspense bad
+Technology & Engineering good
+Tragedy good
+Transportation good
+Travel bad
+Travel & Geography good
+Travel Fiction good
+True Crime good
+Vo bad
+War & Military good
+War & Military Fiction good
+Western bad
+Writing & Linguistics good
+Young Adult Literature bad
+
+['*Non-fiction', 'Action & Adventure', 'Ancient', 'Animals & Nature', 'Anthologies', 'Antiquity', 'Asian Antiquity', 'Atheism & Agnosticism', 'Ballads', 'Bibles', 'Biography & Autobiography', 'Business & Economics', 'Chemistry', "Children's Fiction", "Children's Non-fiction", 'Christian Fiction', 'Christianity - Biographies', 'Christianity - Commentary', 'Christianity - Other', 'Comedy', 'Contemporary', 'Crafts & Hobbies', 'Crime & Mystery Fiction', 'Detective Fiction', 'Drama', 'Dramatic Readings', 'Early Modern', 'Earth Sciences', 'Education', 'Elegies & Odes', 'Epics', 'Epistolary Fiction', 'Erotica', 'Essays & Short Works', 'Exploration', 'Family & Relationships', 'Fictional Biographies & Memoirs', 'Free Verse', 'Games', 'Gardening', 'General Fiction', 'Gothic Fiction', 'Health & Fitness', 'Historical', 'Historical Fiction', 'History', 'House & Home', 'Humor', 'Law', 'Letters', 'Life Sciences', 'Literary Collections', 'Literary Criticism', 'Literary Fiction', 'Lyric', 'Mathematics', 'Medical', 'Medieval', 'Memoirs', 'Middle Ages/Middle History', 'Modern', 'Modern (19th C)', 'Modern (20th C)', 'Music', 'Narratives', 'Nature', 'Nautical & Marine Fiction', 'Performing Arts', 'Philosophy', 'Plays', 'Poetry', 'Political Science', 'Psychology', 'Published 1800 -1900', 'Published 1900 onward', 'Published before 1800', 'Reference', 'Religion', 'Religious Fiction', 'Romance', 'Sagas', 'Satire', 'School', 'Science', 'Science Fiction', 'Short Stories', 'Short non-fiction', 'Short works', 'Single Author Collections', 'Sonnets', 'Sports & Recreation', 'Sports Fiction', 'Technology & Engineering', 'Tragedy', 'Transportation', 'Travel & Geography', 'Travel Fiction', 'True Crime', 'War & Military', 'War & Military Fiction', 'Writing & Linguistics']
+

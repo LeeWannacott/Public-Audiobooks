@@ -4,7 +4,7 @@
     "slug": "libriaudire",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/LibriAudireIcon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -23,9 +23,13 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/LibriAudireIcon.png",
         "backgroundColor": "#ffffff"
       }
+    },
+    "androidNavigationBar": {
+      "barStyle": "dark-content",
+      "backgroundColor": "#F9F6EE"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
