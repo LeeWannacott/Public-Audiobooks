@@ -8,7 +8,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   FlatList,
   ActivityIndicator,
-  Text,
   Dimensions,
   Image,
   Pressable,
@@ -289,7 +288,11 @@ function ShelfForBookshelfAndHistory(props: any) {
         />
         <View style={styles.flatListStyle}>
           <View style={styles.ActivityIndicatorStyle}>
-            <Text>Nothing shelved</Text>
+            <ActivityIndicator
+              size="large"
+              color="#50C878"
+              accessibilityLabel={"loading"}
+            />
           </View>
         </View>
       </View>
