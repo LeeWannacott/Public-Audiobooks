@@ -25,7 +25,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/LibriAudireIcon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.leewannacott.libriaudire"
     },
     "androidNavigationBar": {
       "barStyle": "dark-content",
