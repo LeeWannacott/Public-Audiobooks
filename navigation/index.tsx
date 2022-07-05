@@ -16,7 +16,6 @@ import { ColorSchemeName, Pressable } from "react-native";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
-import NotFoundScreen from "../screens/NotFoundScreen";
 import {
   RootStackParamList,
   RootTabParamList,
@@ -31,12 +30,16 @@ import Audiotracks from "../screens/Audiotracks";
 import History from "../screens/History";
 import Bookshelf from "../screens/Bookshelf";
 import Settings from "../screens/Settings";
+import * as NavigationBar from "expo-navigation-bar";
 
 export default function Navigation({
   colorScheme,
 }: {
   colorScheme: ColorSchemeName;
 }) {
+  NavigationBar.setBackgroundColorAsync(
+    Colors[colorScheme].statusBarBackground
+  );
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
@@ -44,8 +47,8 @@ export default function Navigation({
     >
       <RootNavigator />
       <StatusBar
-        style="dark"
-        backgroundColor="#F9F6EE"
+        style={"auto"}
+        backgroundColor={Colors[colorScheme].statusBarBackground}
         translucent={false}
       />
     </NavigationContainer>
@@ -68,11 +71,6 @@ function RootNavigator() {
           headerShown: false,
           // statusBarHidden: true,
         }}
-      />
-      <Stack.Screen
-        name="NotFound"
-        component={NotFoundScreen}
-        options={{ title: "Oops!" }}
       />
       <Stack.Screen
         name="Audio"
@@ -99,7 +97,10 @@ function BottomTabNavigator() {
       initialRouteName="Explore"
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarStyle: { height: 75, backgroundColor: "#F9F6EE" },
+        tabBarStyle: {
+          height: 75,
+          backgroundColor: Colors[colorScheme].tabBackgroundColor,
+        },
         tabBarIcon: ({ focused, color, size }) => {
           size = 40;
           let iconName;
@@ -121,8 +122,8 @@ function BottomTabNavigator() {
             <MaterialCommunityIcons name={iconName} size={size} color={color} />
           );
         },
-        tabBarActiveTintColor: Colors[colorScheme].tint,
-        tabBarInactiveTintColor: "gray",
+        tabBarActiveTintColor: Colors[colorScheme].tabIconSelected,
+        tabBarInactiveTintColor: Colors[colorScheme].tabIconDefault,
       })}
     >
       <BottomTab.Screen

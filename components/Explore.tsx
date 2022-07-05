@@ -9,8 +9,11 @@ import authorsListJson from "../assets/resources/audiobookAuthorsList.json";
 import { genreList } from "../assets/resources/audiobookGenreList";
 import { getAsyncData, storeAsyncData } from "../db/database_functions";
 import { Button } from "react-native-paper";
+import useColorScheme from "../hooks/useColorScheme";
+import Colors from "../constants/Colors";
 
 function Search() {
+  const colorScheme = useColorScheme();
   const [search, updateSearch] = useState("");
   const [userInputEntered, setUserInputEntered] = useState("");
   const [requestAudiobookAmount] = useState(26);
@@ -124,36 +127,82 @@ function Search() {
 
   return (
     <View style={styles.test}>
-      <View style={styles.searchBarAndSettingsIcon}>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: Colors[colorScheme].searchBarBackground,
+          width: windowWidth,
+          height: 80,
+          paddingLeft: 0,
+          paddingTop: 10,
+          left: -10,
+        }}
+      >
         <View style={styles.searchStyle}>
           <SearchBar
             ref={(searchbar) => (refToSearchbar.current = searchbar)}
             placeholder={searchBarPlaceholder()}
             disabled={statusOfPickers.isSearchDisabled}
+            lightTheme={false}
             onChangeText={(val: string) => {
               updateSearch(val);
             }}
             onSubmitEditing={() => setUserInputEntered(search)}
             value={search}
-            inputContainerStyle={{ backgroundColor: "#F9F6EE", height: 55 }}
-            inputStyle={{ backgroundColor: "#F9F6EE", height: 55 }}
-            containerStyle={{ backgroundColor: "black", height: 70 }}
+            inputContainerStyle={{
+              backgroundColor: Colors[colorScheme].searchBarInputContainerStyle,
+              borderWidth: 1,
+              borderBottomWidth: 1,
+              height: 55,
+            }}
+            inputStyle={{
+              backgroundColor: Colors[colorScheme].searchBarInputStyle,
+              color: Colors[colorScheme].searchBarTextColor,
+              height: 55,
+            }}
+            searchIcon={{ color: Colors[colorScheme].searchBarSearchIcon }}
+            clearIcon={{ color: Colors[colorScheme].searchBarClearIcon }}
+            placeholderTextColor={Colors[colorScheme].searchBarClearIcon}
+            containerStyle={{
+              backgroundColor: Colors[colorScheme].searchBarContainerStyle,
+              height: 70,
+              borderTopWidth: 0,
+              borderBottomWidth: 0,
+            }}
           />
         </View>
         <Button
           accessibilityLabel="Search options"
           accessibilityHint="Opens options for searching by Title, Author, Genre and changing amount of audiobooks requested per search."
           onPress={toggleOverlay}
-          mode="contained"
-          style={styles.settingsIcon}
+          mode={Colors[colorScheme].buttonMode}
+          theme={{
+            colors: {
+              primary: Colors[colorScheme].buttonBackgroundColor,
+            },
+          }}
+          style={{
+            left: -5,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
-          <MaterialCommunityIcons name="cog" size={40} color="#F9F6EE" />
+          <MaterialCommunityIcons
+            name="cog"
+            size={35}
+            color={Colors[colorScheme].buttonIconColor}
+          />
         </Button>
         <Overlay
           isVisible={visible}
           onBackdropPress={toggleOverlay}
           fullScreen={false}
-          overlayStyle={{ backgroundColor: "#F9F6EE" }}
+          overlayStyle={{
+            backgroundColor: Colors[colorScheme].overlayBackgroundColor,
+          }}
         >
           <View style={styles.titleOrAuthorStringFlexbox}>
             <Text>{`Searching by:`}</Text>
@@ -314,10 +363,16 @@ function Search() {
                     ))
                   : undefined
               }
-              mode="contained"
-              style={{ backgroundColor: "#F9F6EE" }}
+              mode={Colors[colorScheme].buttonMode}
+              style={{
+                backgroundColor: Colors[colorScheme].buttonBackgroundColor,
+              }}
             >
-              <MaterialCommunityIcons name="minus" size={30} color="black" />
+              <MaterialCommunityIcons
+                name="minus"
+                size={30}
+                color={Colors[colorScheme].buttonIconColor}
+              />
             </Button>
             <Slider
               value={apiSettings["audiobookAmountRequested"]}
@@ -328,12 +383,12 @@ function Search() {
               style={{ width: 180, height: 40, margin: 10 }}
               trackStyle={{
                 height: 10,
-                backgroundColor: "transparent",
+                backgroundColor: Colors[colorScheme].sliderTrackColor,
               }}
               thumbStyle={{
                 height: 12,
                 width: 12,
-                backgroundColor: "black",
+                backgroundColor: Colors[colorScheme].sliderThumbColor,
               }}
             />
             <Button
@@ -351,10 +406,16 @@ function Search() {
                     ))
                   : undefined
               }
-              mode="contained"
-              style={{ backgroundColor: "#F9F6EE" }}
+              mode={Colors[colorScheme].buttonMode}
+              style={{
+                backgroundColor: Colors[colorScheme].buttonBackgroundColor,
+              }}
             >
-              <MaterialCommunityIcons name="plus" size={30} color="black" />
+              <MaterialCommunityIcons
+                name="plus"
+                size={30}
+                color={Colors[colorScheme].buttonIconColor}
+              />
             </Button>
           </View>
         </Overlay>
@@ -376,30 +437,10 @@ const windowHeight = Dimensions.get("window").height;
 export default Search;
 
 const styles = StyleSheet.create({
-  searchBarAndSettingsIcon: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignContent: "center",
-    width: windowWidth,
-    height: 80,
-    backgroundColor: "black",
-    paddingLeft: 0,
-    paddingTop: 10,
-    left: -10,
-  },
   searchStyle: {
-    backgroundColor: "orange",
     width: windowWidth - 80,
   },
-  settingsIcon: {
-    backgroundColor: "black",
-    left: -5,
-    height: 62,
-    borderWidth: 1,
-    top: 5,
-    borderRadius: 2,
-  },
+  settingsIcon: {},
   checkboxRow: {
     display: "flex",
     flexDirection: "row",
@@ -413,5 +454,4 @@ const styles = StyleSheet.create({
   scrollStyle: {
     height: windowHeight / 1.225,
   },
-  test: {},
 });

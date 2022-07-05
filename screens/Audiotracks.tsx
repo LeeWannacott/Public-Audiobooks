@@ -15,6 +15,8 @@ import MakeUserReview from "../components/audioTrackMakeReview";
 
 import { openDatabase, roundNumberTwoDecimal } from "../db/utils";
 import { useNavigation } from "@react-navigation/native";
+import useColorScheme from "../hooks/useColorScheme";
+import Colors from "../constants/Colors";
 
 const db = openDatabase();
 import {
@@ -109,24 +111,34 @@ function Audiotracks(props: any) {
   // console.log(props.route.params)
 
   const navigation = useNavigation();
+  const colorScheme = useColorScheme();
 
   React.useLayoutEffect(() => {
     try {
       navigation.setOptions({
         headerStyle: {
-          backgroundColor: "#F9F6EE",
+          backgroundColor: Colors[colorScheme].audiotrackHeaderBGColor,
         },
-        headerTitleStyle:{fontWeight:"bold"},
-        headerTintColor:"black",
+        headerTitleStyle: { fontWeight: "bold" },
+        headerTintColor: Colors[colorScheme].text,
         headerTitle: title,
         headerRight: () => (
           <Button
             accessibilityLabel="Audiotack player settings"
             accessibilityHint="Contains options such as changing speed of audiotrack."
-            mode={"outlined"}
+            mode={Colors[colorScheme].buttonMode}
             onPress={() => toggleSettingsOverlay()}
+            theme={{
+              colors: {
+                primary: Colors[colorScheme].buttonBackgroundColor,
+              },
+            }}
           >
-            <MaterialCommunityIcons name="cog" size={30} color="black" />
+            <MaterialCommunityIcons
+              name="cog"
+              size={30}
+              color={Colors[colorScheme].buttonIconColor}
+            />
           </Button>
         ),
       });
@@ -255,7 +267,6 @@ function Audiotracks(props: any) {
       }
     }, null);
   };
-
 
   useEffect(() => {
     async function setAudioMode() {
@@ -744,17 +755,27 @@ function Audiotracks(props: any) {
   };
 
   const renderAudiotracks = ({ item, index }: any) => (
-    <ListItem bottomDivider containerStyle={{ backgroundColor: "#F9F6EE" }}>
+    <ListItem
+      bottomDivider
+      containerStyle={{
+        backgroundColor: Colors[colorScheme].audiotracksContainerColor,
+      }}
+    >
       <Button
-        mode="outlined"
         accessibilityLabel={`Play from start of Audiotrack ${item?.section_number}: ${item?.title}`}
         onPress={() => PlayFromStartOfTrack(index)}
         style={{ margin: 0, padding: 0 }}
+        mode={Colors[colorScheme].buttonMode}
+        theme={{
+          colors: {
+            primary: Colors[colorScheme].buttonBackgroundColor,
+          },
+        }}
       >
         <MaterialCommunityIcons
           name="book-arrow-left"
           size={30}
-          color="black"
+          color={Colors[colorScheme].buttonIconColor}
         />
       </Button>
       <ListItem.Content style={{ alignItems: "stretch", flex: 1 }}>
@@ -769,7 +790,11 @@ function Audiotracks(props: any) {
             alignItems: "center",
           }}
         >
-          <MaterialCommunityIcons name="timer" size={15} color="black" />
+          <MaterialCommunityIcons
+            name="timer"
+            size={15}
+            color={Colors[colorScheme].buttonIconColor}
+          />
           <Text>
             {": "}
             {GetDurationFormat(
@@ -781,10 +806,10 @@ function Audiotracks(props: any) {
         </View>
 
         <LinearProgress
-          color="#50C878"
+          color={Colors[colorScheme].audiobookProgressColor}
           value={audiotracksData.linearProgessBars[index]}
           variant="determinate"
-          trackColor="#DCDCDC"
+          trackColor={Colors[colorScheme].audiobookProgressTrackColor}
           animation={false}
         />
 
@@ -798,7 +823,7 @@ function Audiotracks(props: any) {
           <MaterialCommunityIcons
             name="account-tie-voice"
             size={15}
-            color="black"
+            color={Colors[colorScheme].buttonIconColor}
           />
           <Text>{": "}</Text>
           <ListItem.Subtitle numberOfLines={1} ellipsizeMode="clip">
@@ -807,7 +832,12 @@ function Audiotracks(props: any) {
         </View>
       </ListItem.Content>
       <Button
-        mode="outlined"
+        mode={Colors[colorScheme].buttonMode}
+        theme={{
+          colors: {
+            primary: Colors[colorScheme].buttonBackgroundColor,
+          },
+        }}
         accessibilityLabel={`Resume playing ${item?.section_number}: ${
           item?.title
         } ${GetDurationFormat(
@@ -816,19 +846,28 @@ function Audiotracks(props: any) {
         onPress={() => {
           PlayFromListenButton(index);
         }}
-        style={{}}
       >
-        <MaterialCommunityIcons name="book-play" size={30} color="black" />
+        <MaterialCommunityIcons
+          name="book-play"
+          size={30}
+          color={Colors[colorScheme].buttonIconColor}
+        />
       </Button>
     </ListItem>
   );
 
   const renderReviews = ({ item, index }: any) => (
     <Card
-      containerStyle={{ backgroundColor: "#F9F6EE" }}
-      wrapperStyle={{ backgroundColor: "#F9F6EE" }}
+      containerStyle={{
+        backgroundColor: Colors[colorScheme].reviewsContainerColor,
+      }}
+      wrapperStyle={{
+        backgroundColor: Colors[colorScheme].reviewsWrapperColor,
+      }}
     >
-      <ListItem.Title style={{ backgroundColor: "#F9F6EE" }}>
+      <ListItem.Title
+        style={{ backgroundColor: Colors[colorScheme].reviewsTitleBGColor }}
+      >
         {item?.reviewtitle}
       </ListItem.Title>
       <Card.Divider />
@@ -838,24 +877,48 @@ function Audiotracks(props: any) {
         startingValue={item?.stars}
         showRating={false}
         readonly={true}
-        tintColor="#F9F6EE"
+        tintColor={Colors[colorScheme].reviewsRatingTintColor}
         type="custom"
-        ratingBackgroundColor="#E2DFD2"
+        ratingBackgroundColor={Colors[colorScheme].reviewsRatingBGColor}
       />
-      <ListItem containerStyle={{ backgroundColor: "#F9F6EE" }}>
-        <ListItem.Subtitle style={{ backgroundColor: "#F9F6EE" }}>
+      <ListItem
+        containerStyle={{
+          backgroundColor: Colors[colorScheme].reviewsBodyBGColor,
+        }}
+      >
+        <ListItem.Subtitle
+          style={{
+            backgroundColor: Colors[colorScheme].reviewsBodyHighlightColor,
+          }}
+        >
           {item?.reviewbody}
         </ListItem.Subtitle>
       </ListItem>
 
       <View style={styles.reviewFooter}>
-        <ListItem containerStyle={{ backgroundColor: "#F9F6EE" }}>
-          <ListItem.Subtitle style={{ backgroundColor: "#F9F6EE" }}>
+        <ListItem
+          containerStyle={{
+            backgroundColor: Colors[colorScheme].reviewsFooterBGColor,
+          }}
+        >
+          <ListItem.Subtitle
+            style={{
+              backgroundColor: Colors[colorScheme].reviewsFooterHighlightColor,
+            }}
+          >
             By: {item?.reviewer}
           </ListItem.Subtitle>
         </ListItem>
-        <ListItem containerStyle={{ backgroundColor: "#F9F6EE" }}>
-          <ListItem.Subtitle style={{ backgroundColor: "#F9F6EE" }}>
+        <ListItem
+          containerStyle={{
+            backgroundColor: Colors[colorScheme].reviewsDateBGColor,
+          }}
+        >
+          <ListItem.Subtitle
+            style={{
+              backgroundColor: Colors[colorScheme].reviewsDateHighlightColor,
+            }}
+          >
             {item?.reviewdate}
           </ListItem.Subtitle>
         </ListItem>
@@ -899,8 +962,12 @@ function Audiotracks(props: any) {
       return (
         <View style={styles.bookHeader}>
           <Card
-            containerStyle={{ backgroundColor: "#F9F6EE" }}
-            wrapperStyle={{ backgroundColor: "#F9F6EE" }}
+            containerStyle={{
+              backgroundColor: Colors[colorScheme].bookCoverContainerBGColor,
+            }}
+            wrapperStyle={{
+              backgroundColor: Colors[colorScheme].bookCoverWrapperColor,
+            }}
           >
             <Card.Title style={styles.bookTitle}>{title}</Card.Title>
             <Card.Divider />
@@ -940,19 +1007,16 @@ function Audiotracks(props: any) {
                     audiotracksData.shelveIconToggle ? "star" : "star-outline"
                   }
                   size={30}
-                  color={
-                    audiotracksData.shelveIconToggle ? "#DAA520" : "#DAA520"
-                  }
-                  style={{ borderColor: "black", borderWidth: 2 }}
+                  color={Colors[colorScheme].shelveAudiobookIconColor}
                 />
               </Button>
             </View>
 
             <LinearProgress
-              color="#50C878"
+              color={Colors[colorScheme].audiobookProgressColor}
               value={audiotracksData?.totalAudioBookListeningProgress}
               variant="determinate"
-              trackColor="#DCDCDC"
+              trackColor={Colors[colorScheme].audiobookProgressTrackColor}
               animation={false}
               style={{
                 width: 200,
@@ -980,9 +1044,9 @@ function Audiotracks(props: any) {
               style={{
                 paddingVertical: 10,
               }}
-              tintColor="#F9F6EE"
+              tintColor={Colors[colorScheme].reviewsRatingTintColor}
               type="custom"
-              ratingBackgroundColor="#E2DFD2"
+              ratingBackgroundColor={Colors[colorScheme].reviewsRatingBGColor}
             />
             <View style={styles.shelveButtons}></View>
           </Card>
@@ -997,15 +1061,14 @@ function Audiotracks(props: any) {
           mode={"outlined"}
           onPress={() => toggleWriteReviewOverlay()}
           style={{
-            backgroundColor: "#F9F6EE",
+            backgroundColor: Colors[colorScheme].buttonBackgroundColor,
             height: 45,
           }}
         >
           <MaterialIcons
             name="rate-review"
             size={30}
-            color="black"
-            backgroundColor="white"
+            color={Colors[colorScheme].buttonIconColor}
           />
         </Button>
       );
@@ -1079,7 +1142,12 @@ function Audiotracks(props: any) {
     ];
 
     return (
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: Colors[colorScheme].audiotracksBGColor },
+        ]}
+      >
         <AudioTrackSettings
           visible={visible}
           toggleOverlay={toggleSettingsOverlay}
@@ -1100,7 +1168,12 @@ function Audiotracks(props: any) {
         />
 
         <View style={styles.AudioTracksStyle}>
-          <View style={styles.listItemHeaderStyle}>
+          <View
+            style={[
+              styles.sectionListContainer,
+              { backgroundColor: Colors[colorScheme].audiotracksBGColor },
+            ]}
+          >
             <SectionList
               sections={AudioTracksScreenData}
               keyExtractor={({ section: { keyExtractor } }) => {
@@ -1113,7 +1186,13 @@ function Audiotracks(props: any) {
                 section: { reviewIcon },
               }) => (
                 <View style={styles.sectionTitles}>
-                  <Text View style={styles.sectionStyle}>
+                  <Text
+                    View
+                    style={[
+                      styles.sectionStyle,
+                      { color: Colors[colorScheme].sectionsTitleColor },
+                    ]}
+                  >
                     {title}
                     {"   "}
                   </Text>
@@ -1159,11 +1238,17 @@ function Audiotracks(props: any) {
     );
   } else {
     return (
-      <View style={{ backgroundColor: "#F9F6EE", flex: 1 }}>
+      <View
+        style={{
+          backgroundColor:
+            Colors[colorScheme].audioActivityIndicatorContainerBG,
+          flex: 1,
+        }}
+      >
         <ActivityIndicator
           accessibilityLabel={"loading"}
           size="large"
-          color="#50C878"
+          color={Colors[colorScheme].activityIndicatorColor}
           style={styles.ActivityIndicatorStyle}
         />
       </View>
@@ -1176,7 +1261,6 @@ const windowHeight = Dimensions.get("window").height;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "black",
     padding: 10,
     paddingTop: 2,
   },
@@ -1184,9 +1268,8 @@ const styles = StyleSheet.create({
     flex: 7,
     paddingBottom: 2,
   },
-  listItemHeaderStyle: {
+  sectionListContainer: {
     fontSize: 20,
-    backgroundColor: "black",
   },
   ActivityIndicatorStyle: {
     top: windowHeight / 2.5,
@@ -1224,7 +1307,6 @@ const styles = StyleSheet.create({
   },
   sectionStyle: {
     alignSelf: "center",
-    color: "#F9F6EE",
     fontSize: 16,
   },
   coverImageTimeListened: {
@@ -1233,20 +1315,6 @@ const styles = StyleSheet.create({
     marginLeft: 35,
     flexDirection: "row",
     justifyContent: "space-between",
-  },
-  reviewTextBodyStyle: {
-    backgroundColor: "white",
-    borderColor: "#000000",
-    borderWidth: 1,
-    height: windowHeight / 3,
-    width: windowWidth - 40,
-  },
-  reviewerNameStyle: {
-    backgroundColor: "white",
-    borderColor: "#000000",
-    borderWidth: 1,
-    marginBottom: 5,
-    width: windowWidth - 40,
   },
 });
 

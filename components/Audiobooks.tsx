@@ -17,10 +17,13 @@ import {
   createHistoryTableDB,
   addAudiobookToHistoryDB,
 } from "../db/database_functions";
+import useColorScheme from "../hooks/useColorScheme";
+import Colors from "../constants/Colors";
 
 const db = openDatabase();
 
 export default function Audiobooks(props: any) {
+  const colorScheme = useColorScheme();
   const [loadingAudioBooks, setLoadingAudioBooks] = useState(true);
   const [data, setAudiobooks] = useState<any>([]);
   const [bookCovers, setBookCovers] = useState<any[]>([]);
@@ -136,7 +139,14 @@ export default function Audiobooks(props: any) {
         containerStyle={styles.AudioBookListView}
         key={item.id}
       >
-        <View style={styles.ImageContainer}>
+        <View
+          style={[
+            styles.ImageContainer,
+            {
+              backgroundColor: Colors[colorScheme].audiobookBackgroundColor,
+            },
+          ]}
+        >
           <Pressable
             accessibilityLabel={`${item?.title}`}
             style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1.0 }]}
@@ -230,7 +240,7 @@ export default function Audiobooks(props: any) {
         <ActivityIndicator
           accessibilityLabel={"loading"}
           size="large"
-          color="#50C878"
+          color={Colors[colorScheme].ActivityIndicatorColor}
           style={styles.ActivityIndicatorStyle}
         />
       </View>
@@ -244,7 +254,6 @@ const windowHeight = Dimensions.get("window").height;
 const styles = StyleSheet.create({
   ImageContainer: {
     flexDirection: "column",
-    backgroundColor: "white",
     width: windowWidth / 2 - 40,
     borderStyle: "solid",
     borderWidth: 1,

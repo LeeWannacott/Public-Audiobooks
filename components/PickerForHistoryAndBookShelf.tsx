@@ -4,8 +4,11 @@ import { Picker } from "@react-native-picker/picker";
 import { Button } from "react-native-paper";
 import MaterialIconCommunity from "react-native-vector-icons/MaterialCommunityIcons.js";
 import { storeAsyncData } from "../db/database_functions";
+import useColorScheme from "../hooks/useColorScheme";
+import Colors from "../constants/Colors";
 
 function PickerForHistoryAndBookShelf(props: any) {
+  const colorScheme = useColorScheme();
   const {
     pickerAndQueryState,
     getShelvedBooks,
@@ -15,13 +18,26 @@ function PickerForHistoryAndBookShelf(props: any) {
   } = props;
 
   return (
-    <View style={styles.SQLQueryPickerAndIcon}>
-      <View style={styles.SQLQueryPicker}>
+    <View
+      style={[
+        styles.SQLQueryPickerAndIcon,
+        { backgroundColor: Colors[colorScheme].bookshelfPickerBackground },
+      ]}
+    >
+      <View
+        style={[
+          styles.SQLQueryPicker,
+          { borderColor: Colors[colorScheme].bookshelfPickerBorderColor },
+        ]}
+      >
         <Picker
-          style={{ color: "black", backgroundColor: "#F9F6EE" }}
+          style={{
+            color: Colors[colorScheme].pickerTextColor,
+            backgroundColor: Colors[colorScheme].pickerBackgroundColor,
+          }}
           selectedValue={pickerAndQueryState.orderBy}
-          mode={"dropdown"}
-          dropdownIconRippleColor={"grey"}
+          mode={Colors[colorScheme].pickerMode}
+          dropdownIconRippleColor={Colors[colorScheme].pickerRippleColor}
           onValueChange={(itemValue, itemPosition) => {
             setPickerAndQueryState({
               ...pickerAndQueryState,
@@ -98,10 +114,9 @@ function PickerForHistoryAndBookShelf(props: any) {
             ? "sort ascending up arrow"
             : "sort descending down arrow"
         }`}
-        mode="contained"
+        mode={Colors[colorScheme].buttonMode}
         style={{
-          backgroundColor: "black",
-          height: 62,
+          backgroundColor: Colors[colorScheme].buttonBackgroundColor,
         }}
         onPress={() => {
           toggleAscOrDescSort();
@@ -110,7 +125,7 @@ function PickerForHistoryAndBookShelf(props: any) {
         <MaterialIconCommunity
           name={pickerAndQueryState.icon}
           size={40}
-          color="white"
+          color={Colors[colorScheme].buttonIconColor}
         />
       </Button>
     </View>
@@ -123,12 +138,11 @@ const windowWidth = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
   SQLQueryPicker: {
-    borderColor: "black",
     borderWidth: 1,
-    borderRadius: 1,
+    borderRadius: 3,
+    borderBottomWidth: 1,
     width: windowWidth - 100,
     margin: 5,
-    height: 55,
     marginLeft: 0,
   },
   SQLQueryPickerAndIcon: {
@@ -136,8 +150,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "black",
-    height: 80,
     paddingTop: 10,
   },
 });

@@ -3,8 +3,11 @@ import { Overlay } from "@rneui/themed";
 import { Button } from "react-native-paper";
 import { Rating } from "react-native-ratings";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import useColorScheme from "../hooks/useColorScheme";
+import Colors from "../constants/Colors";
 
 function MakeUserReview(props: any) {
+  const colorScheme = useColorScheme();
   const {
     reviewInformation,
     setReviewInformation,
@@ -19,7 +22,10 @@ function MakeUserReview(props: any) {
         isVisible={makeReviewOptions}
         onBackdropPress={toggleWriteReviewOverlay}
         fullScreen={false}
-        overlayStyle={{ backgroundColor: "#F9F6EE", width: windowWidth - 20 }}
+        overlayStyle={{
+          backgroundColor: Colors[colorScheme].overlayBackgroundColor,
+          width: windowWidth - 20,
+        }}
       >
         <Text style={{ marginBottom: 5, fontSize: 18 }}>Title: {title}</Text>
         <Rating
@@ -29,10 +35,10 @@ function MakeUserReview(props: any) {
           startingValue={reviewInformation?.reviewRating}
           showRating={false}
           fractions={false}
-          tintColor="#F9F6EE"
+          tintColor={Colors[colorScheme].reviewsRatingTintColor}
           type="custom"
           style={{ marginBottom: 5 }}
-          ratingBackgroundColor="#E2DFD2"
+          ratingBackgroundColor={Colors[colorScheme].reviewsRatingBGColor}
           onFinishRating={(userRating: number) => {
             setReviewInformation({
               ...reviewInformation,
@@ -43,7 +49,13 @@ function MakeUserReview(props: any) {
         <Text style={{ fontSize: 18 }}>Review Title:</Text>
         <TextInput
           accessibilityLabel="Write your reviews title inside this text input"
-          style={styles.reviewerTitleStyle}
+          style={[
+            styles.reviewerTitleStyle,
+            {
+              backgroundColor: Colors[colorScheme].makeReviewTitleBG,
+              borderColor: Colors[colorScheme].makeReviewTitleBorderColor,
+            },
+          ]}
           fontSize={18}
           ref={(reviewTitleRef) => {
             reviewTitleRef;
@@ -60,7 +72,13 @@ function MakeUserReview(props: any) {
 
         <TextInput
           accessibilityLabel="Write your review inside this text input."
-          style={styles.reviewTextBodyStyle}
+          style={[
+            styles.reviewTextBodyStyle,
+            {
+              backgroundColor: Colors[colorScheme].makeReviewTextBodyBG,
+              borderColor: Colors[colorScheme].makeReviewTextBorderColor,
+            },
+          ]}
           ref={(reviewTextRef) => {
             reviewTextRef;
           }}
@@ -86,10 +104,19 @@ function MakeUserReview(props: any) {
           <Text style={{ fontSize: 18 }}>Post review: </Text>
           <Button
             accessibilityLabel="Posts users review for the audiobook."
-            mode={"outlined"}
+            mode={Colors[colorScheme].buttonMode}
+            theme={{
+              colors: {
+                primary: Colors[colorScheme].buttonBackgroundColor,
+              },
+            }}
             onPress={() => sendReviewToAPI()}
           >
-            <MaterialIcons name="send" size={30} color="black" />
+            <MaterialIcons
+              name="send"
+              size={30}
+              color={Colors[colorScheme].buttonIconColor}
+            />
           </Button>
         </View>
       </Overlay>
@@ -103,8 +130,6 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 const styles = StyleSheet.create({
   reviewTextBodyStyle: {
-    backgroundColor: "white",
-    borderColor: "#000000",
     borderWidth: 1,
     height: windowHeight / 3,
     width: windowWidth - 40,
@@ -112,9 +137,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   reviewerTitleStyle: {
-    backgroundColor: "white",
     padding: 5,
-    borderColor: "#000000",
     borderWidth: 1,
     marginBottom: 5,
     width: windowWidth - 40,

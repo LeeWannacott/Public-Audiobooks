@@ -2,20 +2,29 @@ import Slider from "@react-native-community/slider";
 import { StyleSheet, Text, View, Image } from "react-native";
 import React from "react";
 import { Dimensions } from "react-native";
+import useColorScheme from "../hooks/useColorScheme";
+import Colors from "../constants/Colors";
 
 function AudiotrackSliderWithCurrentPlaying(props: any) {
+  const colorScheme = useColorScheme();
+  const currentColorScheme = Colors[colorScheme];
   return (
-    <View style={styles.SliderStyle}>
+    <View style={{ backgroundColor: currentColorScheme.sliderBGColor }}>
       <Slider
         value={props.currentSliderPosition}
         disabled={false}
         minimumValue={0.0}
         maximumValue={100.0}
-        minimumTrackTintColor="#50C878"
-        thumbTintColor="#228B22"
+        minimumTrackTintColor={currentColorScheme.sliderTrackColor}
+        thumbTintColor={currentColorScheme.sliderThumbColor}
         onSlidingComplete={(data) => props.SeekUpdate(data)}
       />
-      <View style={styles.AudiobookTime}>
+      <View
+        style={[
+          styles.AudiobookTime,
+          { backgroundColor: Colors[colorScheme].audiobookControlsTimeBGColor },
+        ]}
+      >
         <Text style={{ marginLeft: 10 }}>
           {" "}
           {props.GetDurationFormat(
@@ -27,7 +36,15 @@ function AudiotrackSliderWithCurrentPlaying(props: any) {
           {props.GetDurationFormat(props.Duration)}
         </Text>
       </View>
-      <View style={styles.SliderContainer}>
+      <View
+        style={[
+          styles.audiobookImageAndCurrentlyPlayingInfo,
+          {
+            backgroundColor:
+              currentColorScheme.imageAndCurrentlyPlayingInfoBGColor,
+          },
+        ]}
+      >
         <Image
           source={{ uri: props.coverImage }}
           style={{
@@ -58,18 +75,11 @@ const windowHeight = Dimensions.get("window").height;
 const styles = StyleSheet.create({
   AudiobookTime: {
     display: "flex",
-    backgroundColor: "#F9F6EE",
     flexDirection: "row",
     justifyContent: "space-between",
-    // top: -200,
-    // padding: 10,
     minHeight: 20,
   },
-  SliderStyle: {
-    backgroundColor: "#F9F6EE",
-  },
-  SliderContainer: {
-    backgroundColor: "#F9F6EE",
+  audiobookImageAndCurrentlyPlayingInfo: {
     flexDirection: "row",
     paddingLeft: 5,
     maxWidth: windowWidth - 70,

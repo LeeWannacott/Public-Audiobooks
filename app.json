@@ -15,9 +15,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -27,10 +25,6 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.leewannacott.libriaudire"
-    },
-    "androidNavigationBar": {
-      "barStyle": "dark-content",
-      "backgroundColor": "#F9F6EE"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

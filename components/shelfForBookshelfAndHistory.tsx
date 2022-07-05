@@ -4,6 +4,8 @@ import { useNavigation } from "@react-navigation/native";
 import { ListItem, LinearProgress } from "@rneui/themed";
 import { Rating } from "react-native-ratings";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import useColorScheme from "../hooks/useColorScheme";
+import Colors from "../constants/Colors";
 
 import {
   FlatList,
@@ -27,6 +29,7 @@ import {
 const db = openDatabase();
 
 function ShelfForBookshelfAndHistory(props: any) {
+  const colorScheme = useColorScheme();
   const [audioBookInfo, setAudioBookInfo] = useState({});
   const [avatarOnPressEnabled, setAvatarOnPressEnabled] = useState(true);
 
@@ -118,8 +121,18 @@ function ShelfForBookshelfAndHistory(props: any) {
 
   const renderItem = ({ item, index }: any) => (
     <View>
-      <ListItem topDivider containerStyle={styles.AudioBookListView}>
-        <View style={styles.ImageContainer}>
+      <ListItem
+        topDivider
+        containerStyle={[
+          { backgroundColor: Colors[colorScheme].colorAroundAudiobookImage },
+        ]}
+      >
+        <View
+          style={[
+            styles.ImageContainer,
+            { backgroundColor: Colors[colorScheme].audiobookBackgroundColor },
+          ]}
+        >
           <Pressable
             accessibilityLabel={`${item?.audiobook_title}`}
             style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1.0 }]}
@@ -167,7 +180,7 @@ function ShelfForBookshelfAndHistory(props: any) {
                   : undefined
               }
               size={30}
-              color={"#DAA520"}
+              color={Colors[colorScheme].shelveAudiobookIconColor}
               style={{
                 margin: 5,
                 position: "absolute",
@@ -180,10 +193,10 @@ function ShelfForBookshelfAndHistory(props: any) {
           </Pressable>
 
           <LinearProgress
-            color="#50C878"
+            color={Colors[colorScheme].audiobookProgressColor}
             value={audioBookInfo[item.audiobook_id]?.listening_progress_percent}
             variant="determinate"
-            trackColor="#DCDCDC"
+            trackColor={Colors[colorScheme].audiobookProgressTrackColor}
             animation={false}
           />
         </View>
@@ -196,7 +209,7 @@ function ShelfForBookshelfAndHistory(props: any) {
           ratingCount={5}
           startingValue={audioBookInfo[item.audiobook_id]?.audiobook_rating}
           readonly={true}
-          tintColor={"black"}
+          tintColor={Colors[colorScheme].ratingBackgroundColor}
         />
       ) : undefined}
       <AudiobookAccordionList
@@ -217,8 +230,6 @@ function ShelfForBookshelfAndHistory(props: any) {
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      // The screen is focused
-      // Call any action
       try {
         db.transaction((tx) => {
           tx.executeSql(
@@ -265,7 +276,14 @@ function ShelfForBookshelfAndHistory(props: any) {
           storeAsyncData={storeAsyncData}
           asyncDataKeyName={props.asyncDataKeyName}
         />
-        <View style={styles.flatListStyle}>
+        <View
+          style={[
+            styles.flatListStyle,
+            {
+              backgroundColor: Colors[colorScheme].audiobookImageContainerColor,
+            },
+          ]}
+        >
           <FlatList
             data={props.audiobookHistory}
             keyExtractor={keyExtractor}
@@ -277,7 +295,7 @@ function ShelfForBookshelfAndHistory(props: any) {
     );
   } else {
     return (
-      <View style={styles.pickerContainer}>
+      <View>
         <PickerForHistoryAndBookShelf
           pickerAndQueryState={pickerAndQueryState}
           setPickerAndQueryState={setPickerAndQueryState}
@@ -286,11 +304,27 @@ function ShelfForBookshelfAndHistory(props: any) {
           storeAsyncData={storeAsyncData}
           asyncDataKeyName={props.asyncDataKeyName}
         />
-        <View style={styles.flatListStyle}>
-          <View style={styles.ActivityIndicatorStyle}>
+        <View
+          style={[
+            styles.flatListStyle,
+            {
+              backgroundColor: Colors[colorScheme].audiobookImageContainerColor,
+            },
+          ]}
+        >
+          <View
+            style={[
+              styles.ActivityIndicatorStyle,
+              {
+                backgroundColor:
+                  Colors[colorScheme].shelfIndicatorContainerBGColor,
+                color: Colors[colorScheme].activityIndicatorColor,
+              },
+            ]}
+          >
             <ActivityIndicator
               size="large"
-              color="#50C878"
+              color={Colors[colorScheme].activityIndicatorColor}
               accessibilityLabel={"loading"}
             />
           </View>
@@ -310,7 +344,6 @@ const ImageContainerWidth = windowWidth / 2 - 40;
 const styles = StyleSheet.create({
   ImageContainer: {
     flexDirection: "column",
-    backgroundColor: "white",
     width: ImageContainerWidth,
     borderStyle: "solid",
     borderWidth: 1,
@@ -321,17 +354,8 @@ const styles = StyleSheet.create({
     paddingTop: 2,
     paddingBottom: 0,
     height: flatlistHeight,
-    backgroundColor: "#331800",
-  },
-  AudioBookListView: {
-    backgroundColor: "#51361a",
   },
   ActivityIndicatorStyle: {
     top: windowHeight / 3,
-    backgroundColor: "#331800",
-    color: "#50C878",
-  },
-  pickerContainer: {
-    backgroundColor: "#331800",
   },
 });

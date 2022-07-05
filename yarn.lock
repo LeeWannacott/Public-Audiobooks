@@ -3885,6 +3885,15 @@
     "compare-versions" "^3.4.0"
     "invariant" "^2.2.4"
 
+"expo-navigation-bar@~1.2.0":
+  "integrity" "sha512-DjSbhKJ1zbXI73GoVi+m1Zm6WkptalDdKxAAuuhAwLFwpBGVxBJp1J/f9nvntFKeP8i9+WoE713NHnyhKAS2+Q=="
+  "resolved" "https://registry.npmjs.org/expo-navigation-bar/-/expo-navigation-bar-1.2.0.tgz"
+  "version" "1.2.0"
+  dependencies:
+    "@expo/config-plugins" "^4.0.14"
+    "@react-native/normalize-color" "^2.0.0"
+    "debug" "^4.3.2"
+
 "expo-splash-screen@~0.15.1":
   "integrity" "sha512-Yvz6p/ig+cQp9c1PLSm1YshpNJXRp/xtxajfwPq2kampf61zA+xnoMk+J6YcNeXeIlqHysj3ND2tMhEEQjM/ow=="
   "resolved" "https://registry.npmjs.org/expo-splash-screen/-/expo-splash-screen-0.15.1.tgz"

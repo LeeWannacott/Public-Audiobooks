@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, Alert, Linking } from "react-native";
 import SettingsList from "react-native-settings-list";
+import useColorScheme from "../hooks/useColorScheme";
+import Colors from "../constants/Colors";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import {
-  storeAsyncData,
-  getAsyncData,
-} from "../db/database_functions";
+import { storeAsyncData, getAsyncData } from "../db/database_functions";
 import { openDatabase } from "../db/utils";
 const db = openDatabase();
 
 const UserSettings = () => {
+  const colorScheme = useColorScheme();
+  const currentColorScheme = Colors[colorScheme];
   const [audioModeSettings, setAudioModeSettings] = useState({
     interruptionModeAndroid: 1,
     staysActiveInBackground: true,
@@ -75,14 +76,34 @@ const UserSettings = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.settingsStyleBlock}>
-        <Text style={styles.settingsTitleText}>Settings</Text>
+      <View
+        style={[
+          styles.settingsStyleBlock,
+          { backgroundColor: currentColorScheme.settingsTitleBG },
+        ]}
+      >
+        <Text
+          style={[
+            styles.settingsTitle,
+            { color: currentColorScheme.settingsTitleText },
+          ]}
+        >
+          Settings
+        </Text>
       </View>
-      <View style={styles.sectionHeadings}>
-        <SettingsList backgroundColor="#F9F6EE">
+      <View
+        style={[
+          styles.sectionHeadings,
+          { backgroundColor: currentColorScheme.settingsBGColor },
+        ]}
+      >
+        <SettingsList backgroundColor={currentColorScheme.settingsList}>
           <SettingsList.Header
             headerText="Audiobook settings"
-            headerStyle={styles.audiobookSettingsSubHeading}
+            headerStyle={[
+              styles.audiobookSettingsSubHeading,
+              { color: currentColorScheme.settingsSubSectionTitles },
+            ]}
           />
           {/*<SettingsList.Item
             icon={
@@ -102,7 +123,7 @@ const UserSettings = () => {
               <MaterialCommunityIcons
                 name="run-fast"
                 size={50}
-                color={"black"}
+                color={currentColorScheme.settingsIconsColor}
               />
             }
             hasNavArrow={false}
@@ -126,7 +147,11 @@ const UserSettings = () => {
           />
           <SettingsList.Item
             icon={
-              <MaterialCommunityIcons name="duck" size={50} color={"black"} />
+              <MaterialCommunityIcons
+                name="duck"
+                size={50}
+                color={currentColorScheme.settingsIconsColor}
+              />
             }
             hasNavArrow={false}
             title="Duck Audio"
@@ -152,7 +177,7 @@ const UserSettings = () => {
               <MaterialCommunityIcons
                 name="headset"
                 size={50}
-                color={"black"}
+                color={currentColorScheme.settingsIconsColor}
               />
             }
             hasNavArrow={false}
@@ -235,7 +260,10 @@ const UserSettings = () => {
           />*/}
           <SettingsList.Header
             headerText="About"
-            headerStyle={styles.audiobookSettingsSubHeading}
+            headerStyle={[
+              styles.audiobookSettingsSubHeading,
+              { color: currentColorScheme.settingsSubSectionTitles },
+            ]}
           />
           <SettingsList.Item
             icon={
@@ -252,7 +280,11 @@ const UserSettings = () => {
           <SettingsList.Item
             hasNavArrow={true}
             icon={
-              <MaterialCommunityIcons name="github" size={50} color={"black"} />
+              <MaterialCommunityIcons
+                name="github"
+                size={50}
+                color={currentColorScheme.settingsIconsColor}
+              />
             }
             title="GitHub: LeeWannacott"
             onPress={() =>
@@ -281,7 +313,7 @@ const UserSettings = () => {
               <MaterialCommunityIcons
                 name="account-tie-voice"
                 size={50}
-                color={"black"}
+                color={currentColorScheme.settingsIconsColor}
               />
             }
             title="LibriVox"
@@ -312,23 +344,18 @@ const UserSettings = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { backgroundColor: "#331800", flex: 1 },
-  title: {
-    fontSize: 24,
-  },
-  sectionHeadings: { backgroundColor: "#F9F6EE", flex: 1 },
-  settingsTitleText: {
-    color: "#F9F6EE",
+  container: { flex: 1 },
+  sectionHeadings: { flex: 1 },
+  settingsTitle: {
     marginTop: 35,
     marginBottom: 15,
     marginLeft: 15,
     fontWeight: "bold",
     fontSize: 25,
   },
-  audiobookSettingsSubHeading: { color: "#009688", marginTop: 20 },
+  audiobookSettingsSubHeading: { marginTop: 20 },
   settingsStyleBlock: {
     borderBottomWidth: 1,
-    backgroundColor: "#263238",
     borderColor: "red",
   },
 });
