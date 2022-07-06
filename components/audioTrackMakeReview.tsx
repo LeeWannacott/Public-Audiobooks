@@ -8,6 +8,7 @@ import Colors from "../constants/Colors";
 
 function MakeUserReview(props: any) {
   const colorScheme = useColorScheme();
+  const currentColorScheme = Colors[colorScheme];
   const {
     reviewInformation,
     setReviewInformation,
@@ -27,7 +28,7 @@ function MakeUserReview(props: any) {
           width: windowWidth - 20,
         }}
       >
-        <Text style={{ marginBottom: 5, fontSize: 18 }}>Title: {title}</Text>
+        <Text style={{ marginBottom: 5, fontSize: 18, color:currentColorScheme.text }}>Title: {title}</Text>
         <Rating
           accessibilityLabel="Tap to give audiobook a rating out of 5"
           imageSize={40}
@@ -46,7 +47,7 @@ function MakeUserReview(props: any) {
             });
           }}
         />
-        <Text style={{ fontSize: 18 }}>Review Title:</Text>
+        <Text style={{ fontSize: 18 , color:currentColorScheme.text}}>Review Title:</Text>
         <TextInput
           accessibilityLabel="Write your reviews title inside this text input"
           style={[
@@ -68,7 +69,7 @@ function MakeUserReview(props: any) {
             });
           }}
         ></TextInput>
-        <Text style={{ fontSize: 18 }}>Review Text:</Text>
+        <Text style={{ fontSize: 18 , color:currentColorScheme.text}}>Review Text:</Text>
 
         <TextInput
           accessibilityLabel="Write your review inside this text input."
@@ -101,7 +102,7 @@ function MakeUserReview(props: any) {
             alignItems: "center",
           }}
         >
-          <Text style={{ fontSize: 18 }}>Post review: </Text>
+          <Text style={{ fontSize: 18 , color:currentColorScheme.text}}>Post review: </Text>
           <Button
             accessibilityLabel="Posts users review for the audiobook."
             mode={Colors[colorScheme].buttonMode}

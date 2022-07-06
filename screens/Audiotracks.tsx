@@ -778,8 +778,19 @@ function Audiotracks(props: any) {
           color={Colors[colorScheme].buttonIconColor}
         />
       </Button>
-      <ListItem.Content style={{ alignItems: "stretch", flex: 1 }}>
-        <ListItem.Title numberOfLines={1} ellipsizeMode="tail">
+      <ListItem.Content
+        style={{
+          alignItems: "stretch",
+          flex: 1,
+          backgroundColor: Colors[colorScheme].audiotracksTextContainerColor,
+          color: "white",
+        }}
+      >
+        <ListItem.Title
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          style={{ color: Colors[colorScheme].text }}
+        >
           {item?.section_number}: {item?.title}
         </ListItem.Title>
 
@@ -795,14 +806,16 @@ function Audiotracks(props: any) {
             size={15}
             color={Colors[colorScheme].buttonIconColor}
           />
-          <Text>
+          <Text style={{ color: Colors[colorScheme].text }}>
             {": "}
             {GetDurationFormat(
               audiotracksData.currentAudiotrackPositionsMs[index]
             )}
           </Text>
-          <Text>{" | "}</Text>
-          <Text>{FormatChapterDurations(chapters[index]?.playtime)}</Text>
+          <Text style={{ color: Colors[colorScheme].text }}>{" | "}</Text>
+          <Text style={{ color: Colors[colorScheme].text }}>
+            {FormatChapterDurations(chapters[index]?.playtime)}
+          </Text>
         </View>
 
         <LinearProgress
@@ -826,7 +839,11 @@ function Audiotracks(props: any) {
             color={Colors[colorScheme].buttonIconColor}
           />
           <Text>{": "}</Text>
-          <ListItem.Subtitle numberOfLines={1} ellipsizeMode="clip">
+          <ListItem.Subtitle
+            numberOfLines={1}
+            ellipsizeMode="clip"
+            style={{ color: Colors[colorScheme].text }}
+          >
             {item?.readers[0]?.display_name}
           </ListItem.Subtitle>
         </View>
@@ -866,7 +883,12 @@ function Audiotracks(props: any) {
       }}
     >
       <ListItem.Title
-        style={{ backgroundColor: Colors[colorScheme].reviewsTitleBGColor }}
+        style={{
+          backgroundColor: Colors[colorScheme].reviewsTitleBGColor,
+          color: Colors[colorScheme].text,
+          padding: 5,
+          paddingLeft: 10,
+        }}
       >
         {item?.reviewtitle}
       </ListItem.Title>
@@ -889,6 +911,7 @@ function Audiotracks(props: any) {
         <ListItem.Subtitle
           style={{
             backgroundColor: Colors[colorScheme].reviewsBodyHighlightColor,
+            color: Colors[colorScheme].text,
           }}
         >
           {item?.reviewbody}
@@ -904,6 +927,7 @@ function Audiotracks(props: any) {
           <ListItem.Subtitle
             style={{
               backgroundColor: Colors[colorScheme].reviewsFooterHighlightColor,
+              color: Colors[colorScheme].text,
             }}
           >
             By: {item?.reviewer}
@@ -917,6 +941,7 @@ function Audiotracks(props: any) {
           <ListItem.Subtitle
             style={{
               backgroundColor: Colors[colorScheme].reviewsDateHighlightColor,
+              color: Colors[colorScheme].text,
             }}
           >
             {item?.reviewdate}
@@ -1024,17 +1049,24 @@ function Audiotracks(props: any) {
               }}
             />
             <View style={styles.coverImageTimeListened}>
-              <Text>
+              <Text style={{ color: Colors[colorScheme].text }}>
                 {msToTime(audiotracksData.totalAudioBookListeningTimeMS)}
               </Text>
               <Text> {totalTime}</Text>
             </View>
 
-            <Text style={styles.bookAuthor}>
+            <Text style={[styles.bookAuthor, { color: "#b58900" }]}>
               {" "}
               Author: {authorFirstName} {authorLastName}
             </Text>
-            <Text style={styles.bookDescription}>{AudioBookDescription}</Text>
+            <Text
+              style={[
+                styles.bookDescription,
+                { color: Colors[colorScheme].text },
+              ]}
+            >
+              {AudioBookDescription}
+            </Text>
             <Rating
               showRating
               ratingCount={5}
@@ -1179,6 +1211,9 @@ function Audiotracks(props: any) {
               keyExtractor={({ section: { keyExtractor } }) => {
                 keyExtractor;
               }}
+              initialNumToRender={25}
+              maxToRenderPerBatch={50}
+              updateCellsBatchingPeriod={50}
               renderItem={({ section: { renderItem } }) => renderItem}
               ListHeaderComponent={getHeader()}
               renderSectionHeader={({

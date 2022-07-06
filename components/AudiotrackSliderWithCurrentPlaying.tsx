@@ -25,13 +25,13 @@ function AudiotrackSliderWithCurrentPlaying(props: any) {
           { backgroundColor: Colors[colorScheme].audiobookControlsTimeBGColor },
         ]}
       >
-        <Text style={{ marginLeft: 10 }}>
+        <Text style={{ marginLeft: 10, color:currentColorScheme.text }}>
           {" "}
           {props.GetDurationFormat(
             (props.currentSliderPosition * props.Duration) / 100
           )}{" "}
         </Text>
-        <Text style={{ marginRight: 10 }}>
+        <Text style={{ marginRight: 10 ,color:currentColorScheme.text }}>
           {" "}
           {props.GetDurationFormat(props.Duration)}
         </Text>
@@ -54,11 +54,11 @@ function AudiotrackSliderWithCurrentPlaying(props: any) {
           }}
         />
         <View>
-          <Text numberOfLines={2} ellipsizeMode="tail" style={{}}>
+          <Text numberOfLines={2} ellipsizeMode="tail" style={{color:currentColorScheme.text }}>
             {" "}
             {props.audioTrackChapterPlayingTitle}{" "}
           </Text>
-          <Text numberOfLines={1} ellipsizeMode="tail">
+          <Text numberOfLines={1} ellipsizeMode="tail" style={{color:currentColorScheme.text }}>
             {" "}
             {props.audioTrackReader}{" "}
           </Text>

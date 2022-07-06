@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   controls: {
     flex: 1,
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-around",
     alignItems: "center",
   },
   controlsVert: {

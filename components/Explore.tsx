@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
-import { SearchBar, Overlay, Slider } from "@rneui/themed";
+import { SearchBar, Overlay } from "@rneui/themed";
+import Slider from "@react-native-community/slider";
 import AudioBooks from "../components/Audiobooks";
 import { View, Dimensions, Text } from "react-native";
 import { StyleSheet } from "react-native";
@@ -11,9 +12,11 @@ import { getAsyncData, storeAsyncData } from "../db/database_functions";
 import { Button } from "react-native-paper";
 import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
+import * as NavigationBar from "expo-navigation-bar";
 
 function Search() {
   const colorScheme = useColorScheme();
+  const currentColorScheme = Colors[colorScheme];
   const [search, updateSearch] = useState("");
   const [userInputEntered, setUserInputEntered] = useState("");
   const [requestAudiobookAmount] = useState(26);
@@ -81,6 +84,9 @@ function Search() {
   }
 
   const toggleOverlay = () => {
+    NavigationBar.setBackgroundColorAsync(
+      Colors[colorScheme].statusBarBackground
+    );
     setVisible(!visible);
   };
 
@@ -205,9 +211,17 @@ function Search() {
           }}
         >
           <View style={styles.titleOrAuthorStringFlexbox}>
-            <Text>{`Searching by:`}</Text>
+            <Text
+              style={{ color: currentColorScheme.text }}
+            >{`Searching by:`}</Text>
           </View>
           <Picker
+            mode="dropdown"
+            dropdownIconColor={currentColorScheme.pickerDropdownColor}
+            style={{
+              color: Colors[colorScheme].pickerTextColor,
+              backgroundColor: Colors[colorScheme].pickerBackgroundColor,
+            }}
             selectedValue={apiSettings["searchBy"]}
             onValueChange={(titleOrGenreOrAuthor, itemIndex) => {
               setApiSettings((prevState) => ({
@@ -291,14 +305,20 @@ function Search() {
             <Picker.Item label="Genre" value="genre" style={{ fontSize: 18 }} />
           </Picker>
           <View style={styles.titleOrAuthorStringFlexbox}>
-            <Text>{`Select Author:`}</Text>
+            <Text
+              style={{ color: currentColorScheme.text }}
+            >{`Select Author:`}</Text>
           </View>
-
           <Picker
+            dropdownIconColor={statusOfPickers.authorSelected ? currentColorScheme.pickerDropdownColor : currentColorScheme.overlayBackgroundColor}
             selectedValue={apiSettings["authorLastName"]}
             prompt={"Search by author:"}
             // mode={"dropdown"}
             enabled={statusOfPickers.authorSelected}
+            style={{
+              color: Colors[colorScheme].pickerTextColor,
+              backgroundColor: Colors[colorScheme].pickerBackgroundColor,
+            }}
             onValueChange={(author, itemIndex) => {
               setApiSettings((prevState) => ({
                 ...prevState,
@@ -312,12 +332,17 @@ function Search() {
           >
             {AuthorsListRender}
           </Picker>
-
           <View style={styles.titleOrAuthorStringFlexbox}>
-            <Text>{`Select Genre:`}</Text>
+            <Text
+              style={{ color: currentColorScheme.text }}
+            >{`Select Genre:`}</Text>
           </View>
-
           <Picker
+            dropdownIconColor={statusOfPickers.genreSelected ? currentColorScheme.pickerDropdownColor : currentColorScheme.overlayBackgroundColor}
+            style={{
+              color: Colors[colorScheme].pickerTextColor,
+              backgroundColor: Colors[colorScheme].pickerBackgroundColor,
+            }}
             selectedValue={apiSettings["audiobookGenre"]}
             prompt={"Search by genre:"}
             enabled={statusOfPickers.genreSelected}
@@ -335,7 +360,7 @@ function Search() {
             {genreListRender}
           </Picker>
           <View style={styles.checkboxRow}>
-            <Text style={{ fontSize: 15 }}>
+            <Text style={{ fontSize: 15 ,color:currentColorScheme.text}}>
               Audiobooks requested per search:{" "}
               {apiSettings["audiobookAmountRequested"]}.
             </Text>

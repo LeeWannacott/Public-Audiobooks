@@ -150,7 +150,7 @@ function AudioTrackSettings(props: any) {
         backgroundColor: currentColorScheme.overlayBackgroundColor,
       }}
     >
-      <Text style={{ marginBottom: 10 }}>
+      <Text style={{ marginBottom: 10, color: currentColorScheme.text }}>
         Volume of Audiotrack: {props.audioPlayerSettings.volume}
       </Text>
       <View style={styles.sliderWithIconsOnSides}>
@@ -205,7 +205,13 @@ function AudioTrackSettings(props: any) {
           />
         </Button>
       </View>
-      <Text style={{ marginBottom: 10, marginTop: 10 }}>
+      <Text
+        style={{
+          marginBottom: 10,
+          marginTop: 10,
+          color: currentColorScheme.text,
+        }}
+      >
         Pitch Correction: {props.audioPlayerSettings.shouldCorrectPitch}
       </Text>
       <Switch
@@ -213,7 +219,7 @@ function AudioTrackSettings(props: any) {
         value={props.audioPlayerSettings.shouldCorrectPitch}
         onValueChange={onTogglePitchSwitch}
       />
-      <Text style={{ marginBottom: 10 }}>
+      <Text style={{ marginBottom: 10, color: currentColorScheme.text }}>
         Mute : {props.audioPlayerSettings.isMuted}
       </Text>
       <Switch
@@ -228,7 +234,7 @@ function AudioTrackSettings(props: any) {
         onValueChange={onToggleLoopSwitch}
       />
       */}
-      <Text style={{ marginBottom: 10 }}>
+      <Text style={{ marginBottom: 10, color: currentColorScheme.text }}>
         Speed of Audiotrack: {props.audioPlayerSettings.rate}X
       </Text>
       <View style={styles.sliderWithIconsOnSides}>
