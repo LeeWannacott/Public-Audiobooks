@@ -994,7 +994,11 @@ function Audiotracks(props: any) {
               backgroundColor: Colors[colorScheme].bookCoverWrapperColor,
             }}
           >
-            <Card.Title style={styles.bookTitle}>{title}</Card.Title>
+            <Card.Title
+              style={[styles.bookTitle, { color: Colors[colorScheme].text }]}
+            >
+              {title}
+            </Card.Title>
             <Card.Divider />
 
             <View
@@ -1055,7 +1059,9 @@ function Audiotracks(props: any) {
               <Text> {totalTime}</Text>
             </View>
 
-            <Text style={[styles.bookAuthor, { color: "#b58900" }]}>
+            <Text
+              style={[styles.bookAuthor, { color: Colors[colorScheme].text }]}
+            >
               {" "}
               Author: {authorFirstName} {authorLastName}
             </Text>

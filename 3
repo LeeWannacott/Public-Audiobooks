@@ -6,31 +6,10 @@ const antiFlashWhiteClose = "#eef1f9";
 // compliment to bone white
 
 // dark theme colors
-const slateGray = "#708090";
-const darkSlateGray = "#2F4F4F";
-const darkGray = "#121212";
+const slateGray =  "#708090";
+const darkSlateGray =  "#2F4F4F";
+const darkGray = "#121212"
 // #2F4F4F
-// solarized dark
-// (dark theme)
-const Base03 = "#002b36";
-const Base02 = "#073642";
-const Base01 = "#586e75";
-const Base00 = "#657b83";
-const Base0 = "#839496";
-const Base1 = "#93a1a1";
-const Base2 = "#eee8d5";
-// (light theme)
-const Base3 = "#fdf6e3";
-const Yellow = "#b58900";
-const Orange = "#cb4b16";
-const Red = "#dc322f	";
-const Magenta = "#d33682";
-const Violet = "#6c71c4";
-const Blue = "#268bd2";
-const Cyan = "#2aa198";
-const Green = "#859900";
-const niceGrey = "#263238"
-
 export default {
   light: {
     text: "#000",
@@ -73,7 +52,6 @@ export default {
     shelfIndicatorContainerBGColor: "#331800",
     shelveAudiobookIconColor: "#DAA520",
     audiotracksContainerColor: boneWhite,
-    audiotracksTextContainerColor: boneWhite,
     reviewsContainerColor: boneWhite,
     reviewsWrapperColor: boneWhite,
     reviewsTitleBGColor: boneWhite,
@@ -112,7 +90,7 @@ export default {
     settingsSubSectionTitles: "#009688",
   },
   dark: {
-    text: boneWhite,
+    text: "white",
     background: darkGray,
     audiotracksBGColor: darkGray,
     tint: tintColorDark,
@@ -124,73 +102,69 @@ export default {
     tabIconDefault: boneWhite,
     tabIconSelected: tintColorDark,
     buttonIconColor: boneWhite,
-    buttonBackgroundColor: Base03,
+    buttonBackgroundColor: darkSlateGray,
     buttonMode: "contained",
-    searchBarInputStyle: Base03,
-    searchBarInputContainerStyle: Base03,
+    searchBarInputStyle: slateGray,
+    searchBarInputContainerStyle:slateGray,
     searchBarContainerStyle: darkGray,
     searchBarBackground: darkGray,
     searchBarClearIcon: boneWhite,
     searchBarSearchIcon: boneWhite,
     searchBarPlaceholderText: boneWhite,
     searchBarTextColor: boneWhite,
-    overlayBackgroundColor: Base02,
-    bookshelfPickerBackground: darkGray,
-    bookshelfPickerBorderColor: darkSlateGray,
-    pickerBackgroundColor: Base03,
+    overlayBackgroundColor: "#000",
+    bookshelfPickerBackground: "#000",
+    bookshelfPickerBorderColor: "lightgrey",
+    pickerBackgroundColor: "#000",
     pickerTextColor: "white",
     pickerMode: "dropdown",
-    pickerRippleColor: "white",
-    pickerDropdownColor: "white",
+    pickerRippleColor: "grey",
     sliderThumbColor: "#228B22",
     sliderTrackColor: "#50C878",
-    audiobookBackgroundColor: darkGray,
+    audiobookBackgroundColor: boneWhite,
     audiobookProgressColor: "#50C878",
-    audiobookProgressTrackColor: darkSlateGray,
+    audiobookProgressTrackColor: "#DCDCDC",
     ratingBackgroundColor: "black",
-    audiobookImageContainerColor: Base03,
-    colorAroundAudiobookImage: Base02,
-    shelfIndicatorContainerBGColor: Base03,
+    audiobookImageContainerColor: "#331800",
+    colorAroundAudiobookImage: "#51361a",
+    shelfIndicatorContainerBGColor: "#331800",
     shelveAudiobookIconColor: "#DAA520",
-    audiotracksContainerColor: Base02,
-    audiotracksTextContainerColor: Base02,
-    audiotracksTextColor: boneWhite,
-    reviewsContainerColor: Base00,
-    reviewsWrapperColor: Base02,
-    reviewsTitleBGColor: Base02,
-    reviewsRatingTintColor: Base00,
-    reviewsRatingBGColor: Base01,
-    reviewsBodyHighlightColor: Base02,
-    reviewsBodyBGColor: Base02,
-    reviewsFooterHighlightColor: Base02,
-    reviewsFooterBGColor: Base02,
-    reviewsDateHighlightColor: Base02,
-    reviewsDateBGColor: Base02,
-    bookCoverContainerBGColor: Base02,
-    bookCoverWrapperColor: Base02,
-    audiotrackHeaderBGColor: darkGray,
-    audioActivityIndicatorContainerBG: darkGray,
+    audiotracksContainerColor: boneWhite,
+    reviewsContainerColor: boneWhite,
+    reviewsWrapperColor: boneWhite,
+    reviewsTitleBGColor: boneWhite,
+    reviewsRatingTintColor: boneWhite,
+    reviewsRatingBGColor: "#E2DFD2",
+    reviewsBodyHighlightColor: boneWhite,
+    reviewsBodyBGColor: boneWhite,
+    reviewsFooterHighlightColor: boneWhite,
+    reviewsFooterBGColor: boneWhite,
+    reviewsDateHighlightColor: boneWhite,
+    reviewsDateBGColor: boneWhite,
+    bookCoverContainerBGColor: boneWhite,
+    bookCoverWrapperColor: boneWhite,
+    audiotrackHeaderBGColor: "#000",
+    audioActivityIndicatorContainerBG: boneWhite,
     sectionsTitleColor: boneWhite,
-    makeReviewTextBodyBG: Base03,
-    makeReviewTextBorderColor: boneWhite,
-    makeReviewTitleBG: Base03,
-    makeReviewTitleBorderColor: boneWhite,
-    audiotrackControlsBGColor: Base02,
-    audiobookControlsTimeBGColor: Base02,
-    sliderBGColor: Base02,
-    imageAndCurrentlyPlayingInfoBGColor: Base02,
+    makeReviewTextBodyBG: "white",
+    makeReviewTextBorderColor: "#000000",
+    makeReviewTitleBG: "white",
+    makeReviewTitleBorderColor: "#000000",
+    audiotrackControlsBGColor: boneWhite,
+    audiobookControlsTimeBGColor: boneWhite,
+    sliderBGColor: boneWhite,
+    imageAndCurrentlyPlayingInfoBGColor: boneWhite,
     listAccordionDropdownIconColor: "white",
-    listAccordionDropdownBGColor: Base03,
+    listAccordionDropdownBGColor: "#331800",
     listAccordionTextColor: "white",
-    listAccordionTextHighlightColor: Base03,
+    listAccordionTextHighlightColor: "#331800",
     accordionItemsTextColor: "white",
-    accordionItemsBGColor: Base02,
-    settingsIconsColor: boneWhite,
-    settingsList: Base02,
-    settingsListText: boneWhite,
-    settingsBGColor: Base03,
+    accordionItemsBGColor: "#51361a",
+    settingsIconsColor: "#000",
+    settingsList: boneWhite,
+    settingsBGColor: boneWhite,
     settingsTitleText: "white",
-    settingsTitleBG: darkGray,
-    settingsSubSectionTitles: Green,
+    settingsTitleBG: "#263238",
+    settingsSubSectionTitles: "#009688",
   },
 };

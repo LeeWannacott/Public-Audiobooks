@@ -136,7 +136,7 @@ export default function Audiobooks(props: any) {
     <View>
       <ListItem
         topDivider
-        containerStyle={styles.AudioBookListView}
+        containerStyle={{backgroundColor:Colors[colorScheme].colorAroundAudiobookImage}}
         key={item.id}
       >
         <View
@@ -270,6 +270,5 @@ const styles = StyleSheet.create({
     color: "green",
   },
   AudioBookListView: {
-    backgroundColor: "#51361a",
   },
 });

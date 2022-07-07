@@ -31,6 +31,7 @@ function PickerForHistoryAndBookShelf(props: any) {
         ]}
       >
         <Picker
+            dropdownIconColor={Colors[colorScheme].pickerDropdownColor}
           style={{
             color: Colors[colorScheme].pickerTextColor,
             backgroundColor: Colors[colorScheme].pickerBackgroundColor,
@@ -139,7 +140,7 @@ const windowWidth = Dimensions.get("window").width;
 const styles = StyleSheet.create({
   SQLQueryPicker: {
     borderWidth: 1,
-    borderRadius: 3,
+    borderRadius: 2,
     borderBottomWidth: 1,
     width: windowWidth - 100,
     margin: 5,

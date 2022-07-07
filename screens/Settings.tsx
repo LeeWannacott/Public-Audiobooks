@@ -119,6 +119,7 @@ const UserSettings = () => {
             hasSwitch={false}
           />*/}
           <SettingsList.Item
+            titleStyle={{color:currentColorScheme.settingsListText}}
             icon={
               <MaterialCommunityIcons
                 name="run-fast"
@@ -146,6 +147,7 @@ const UserSettings = () => {
             }
           />
           <SettingsList.Item
+            titleStyle={{color:currentColorScheme.settingsListText}}
             icon={
               <MaterialCommunityIcons
                 name="duck"
@@ -173,6 +175,7 @@ const UserSettings = () => {
             }
           />
           <SettingsList.Item
+            titleStyle={{color:currentColorScheme.settingsListText}}
             icon={
               <MaterialCommunityIcons
                 name="headset"
@@ -266,6 +269,7 @@ const UserSettings = () => {
             ]}
           />
           <SettingsList.Item
+            titleStyle={{color:currentColorScheme.settingsListText}}
             icon={
               <MaterialCommunityIcons
                 name="information-variant"
@@ -279,6 +283,7 @@ const UserSettings = () => {
           />
           <SettingsList.Item
             hasNavArrow={true}
+            titleStyle={{color:currentColorScheme.settingsListText}}
             icon={
               <MaterialCommunityIcons
                 name="github"
@@ -308,6 +313,7 @@ const UserSettings = () => {
             }
           />
           <SettingsList.Item
+            titleStyle={{color:currentColorScheme.text}}
             hasNavArrow={true}
             icon={
               <MaterialCommunityIcons
@@ -356,7 +362,7 @@ const styles = StyleSheet.create({
   audiobookSettingsSubHeading: { marginTop: 20 },
   settingsStyleBlock: {
     borderBottomWidth: 1,
-    borderColor: "red",
+    borderColor: "#dc322f",
   },
 });
 

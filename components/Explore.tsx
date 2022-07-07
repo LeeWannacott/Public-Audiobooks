@@ -123,7 +123,7 @@ function Search() {
       case "recent":
         return "New Releases";
       case "title":
-        return "Enter title:";
+        return "Search by Title:";
       case "author":
         return `Author: ${apiSettings["authorLastName"]}`;
       case "genre":
@@ -142,9 +142,8 @@ function Search() {
           backgroundColor: Colors[colorScheme].searchBarBackground,
           width: windowWidth,
           height: 80,
-          paddingLeft: 0,
           paddingTop: 10,
-          left: -10,
+          right: 15,
         }}
       >
         <View style={styles.searchStyle}>
@@ -162,6 +161,7 @@ function Search() {
               backgroundColor: Colors[colorScheme].searchBarInputContainerStyle,
               borderWidth: 1,
               borderBottomWidth: 1,
+              borderColor:Colors[colorScheme].bookshelfPickerBorderColor,
               height: 55,
             }}
             inputStyle={{
@@ -221,6 +221,8 @@ function Search() {
             style={{
               color: Colors[colorScheme].pickerTextColor,
               backgroundColor: Colors[colorScheme].pickerBackgroundColor,
+              borderColor: Colors[colorScheme].bookshelfPickerBorderColor,
+                borderWidth:1,
             }}
             selectedValue={apiSettings["searchBy"]}
             onValueChange={(titleOrGenreOrAuthor, itemIndex) => {
@@ -310,7 +312,11 @@ function Search() {
             >{`Select Author:`}</Text>
           </View>
           <Picker
-            dropdownIconColor={statusOfPickers.authorSelected ? currentColorScheme.pickerDropdownColor : currentColorScheme.overlayBackgroundColor}
+            dropdownIconColor={
+              statusOfPickers.authorSelected
+                ? currentColorScheme.pickerDropdownColor
+                : currentColorScheme.overlayBackgroundColor
+            }
             selectedValue={apiSettings["authorLastName"]}
             prompt={"Search by author:"}
             // mode={"dropdown"}
@@ -338,7 +344,11 @@ function Search() {
             >{`Select Genre:`}</Text>
           </View>
           <Picker
-            dropdownIconColor={statusOfPickers.genreSelected ? currentColorScheme.pickerDropdownColor : currentColorScheme.overlayBackgroundColor}
+            dropdownIconColor={
+              statusOfPickers.genreSelected
+                ? currentColorScheme.pickerDropdownColor
+                : currentColorScheme.overlayBackgroundColor
+            }
             style={{
               color: Colors[colorScheme].pickerTextColor,
               backgroundColor: Colors[colorScheme].pickerBackgroundColor,
@@ -360,7 +370,7 @@ function Search() {
             {genreListRender}
           </Picker>
           <View style={styles.checkboxRow}>
-            <Text style={{ fontSize: 15 ,color:currentColorScheme.text}}>
+            <Text style={{ fontSize: 15, color: currentColorScheme.text }}>
               Audiobooks requested per search:{" "}
               {apiSettings["audiobookAmountRequested"]}.
             </Text>
