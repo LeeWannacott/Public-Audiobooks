@@ -240,7 +240,8 @@ export default function Audiobooks(props: any) {
         <ActivityIndicator
           accessibilityLabel={"loading"}
           size="large"
-          color={Colors[colorScheme].ActivityIndicatorColor}
+
+          color={Colors[colorScheme].activityIndicatorColor}
           style={styles.ActivityIndicatorStyle}
         />
       </View>
@@ -267,7 +268,6 @@ const styles = StyleSheet.create({
   },
   ActivityIndicatorStyle: {
     top: windowHeight / 2 - 90,
-    color: "green",
   },
   AudioBookListView: {
   },

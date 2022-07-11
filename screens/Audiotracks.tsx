@@ -128,11 +128,9 @@ function Audiotracks(props: any) {
             accessibilityHint="Contains options such as changing speed of audiotrack."
             mode={Colors[colorScheme].buttonMode}
             onPress={() => toggleSettingsOverlay()}
-            theme={{
-              colors: {
-                primary: Colors[colorScheme].buttonBackgroundColor,
-              },
-            }}
+          style={{
+            backgroundColor: Colors[colorScheme].buttonBackgroundColor,
+          }}
           >
             <MaterialCommunityIcons
               name="cog"
@@ -766,11 +764,9 @@ function Audiotracks(props: any) {
         onPress={() => PlayFromStartOfTrack(index)}
         style={{ margin: 0, padding: 0 }}
         mode={Colors[colorScheme].buttonMode}
-        theme={{
-          colors: {
-            primary: Colors[colorScheme].buttonBackgroundColor,
-          },
-        }}
+          style={{
+            backgroundColor: Colors[colorScheme].buttonBackgroundColor,
+          }}
       >
         <MaterialCommunityIcons
           name="book-arrow-left"
@@ -850,11 +846,9 @@ function Audiotracks(props: any) {
       </ListItem.Content>
       <Button
         mode={Colors[colorScheme].buttonMode}
-        theme={{
-          colors: {
-            primary: Colors[colorScheme].buttonBackgroundColor,
-          },
-        }}
+          style={{
+            backgroundColor: Colors[colorScheme].buttonBackgroundColor,
+          }}
         accessibilityLabel={`Resume playing ${item?.section_number}: ${
           item?.title
         } ${GetDurationFormat(
@@ -1056,7 +1050,9 @@ function Audiotracks(props: any) {
               <Text style={{ color: Colors[colorScheme].text }}>
                 {msToTime(audiotracksData.totalAudioBookListeningTimeMS)}
               </Text>
-              <Text> {totalTime}</Text>
+              <Text style={{ color: Colors[colorScheme].text }}>
+                {totalTime}
+              </Text>
             </View>
 
             <Text
@@ -1096,7 +1092,10 @@ function Audiotracks(props: any) {
       return (
         <Button
           accessibilityLabel="Opens overlay for writing a review on the audiobook."
-          mode={"outlined"}
+            mode={Colors[colorScheme].buttonMode}
+          style={{
+            backgroundColor: Colors[colorScheme].buttonBackgroundColor,
+          }}
           onPress={() => toggleWriteReviewOverlay()}
           style={{
             backgroundColor: Colors[colorScheme].buttonBackgroundColor,

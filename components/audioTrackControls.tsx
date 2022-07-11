@@ -29,10 +29,8 @@ function AudioTrackControls(props: any) {
         ]}
       >
         <Button
-          theme={{
-            colors: {
-              primary: Colors[colorScheme].buttonBackgroundColor,
-            },
+          style={{
+            backgroundColor: Colors[colorScheme].buttonBackgroundColor,
           }}
           mode={Colors[colorScheme].buttonMode}
           onPress={() => HandlePrev()}
@@ -45,10 +43,8 @@ function AudioTrackControls(props: any) {
           />
         </Button>
         <Button
-          theme={{
-            colors: {
-              primary: Colors[colorScheme].buttonBackgroundColor,
-            },
+          style={{
+            backgroundColor: Colors[colorScheme].buttonBackgroundColor,
           }}
           mode={Colors[colorScheme].buttonMode}
           onPress={() => rewindTenSeconds()}
@@ -70,10 +66,8 @@ function AudioTrackControls(props: any) {
           </View>
         ) : props.loadedCurrentAudiotrack === false ? (
           <Button
-            theme={{
-              colors: {
-                primary: Colors[colorScheme].buttonBackgroundColor,
-              },
+            style={{
+              backgroundColor: Colors[colorScheme].buttonBackgroundColor,
             }}
             mode={Colors[colorScheme].buttonMode}
             accessibilityLabel="Resume play from last played audiotrack"
@@ -94,10 +88,8 @@ function AudioTrackControls(props: any) {
           </Button>
         ) : props.Playing ? (
           <Button
-            theme={{
-              colors: {
-                primary: Colors[colorScheme].buttonBackgroundColor,
-              },
+            style={{
+              backgroundColor: Colors[colorScheme].buttonBackgroundColor,
             }}
             mode={Colors[colorScheme].buttonMode}
             onPress={() => props.PauseAudio()}
@@ -119,10 +111,8 @@ function AudioTrackControls(props: any) {
           </View>
         ) : (
           <Button
-            theme={{
-              colors: {
-                primary: Colors[colorScheme].buttonBackgroundColor,
-              },
+            style={{
+              backgroundColor: Colors[colorScheme].buttonBackgroundColor,
             }}
             mode={Colors[colorScheme].buttonMode}
             onPress={() => PlayAudio()}
@@ -136,10 +126,8 @@ function AudioTrackControls(props: any) {
           </Button>
         )}
         <Button
-          theme={{
-            colors: {
-              primary: Colors[colorScheme].buttonBackgroundColor,
-            },
+          style={{
+            backgroundColor: Colors[colorScheme].buttonBackgroundColor,
           }}
           mode={Colors[colorScheme].buttonMode}
           onPress={() => forwardTenSeconds()}
@@ -152,10 +140,8 @@ function AudioTrackControls(props: any) {
           />
         </Button>
         <Button
-          theme={{
-            colors: {
-              primary: Colors[colorScheme].buttonBackgroundColor,
-            },
+          style={{
+            backgroundColor: Colors[colorScheme].buttonBackgroundColor,
           }}
           mode={Colors[colorScheme].buttonMode}
           onPress={() => HandleNext()}

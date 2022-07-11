@@ -19,7 +19,7 @@ function Search() {
   const currentColorScheme = Colors[colorScheme];
   const [search, updateSearch] = useState("");
   const [userInputEntered, setUserInputEntered] = useState("");
-  const [requestAudiobookAmount] = useState(26);
+  const [requestAudiobookAmount] = useState(64);
   const [visible, setVisible] = useState(false);
 
   const [statusOfPickers, setStatusOfPickers] = useState({
@@ -132,7 +132,7 @@ function Search() {
   }
 
   return (
-    <View style={styles.test}>
+    <View style={{display:"flex"}}>
       <View
         style={{
           display: "flex",
@@ -143,7 +143,7 @@ function Search() {
           width: windowWidth,
           height: 80,
           paddingTop: 10,
-          right: 15,
+          right:10,
         }}
       >
         <View style={styles.searchStyle}>
@@ -185,15 +185,9 @@ function Search() {
           accessibilityHint="Opens options for searching by Title, Author, Genre and changing amount of audiobooks requested per search."
           onPress={toggleOverlay}
           mode={Colors[colorScheme].buttonMode}
-          theme={{
-            colors: {
-              primary: Colors[colorScheme].buttonBackgroundColor,
-            },
-          }}
           style={{
-            left: -5,
-            justifyContent: "center",
-            alignItems: "center",
+            backgroundColor: currentColorScheme.buttonBackgroundColor,
+              right:4,
           }}
         >
           <MaterialCommunityIcons
@@ -473,6 +467,7 @@ export default Search;
 
 const styles = StyleSheet.create({
   searchStyle: {
+    right:4,
     width: windowWidth - 80,
   },
   settingsIcon: {},
