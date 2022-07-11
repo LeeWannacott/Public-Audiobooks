@@ -277,7 +277,7 @@ const UserSettings = () => {
                 color={"green"}
               />
             }
-            titleInfo="1.0.0"
+            titleInfo="1.1.0"
             hasNavArrow={false}
             title="Version: "
           />
