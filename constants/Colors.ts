@@ -168,7 +168,7 @@ export default {
     reviewsDateBGColor: Base02,
     bookCoverContainerBGColor: Base02,
     bookCoverWrapperColor: Base02,
-    audiotrackHeaderBGColor: Base02,
+    audiotrackHeaderBGColor: darkGray,
     audioActivityIndicatorContainerBG: darkGray,
     sectionsTitleColor: boneWhite,
     makeReviewTextBodyBG: Base03,
