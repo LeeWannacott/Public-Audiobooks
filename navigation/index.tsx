@@ -3,7 +3,7 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   NavigationContainer,
@@ -13,7 +13,6 @@ import {
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
 import { ColorSchemeName, Pressable } from "react-native";
-
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import {
@@ -22,15 +21,18 @@ import {
   RootTabScreenProps,
 } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
-
 import { StatusBar } from "expo-status-bar";
-
 import HomeScreen from "../screens/Homescreen";
 import Audiotracks from "../screens/Audiotracks";
 import History from "../screens/History";
 import Bookshelf from "../screens/Bookshelf";
 import Settings from "../screens/Settings";
 import * as NavigationBar from "expo-navigation-bar";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import {
+  audiobookHistoryTableName,
+  audiobookProgressTableName,
+} from "../db/database_functions";
 
 export default function Navigation({
   colorScheme,
@@ -89,6 +91,36 @@ function RootNavigator() {
  */
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
+const BookshelfTab = createMaterialTopTabNavigator();
+
+function BookshelfTabs() {
+  const starredQuery = `select * from ${audiobookHistoryTableName} inner join ${audiobookProgressTableName} on ${audiobookProgressTableName}.audiobook_id = ${audiobookHistoryTableName}.audiobook_id where ${audiobookProgressTableName}.audiobook_shelved=1`;
+
+  const inProgressQuery = `select * from ${audiobookHistoryTableName} inner join ${audiobookProgressTableName} on ${audiobookProgressTableName}.audiobook_id = ${audiobookHistoryTableName}.audiobook_id where ${audiobookProgressTableName}.listening_progress_percent > 0.01`;
+
+  const finishedQuery = `select * from ${audiobookHistoryTableName} inner join ${audiobookProgressTableName} on ${audiobookProgressTableName}.audiobook_id = ${audiobookHistoryTableName}.audiobook_id where ${audiobookProgressTableName}.listening_progress_percent > 0.99`;
+
+  return (
+    <BookshelfTab.Navigator screenOptions={{ swipeEnabled: false }}>
+      <BookshelfTab.Screen
+        initialParams={{ sqlQuery: starredQuery }}
+        name="Starred"
+        component={Bookshelf}
+      />
+      <BookshelfTab.Screen
+        initialParams={{ sqlQuery: inProgressQuery }}
+        name="In progress"
+        component={Bookshelf}
+      />
+      <BookshelfTab.Screen
+        initialParams={{ sqlQuery: finishedQuery }}
+        name="Finished"
+        component={Bookshelf}
+      />
+    </BookshelfTab.Navigator>
+  );
+}
+
 function BottomTabNavigator() {
   const colorScheme = useColorScheme();
 
@@ -135,7 +167,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Bookshelf"
-        component={Bookshelf}
+        component={BookshelfTabs}
         options={{
           tabBarLabel: "Bookshelf",
           unmountOnBlur: false,
@@ -158,14 +190,4 @@ function BottomTabNavigator() {
       />
     </BottomTab.Navigator>
   );
-}
-
-/**
- * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
- */
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>["name"];
-  color: string;
-}) {
-  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
 }

@@ -59,6 +59,7 @@ function History() {
         audiobookHistory={audiobookHistory}
         loadingHistory={loadingHistory}
         asyncDataKeyName={asyncDataKeyNameForPickerAndToggle}
+        shelfHeightOffset={150}
       />
     </View>
   );

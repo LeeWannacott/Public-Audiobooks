@@ -16,7 +16,8 @@ const db = openDatabase();
 // global scope
 let lolcache = {};
 
-function History() {
+function Bookshelf(props:any) {
+  const sqlQuery = props.route.params.sqlQuery
   const [audiobookHistory, setAudiobookHistory] = useState<any[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(true);
   function getShelvedBooks(pickerAndQueryStatePassedIn: {
@@ -25,7 +26,7 @@ function History() {
   }) {
     db.transaction((tx) => {
       tx.executeSql(
-        `select * from ${audiobookHistoryTableName} inner join ${audiobookProgressTableName} on ${audiobookProgressTableName}.audiobook_id = ${audiobookHistoryTableName}.audiobook_id where ${audiobookProgressTableName}.audiobook_shelved=1 ${pickerAndQueryStatePassedIn.orderBy} ${pickerAndQueryStatePassedIn.order}`,
+        `${sqlQuery} ${pickerAndQueryStatePassedIn.orderBy} ${pickerAndQueryStatePassedIn.order}`,
         [],
         (_, { rows }) => {
           // let start = performance.now();
@@ -58,9 +59,10 @@ function History() {
         audiobookHistory={audiobookHistory}
         loadingHistory={loadingHistory}
         asyncDataKeyName={asyncDataKeyNameForPickerAndToggle}
+        shelfHeightOffset={200}
       />
     </View>
   );
 }
 
-export default History;
+export default Bookshelf;

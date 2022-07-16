@@ -281,6 +281,7 @@ function ShelfForBookshelfAndHistory(props: any) {
             styles.flatListStyle,
             {
               backgroundColor: Colors[colorScheme].audiobookImageContainerColor,
+              height: windowHeight - props.shelfHeightOffset,
             },
           ]}
         >
@@ -309,6 +310,7 @@ function ShelfForBookshelfAndHistory(props: any) {
             styles.flatListStyle,
             {
               backgroundColor: Colors[colorScheme].audiobookImageContainerColor,
+              height: windowHeight - props.shelfHeightOffset,
             },
           ]}
         >
@@ -338,7 +340,7 @@ export default ShelfForBookshelfAndHistory;
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-const flatlistHeight = windowHeight / 1.25;
+const flatlistHeight = windowHeight - 200;
 const ImageContainerWidth = windowWidth / 2 - 40;
 
 const styles = StyleSheet.create({
@@ -353,7 +355,6 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingTop: 2,
     paddingBottom: 0,
-    height: flatlistHeight,
   },
   ActivityIndicatorStyle: {
     top: windowHeight / 3,
