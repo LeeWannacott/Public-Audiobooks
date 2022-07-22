@@ -96,9 +96,9 @@ const BookshelfTab = createMaterialTopTabNavigator();
 function BookshelfTabs() {
   const starredQuery = `select * from ${audiobookHistoryTableName} inner join ${audiobookProgressTableName} on ${audiobookProgressTableName}.audiobook_id = ${audiobookHistoryTableName}.audiobook_id where ${audiobookProgressTableName}.audiobook_shelved=1`;
 
-  const inProgressQuery = `select * from ${audiobookHistoryTableName} inner join ${audiobookProgressTableName} on ${audiobookProgressTableName}.audiobook_id = ${audiobookHistoryTableName}.audiobook_id where ${audiobookProgressTableName}.listening_progress_percent > 0.001 and ${audiobookProgressTableName}.listening_progress_percent <= 0.999`;
+  const inProgressQuery = `select * from ${audiobookHistoryTableName} inner join ${audiobookProgressTableName} on ${audiobookProgressTableName}.audiobook_id = ${audiobookHistoryTableName}.audiobook_id where ${audiobookProgressTableName}.listening_progress_percent > 0.001 and ${audiobookProgressTableName}.listening_progress_percent <= 0.99`;
 
-  const finishedQuery = `select * from ${audiobookHistoryTableName} inner join ${audiobookProgressTableName} on ${audiobookProgressTableName}.audiobook_id = ${audiobookHistoryTableName}.audiobook_id where ${audiobookProgressTableName}.listening_progress_percent > 0.999`;
+  const finishedQuery = `select * from ${audiobookHistoryTableName} inner join ${audiobookProgressTableName} on ${audiobookProgressTableName}.audiobook_id = ${audiobookHistoryTableName}.audiobook_id where ${audiobookProgressTableName}.listening_progress_percent > 0.99`;
 
   return (
     <BookshelfTab.Navigator screenOptions={{ swipeEnabled: false }}>
