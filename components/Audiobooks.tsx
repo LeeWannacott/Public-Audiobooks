@@ -43,14 +43,11 @@ export default function Audiobooks(props: any) {
     addAudiobookToHistoryDB(db, bookDataForHistory);
   };
 
-  useEffect(() => {
-    setLoadingAudioBooks(true);
+  const requestAudiobooksFromAPI = () => {
     const searchQuery = encodeURIComponent(props.searchBarCurrentText);
     const genre = encodeURIComponent(props.apiSettings["audiobookGenre"]);
     const author = encodeURIComponent(props.apiSettings["authorLastName"]);
-    const amountOfAudiobooks = encodeURIComponent(
-      props.apiSettings["audiobookAmountRequested"]
-    );
+    const amountOfAudiobooks = encodeURIComponent(props.requestAudiobookAmount);
     const librivoxAudiobooksAPI = encodeURI(
       "https://librivox.org/api/feed/audiobooks"
     );
@@ -95,11 +92,16 @@ export default function Audiobooks(props: any) {
           setLoadingAudioBooks(false);
         });
     }
-  }, [
-    props.apiSettings,
-    props.searchBarInputSubmitted,
-    props.apiSettingsHaveBeenSet,
-  ]);
+  };
+
+  useEffect(() => {
+    setLoadingAudioBooks(true);
+    requestAudiobooksFromAPI();
+  }, [props.apiSettings, props.searchBarInputSubmitted]);
+
+  useEffect(() => {
+    requestAudiobooksFromAPI();
+  }, [props.requestAudiobookAmount]);
 
   const bookCoverURL: any[] = [];
   const reviewsURL: any[] = [];
@@ -136,7 +138,9 @@ export default function Audiobooks(props: any) {
     <View>
       <ListItem
         topDivider
-        containerStyle={{backgroundColor:Colors[colorScheme].colorAroundAudiobookImage}}
+        containerStyle={{
+          backgroundColor: Colors[colorScheme].colorAroundAudiobookImage,
+        }}
         key={item.id}
       >
         <View
@@ -240,7 +244,6 @@ export default function Audiobooks(props: any) {
         <ActivityIndicator
           accessibilityLabel={"loading"}
           size="large"
-
           color={Colors[colorScheme].activityIndicatorColor}
           style={styles.ActivityIndicatorStyle}
         />
@@ -268,7 +271,5 @@ const styles = StyleSheet.create({
   },
   ActivityIndicatorStyle: {
     top: windowHeight / 2 - 90,
-  },
-  AudioBookListView: {
   },
 });

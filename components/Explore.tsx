@@ -19,8 +19,8 @@ function Search() {
   const currentColorScheme = Colors[colorScheme];
   const [search, updateSearch] = useState("");
   const [userInputEntered, setUserInputEntered] = useState("");
-  const [requestAudiobookAmount] = useState(64);
   const [visible, setVisible] = useState(false);
+  const [audiobookAmountRequested, setAudiobooksAmountRequested] = useState(64);
 
   const [statusOfPickers, setStatusOfPickers] = useState({
     authorSelected: false,
@@ -33,7 +33,6 @@ function Search() {
     searchBy: "",
     audiobookGenre: "*Non-fiction",
     authorLastName: "Hoffmann",
-    audiobookAmountRequested: 64,
   });
 
   React.useState(() => {
@@ -45,9 +44,15 @@ function Search() {
               ["searchBy"]: "recent",
               ["audiobookGenre"]: "*Non-fiction",
               ["authorLastName"]: "Hoffmann",
-              ["audiobookAmountRequested"]: 64,
             });
       });
+      getAsyncData("audiobookAmountRequested").then(
+        (audiobookAmountRequestedRetrieved) => {
+          audiobookAmountRequestedRetrieved
+            ? setAudiobooksAmountRequested(audiobookAmountRequestedRetrieved)
+            : setAudiobooksAmountRequested(64);
+        }
+      );
       getAsyncData("author&GenrePickerSearchbarDisableBools").then(
         (authorGenreSearchbar) => {
           authorGenreSearchbar
@@ -72,18 +77,12 @@ function Search() {
     storeAsyncData("author&GenrePickerSearchbarDisableBools", dropdownPickers);
   };
 
-  function changeAudiobookAmountRequested(amount: number) {
-    setApiSettings((prevState) => ({
-      ...prevState,
-      ["audiobookAmountRequested"]: amount,
-    }));
-    storeApiSettings({
-      ...apiSettings,
-      ["audiobookAmountRequested"]: amount,
-    });
+  function setAndStoreAudiobookAmountRequested(amount: number) {
+    setAudiobooksAmountRequested(amount);
+    storeAsyncData("audiobookAmountRequested", amount);
   }
 
-  const toggleOverlay = () => {
+  const toggleSearchOptionsOverlay = () => {
     NavigationBar.setBackgroundColorAsync(
       Colors[colorScheme].statusBarBackground
     );
@@ -132,7 +131,7 @@ function Search() {
   }
 
   return (
-    <View style={{display:"flex"}}>
+    <View style={{ display: "flex" }}>
       <View
         style={{
           display: "flex",
@@ -143,7 +142,7 @@ function Search() {
           width: windowWidth,
           height: 80,
           paddingTop: 10,
-          right:10,
+          right: 10,
         }}
       >
         <View style={styles.searchStyle}>
@@ -161,7 +160,7 @@ function Search() {
               backgroundColor: Colors[colorScheme].searchBarInputContainerStyle,
               borderWidth: 1,
               borderBottomWidth: 1,
-              borderColor:Colors[colorScheme].bookshelfPickerBorderColor,
+              borderColor: Colors[colorScheme].bookshelfPickerBorderColor,
               height: 55,
             }}
             inputStyle={{
@@ -183,11 +182,11 @@ function Search() {
         <Button
           accessibilityLabel="Search options"
           accessibilityHint="Opens options for searching by Title, Author, Genre and changing amount of audiobooks requested per search."
-          onPress={toggleOverlay}
+          onPress={toggleSearchOptionsOverlay}
           mode={Colors[colorScheme].buttonMode}
           style={{
             backgroundColor: currentColorScheme.buttonBackgroundColor,
-              right:4,
+            right: 4,
           }}
         >
           <MaterialCommunityIcons
@@ -198,7 +197,7 @@ function Search() {
         </Button>
         <Overlay
           isVisible={visible}
-          onBackdropPress={toggleOverlay}
+          onBackdropPress={toggleSearchOptionsOverlay}
           fullScreen={false}
           overlayStyle={{
             backgroundColor: Colors[colorScheme].overlayBackgroundColor,
@@ -216,7 +215,7 @@ function Search() {
               color: Colors[colorScheme].pickerTextColor,
               backgroundColor: Colors[colorScheme].pickerBackgroundColor,
               borderColor: Colors[colorScheme].bookshelfPickerBorderColor,
-                borderWidth:1,
+              borderWidth: 1,
             }}
             selectedValue={apiSettings["searchBy"]}
             onValueChange={(titleOrGenreOrAuthor, itemIndex) => {
@@ -365,8 +364,7 @@ function Search() {
           </Picker>
           <View style={styles.checkboxRow}>
             <Text style={{ fontSize: 15, color: currentColorScheme.text }}>
-              Audiobooks requested per search:{" "}
-              {apiSettings["audiobookAmountRequested"]}.
+              Audiobooks requested per search: {audiobookAmountRequested}.
             </Text>
           </View>
           <View
@@ -379,17 +377,12 @@ function Search() {
           >
             <Button
               accessibilityLabel="Decrease audiobooks requested per search."
-              accessibilityHint={`Currently: ${apiSettings.audiobookAmountRequested} requested`}
+              accessibilityHint={`Currently: ${audiobookAmountRequested} requested`}
               onPress={() =>
-                apiSettings.audiobookAmountRequested >= 6
-                  ? (setApiSettings({
-                      ...apiSettings,
-                      audiobookAmountRequested:
-                        apiSettings.audiobookAmountRequested - 5,
-                    }),
-                    changeAudiobookAmountRequested(
-                      apiSettings.audiobookAmountRequested - 5
-                    ))
+                audiobookAmountRequested >= 6
+                  ? setAndStoreAudiobookAmountRequested(
+                      audiobookAmountRequested - 5
+                    )
                   : undefined
               }
               mode={Colors[colorScheme].buttonMode}
@@ -404,10 +397,10 @@ function Search() {
               />
             </Button>
             <Slider
-              value={apiSettings["audiobookAmountRequested"]}
+              value={audiobookAmountRequested}
               maximumValue={420}
               minimumValue={1}
-              onValueChange={changeAudiobookAmountRequested}
+              onValueChange={setAndStoreAudiobookAmountRequested}
               step={1}
               style={{ width: 180, height: 40, margin: 10 }}
               trackStyle={{
@@ -422,17 +415,12 @@ function Search() {
             />
             <Button
               accessibilityLabel="Increase audiobooks requested per search."
-              accessibilityHint={`Currently ${apiSettings.audiobookAmountRequested} requested`}
+              accessibilityHint={`Currently ${audiobookAmountRequested} requested`}
               onPress={() =>
-                apiSettings.audiobookAmountRequested <= 415
-                  ? (setApiSettings({
-                      ...apiSettings,
-                      audiobookAmountRequested:
-                        apiSettings.audiobookAmountRequested + 5,
-                    }),
-                    changeAudiobookAmountRequested(
-                      apiSettings.audiobookAmountRequested + 5
-                    ))
+                audiobookAmountRequested <= 415
+                  ? setAndStoreAudiobookAmountRequested(
+                      audiobookAmountRequested + 5
+                    )
                   : undefined
               }
               mode={Colors[colorScheme].buttonMode}
@@ -454,7 +442,7 @@ function Search() {
           apiSettings={apiSettings}
           searchBarInputSubmitted={userInputEntered}
           searchBarCurrentText={search}
-          requestAudiobookAmount={requestAudiobookAmount}
+          requestAudiobookAmount={audiobookAmountRequested}
         />
       </View>
     </View>
@@ -467,7 +455,7 @@ export default Search;
 
 const styles = StyleSheet.create({
   searchStyle: {
-    right:4,
+    right: 4,
     width: windowWidth - 80,
   },
   settingsIcon: {},
