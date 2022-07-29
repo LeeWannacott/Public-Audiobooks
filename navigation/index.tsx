@@ -10,9 +10,10 @@ import {
   DefaultTheme,
   DarkTheme,
 } from "@react-navigation/native";
+import { SearchBar, Overlay } from "@rneui/themed";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
-import { ColorSchemeName, Pressable } from "react-native";
+import { ColorSchemeName, Pressable, Text, View } from "react-native";
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import {
@@ -27,6 +28,9 @@ import Audiotracks from "../screens/Audiotracks";
 import History from "../screens/History";
 import Bookshelf from "../screens/Bookshelf";
 import Settings from "../screens/Settings";
+import AudioBooks from "../components/Audiobooks";
+import Explore from "../components/Explore";
+import { Button } from "react-native-paper";
 import * as NavigationBar from "expo-navigation-bar";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import {
@@ -90,6 +94,108 @@ function RootNavigator() {
  * https://reactnavigation.org/docs/bottom-tab-navigator
  */
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
+
+const ExploreTopTab = createMaterialTopTabNavigator();
+
+function SearchTopTabs() {
+  const colorScheme = useColorScheme();
+  const [apiSettings, setApiSettings] = React.useState({
+    searchBy: "title",
+    audiobookGenre: "*Non-fiction",
+    authorLastName: "Hoffmann",
+  });
+  const [apiSettings2, setApiSettings2] = React.useState({
+    searchBy: "recent",
+    audiobookGenre: "*Non-fiction",
+    authorLastName: "Hoffmann",
+  });
+  const [apiSettings3, setApiSettings3] = React.useState({
+    searchBy: "genre",
+    audiobookGenre: "*Non-fiction",
+    authorLastName: "Hoffmann",
+  });
+  const [apiSettings4, setApiSettings4] = React.useState({
+    searchBy: "author",
+    audiobookGenre: "*Non-fiction",
+    authorLastName: "Hoffmann",
+  });
+  const [visible, setVisible] = React.useState(false);
+  const [userInputEntered, setUserInputEntered] = React.useState("");
+  const [search, updateSearch] = React.useState("");
+  const [audiobookAmountRequested, setAudiobooksAmountRequested] =
+    React.useState(64);
+  return (
+    <>
+      <ExploreTopTab.Navigator screenOptions={{ swipeEnabled: false }}>
+        <ExploreTopTab.Screen
+          initialParams={{
+            apiSettings: apiSettings,
+            searchBy: "title",
+            isSearchDisabled: false,
+            searchBarInputSubmitted: userInputEntered,
+            searchBarCurrentText: search,
+            requestAudiobookAmount: audiobookAmountRequested,
+          }}
+          name="Title"
+          component={Explore}
+        />
+        <ExploreTopTab.Screen
+          initialParams={{
+            apiSettings: apiSettings2,
+            searchBy: "recent",
+            isSearchDisabled: true,
+            searchBarInputSubmitted: userInputEntered,
+            searchBarCurrentText: search,
+            requestAudiobookAmount: audiobookAmountRequested,
+          }}
+          name="New"
+          component={Explore}
+        />
+        <ExploreTopTab.Screen
+          initialParams={{
+            apiSettings: apiSettings3,
+            searchBy: "genre",
+            isSearchDisabled: false,
+            searchBarInputSubmitted: userInputEntered,
+            searchBarCurrentText: search,
+            requestAudiobookAmount: audiobookAmountRequested,
+          }}
+          name="Genre"
+          component={Explore}
+        />
+        <ExploreTopTab.Screen
+          initialParams={{
+            apiSettings: apiSettings4,
+            searchBy: "author",
+            isSearchDisabled: false,
+            searchBarInputSubmitted: userInputEntered,
+            searchBarCurrentText: search,
+            requestAudiobookAmount: audiobookAmountRequested,
+          }}
+          name="Author"
+          component={Explore}
+        />
+        {/*<ExploreTopTab.Screen
+        initialParams={{
+        }}
+        name="New Releases"
+        component={AudioBooks}
+      />
+      <ExploreTopTab.Screen
+        initialParams={{}}
+        name="Genre"
+        component={HomeScreen}
+      />
+      <ExploreTopTab.Screen
+        initialParams={{}}
+        name="Authors"
+        component={HomeScreen}
+      />
+        */}
+      </ExploreTopTab.Navigator>
+    </>
+  );
+}
 
 const BookshelfTab = createMaterialTopTabNavigator();
 
@@ -160,7 +266,7 @@ function BottomTabNavigator() {
     >
       <BottomTab.Screen
         name="Explore"
-        component={HomeScreen}
+        component={SearchTopTabs}
         options={{
           tabBarLabel: "Explore",
         }}

@@ -1,8 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
+
 import { SearchBar, Overlay } from "@rneui/themed";
 import Slider from "@react-native-community/slider";
 import AudioBooks from "../components/Audiobooks";
-import { View, Dimensions, Text } from "react-native";
+import { View, Dimensions, Text, FlatList } from "react-native";
 import { StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
@@ -13,55 +14,41 @@ import { Button } from "react-native-paper";
 import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
 import * as NavigationBar from "expo-navigation-bar";
+import Fuse from "fuse.js";
 
-function Search() {
+function Search(props: any) {
   const colorScheme = useColorScheme();
   const currentColorScheme = Colors[colorScheme];
-  const [search, updateSearch] = useState("");
+  const [search, setSearch] = useState("");
   const [userInputEntered, setUserInputEntered] = useState("");
   const [visible, setVisible] = useState(false);
   const [audiobookAmountRequested, setAudiobooksAmountRequested] = useState(64);
-
-  const [statusOfPickers, setStatusOfPickers] = useState({
-    authorSelected: false,
-    genreSelected: false,
-    isSearchDisabled: true,
-  });
+  const [genreFuse, setGenreFuse] = useState<Fuse>("");
+  const [genreFlatList, setGenreFlatList] = useState<Fuse>("");
 
   const refToSearchbar = useRef(null);
   const [apiSettings, setApiSettings] = useState({
-    searchBy: "",
+    searchBy: props.route.params.searchBy,
     audiobookGenre: "*Non-fiction",
     authorLastName: "Hoffmann",
   });
 
   React.useState(() => {
     try {
-      getAsyncData("apiSettings").then((apiSettingsFromStorage) => {
-        apiSettingsFromStorage
-          ? setApiSettings(apiSettingsFromStorage)
-          : setApiSettings({
-              ["searchBy"]: "recent",
-              ["audiobookGenre"]: "*Non-fiction",
-              ["authorLastName"]: "Hoffmann",
-            });
-      });
+      // getAsyncData("apiSettings").then((apiSettingsFromStorage) => {
+      // apiSettingsFromStorage
+      // ? setApiSettings(apiSettingsFromStorage)
+      // : setApiSettings({
+      // ["searchBy"]: "recent",
+      // ["audiobookGenre"]: "*Non-fiction",
+      // ["authorLastName"]: "Hoffmann",
+      // });
+      // });
       getAsyncData("audiobookAmountRequested").then(
         (audiobookAmountRequestedRetrieved) => {
           audiobookAmountRequestedRetrieved
             ? setAudiobooksAmountRequested(audiobookAmountRequestedRetrieved)
             : setAudiobooksAmountRequested(64);
-        }
-      );
-      getAsyncData("author&GenrePickerSearchbarDisableBools").then(
-        (authorGenreSearchbar) => {
-          authorGenreSearchbar
-            ? setStatusOfPickers(authorGenreSearchbar)
-            : setStatusOfPickers({
-                authorSelected: false,
-                genreSelected: false,
-                isSearchDisabled: true,
-              });
         }
       );
     } catch (err) {
@@ -71,10 +58,6 @@ function Search() {
 
   const storeApiSettings = (tempApiSettings: any) => {
     storeAsyncData("apiSettings", tempApiSettings);
-  };
-
-  const storeAuthorGenreEnablePickers = (dropdownPickers: object) => {
-    storeAsyncData("author&GenrePickerSearchbarDisableBools", dropdownPickers);
   };
 
   function setAndStoreAudiobookAmountRequested(amount: number) {
@@ -89,34 +72,6 @@ function Search() {
     setVisible(!visible);
   };
 
-  const genreListRender = React.useCallback(
-    genreList.map((genre) => {
-      return (
-        <Picker.Item
-          key={`${genre}`}
-          label={`${genre}`}
-          value={`${genre}`}
-          style={{ fontSize: 18 }}
-        />
-      );
-    }),
-    [genreList]
-  );
-
-  const AuthorsListRender = React.useCallback(
-    authorsListJson["authors"].map((author, i: number) => {
-      return (
-        <Picker.Item
-          key={`${authorsListJson["authors"][i].id}`}
-          label={`${authorsListJson["authors"][i].first_name} ${authorsListJson["authors"][i].last_name}`}
-          value={`${authorsListJson["authors"][i].last_name}`}
-          style={{ fontSize: 18 }}
-        />
-      );
-    }),
-    [authorsListJson]
-  );
-
   function searchBarPlaceholder() {
     switch (apiSettings["searchBy"]) {
       case "recent":
@@ -130,6 +85,47 @@ function Search() {
     }
   }
 
+  useEffect(() => {
+    const options = {
+      includeScore: true,
+    };
+    console.log(genreList);
+    const fuse = new Fuse(genreList, options);
+
+    setGenreFuse(fuse);
+    // console.log(fuse);
+  }, []);
+
+  const updateSearch = (search: any) => {
+    setSearch(search);
+    const result = genreFuse.search(search);
+    // console.log(result)
+    setGenreFlatList(result);
+  };
+
+  const renderItem = ({ item }) => {
+    // console.log(item.item)
+    return (
+      <Text
+        style={{
+          backgroundColor: "black",
+          color: "white",
+          fontSize: 20,
+          paddingLeft: 5,
+        }}
+        onPress={() => {
+          setSearch(item.item),
+            setUserInputEntered(item.item),
+            setGenreFlatList("");
+        }}
+      >
+        {item.item}
+      </Text>
+    );
+  };
+
+  console.log("test", genreFlatList);
+  console.log(typeof genreFlatList);
   return (
     <View style={{ display: "flex" }}>
       <View
@@ -149,7 +145,7 @@ function Search() {
           <SearchBar
             ref={(searchbar) => (refToSearchbar.current = searchbar)}
             placeholder={searchBarPlaceholder()}
-            disabled={statusOfPickers.isSearchDisabled}
+            disabled={props.route.params.isSearchDisabled}
             lightTheme={false}
             onChangeText={(val: string) => {
               updateSearch(val);
@@ -186,7 +182,6 @@ function Search() {
           mode={Colors[colorScheme].buttonMode}
           style={{
             backgroundColor: currentColorScheme.buttonBackgroundColor,
-            right: 4,
           }}
         >
           <MaterialCommunityIcons
@@ -203,165 +198,6 @@ function Search() {
             backgroundColor: Colors[colorScheme].overlayBackgroundColor,
           }}
         >
-          <View style={styles.titleOrAuthorStringFlexbox}>
-            <Text
-              style={{ color: currentColorScheme.text }}
-            >{`Searching by:`}</Text>
-          </View>
-          <Picker
-            mode="dropdown"
-            dropdownIconColor={currentColorScheme.pickerDropdownColor}
-            style={{
-              color: Colors[colorScheme].pickerTextColor,
-              backgroundColor: Colors[colorScheme].pickerBackgroundColor,
-              borderColor: Colors[colorScheme].bookshelfPickerBorderColor,
-              borderWidth: 1,
-            }}
-            selectedValue={apiSettings["searchBy"]}
-            onValueChange={(titleOrGenreOrAuthor, itemIndex) => {
-              setApiSettings((prevState) => ({
-                ...prevState,
-                ["searchBy"]: titleOrGenreOrAuthor,
-              }));
-              storeApiSettings({
-                ...apiSettings,
-                ["searchBy"]: titleOrGenreOrAuthor,
-              });
-              switch (titleOrGenreOrAuthor) {
-                case "recent":
-                  refToSearchbar.current.clear();
-                  setStatusOfPickers({
-                    ...statusOfPickers,
-                    authorSelected: false,
-                    genreSelected: false,
-                    isSearchDisabled: true,
-                  });
-                  storeAuthorGenreEnablePickers({
-                    authorSelected: false,
-                    genreSelected: false,
-                    isSearchDisabled: true,
-                  });
-                  break;
-                case "title":
-                  setStatusOfPickers({
-                    ...statusOfPickers,
-                    authorSelected: false,
-                    genreSelected: false,
-                    isSearchDisabled: false,
-                  });
-                  storeAuthorGenreEnablePickers({
-                    authorSelected: false,
-                    genreSelected: false,
-                    isSearchDisabled: false,
-                  });
-                  break;
-                case "genre":
-                  refToSearchbar.current.clear();
-                  setStatusOfPickers({
-                    ...statusOfPickers,
-                    authorSelected: false,
-                    genreSelected: true,
-                    isSearchDisabled: true,
-                  });
-                  storeAuthorGenreEnablePickers({
-                    authorSelected: false,
-                    genreSelected: true,
-                    isSearchDisabled: true,
-                  });
-                  break;
-                case "author":
-                  refToSearchbar.current.clear();
-                  setStatusOfPickers({
-                    ...statusOfPickers,
-                    authorSelected: true,
-                    genreSelected: false,
-                    isSearchDisabled: true,
-                  });
-                  storeAuthorGenreEnablePickers({
-                    authorSelected: true,
-                    genreSelected: false,
-                    isSearchDisabled: true,
-                  });
-                  break;
-              }
-            }}
-          >
-            <Picker.Item
-              label="New Releases"
-              value="recent"
-              style={{ fontSize: 18 }}
-            />
-            <Picker.Item label="Title" value="title" style={{ fontSize: 18 }} />
-            <Picker.Item
-              label="Author"
-              value="author"
-              style={{ fontSize: 18 }}
-            />
-            <Picker.Item label="Genre" value="genre" style={{ fontSize: 18 }} />
-          </Picker>
-          <View style={styles.titleOrAuthorStringFlexbox}>
-            <Text
-              style={{ color: currentColorScheme.text }}
-            >{`Select Author:`}</Text>
-          </View>
-          <Picker
-            dropdownIconColor={
-              statusOfPickers.authorSelected
-                ? currentColorScheme.pickerDropdownColor
-                : currentColorScheme.overlayBackgroundColor
-            }
-            selectedValue={apiSettings["authorLastName"]}
-            prompt={"Search by author:"}
-            // mode={"dropdown"}
-            enabled={statusOfPickers.authorSelected}
-            style={{
-              color: Colors[colorScheme].pickerTextColor,
-              backgroundColor: Colors[colorScheme].pickerBackgroundColor,
-            }}
-            onValueChange={(author, itemIndex) => {
-              setApiSettings((prevState) => ({
-                ...prevState,
-                ["authorLastName"]: author,
-              }));
-              storeApiSettings({
-                ...apiSettings,
-                ["authorLastName"]: author,
-              });
-            }}
-          >
-            {AuthorsListRender}
-          </Picker>
-          <View style={styles.titleOrAuthorStringFlexbox}>
-            <Text
-              style={{ color: currentColorScheme.text }}
-            >{`Select Genre:`}</Text>
-          </View>
-          <Picker
-            dropdownIconColor={
-              statusOfPickers.genreSelected
-                ? currentColorScheme.pickerDropdownColor
-                : currentColorScheme.overlayBackgroundColor
-            }
-            style={{
-              color: Colors[colorScheme].pickerTextColor,
-              backgroundColor: Colors[colorScheme].pickerBackgroundColor,
-            }}
-            selectedValue={apiSettings["audiobookGenre"]}
-            prompt={"Search by genre:"}
-            enabled={statusOfPickers.genreSelected}
-            onValueChange={(genre, itemIndex) => {
-              setApiSettings((prevState) => ({
-                ...prevState,
-                ["audiobookGenre"]: genre,
-              }));
-              storeApiSettings({
-                ...apiSettings,
-                ["audiobookGenre"]: genre,
-              });
-            }}
-          >
-            {genreListRender}
-          </Picker>
           <View style={styles.checkboxRow}>
             <Text style={{ fontSize: 15, color: currentColorScheme.text }}>
               Audiobooks requested per search: {audiobookAmountRequested}.
@@ -437,6 +273,21 @@ function Search() {
           </View>
         </Overlay>
       </View>
+      <FlatList
+        style={{
+          position: "absolute",
+          top: 80,
+          left: 10,
+          zIndex: 1000,
+          height: 300,
+          width: 250,
+        }}
+        data={genreFlatList}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.refIndex}
+        initialNumToRender={20}
+        extraData={genreFlatList}
+      />
       <View style={styles.scrollStyle}>
         <AudioBooks
           apiSettings={apiSettings}
@@ -455,8 +306,9 @@ export default Search;
 
 const styles = StyleSheet.create({
   searchStyle: {
-    right: 4,
     width: windowWidth - 80,
+    display: "flex",
+    justifyContent: "center",
   },
   settingsIcon: {},
   checkboxRow: {
@@ -470,6 +322,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   scrollStyle: {
+    margin: 0,
     height: windowHeight / 1.225,
   },
 });

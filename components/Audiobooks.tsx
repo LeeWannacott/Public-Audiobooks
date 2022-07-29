@@ -9,7 +9,8 @@ import {
 } from "react-native";
 import { ListItem } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+
 import AudiobookAccordionList from "../components/audiobookAccordionList";
 
 import { openDatabase } from "../db/utils";
@@ -19,7 +20,6 @@ import {
 } from "../db/database_functions";
 import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
-
 const db = openDatabase();
 
 export default function Audiobooks(props: any) {
@@ -29,6 +29,12 @@ export default function Audiobooks(props: any) {
   const [bookCovers, setBookCovers] = useState<any[]>([]);
   const [reviewURLS, setReviewsUrlList] = useState<any[]>([]);
   const [avatarOnPressEnabled, setAvatarOnPressEnabled] = useState(true);
+  const {
+    apiSettings,
+    requestAudiobookAmount,
+    searchBarCurrentText,
+    searchBarInputSubmitted,
+  } = props;
 
   React.useEffect(() => {
     createHistoryTableDB(db);
@@ -44,10 +50,10 @@ export default function Audiobooks(props: any) {
   };
 
   const requestAudiobooksFromAPI = () => {
-    const searchQuery = encodeURIComponent(props.searchBarCurrentText);
-    const genre = encodeURIComponent(props.apiSettings["audiobookGenre"]);
-    const author = encodeURIComponent(props.apiSettings["authorLastName"]);
-    const amountOfAudiobooks = encodeURIComponent(props.requestAudiobookAmount);
+    const searchQuery = encodeURIComponent(searchBarCurrentText);
+    const genre = encodeURIComponent(apiSettings["audiobookGenre"]);
+    const author = encodeURIComponent(apiSettings["authorLastName"]);
+    const amountOfAudiobooks = encodeURIComponent(requestAudiobookAmount);
     const librivoxAudiobooksAPI = encodeURI(
       "https://librivox.org/api/feed/audiobooks"
     );
@@ -56,7 +62,7 @@ export default function Audiobooks(props: any) {
     const fields =
       "id,title,url_text_source,language,copyright_year,num_sections,url_rss,url_zip_file,url_project,url_librivox,url_iarchive,url_other,totaltime,totaltimesecs,authors,genres";
     let apiFetchQuery;
-    switch (props.apiSettings["searchBy"]) {
+    switch (apiSettings["searchBy"]) {
       case "recent":
         const oneMonthsAgoInUnixTime =
           // TODO: Add a range slider for period of time; currently is for past month...
@@ -72,18 +78,18 @@ export default function Audiobooks(props: any) {
         break;
       case "author":
         apiFetchQuery = encodeURI(
-          `${librivoxAudiobooksAPI}/?author=${author}&fields={${fields}}&extended=1&format=json&limit=${amountOfAudiobooks}`
+          `${librivoxAudiobooksAPI}/?author=${searchQuery}&fields={${fields}}&extended=1&format=json&limit=${amountOfAudiobooks}`
         );
         break;
       case "genre":
         apiFetchQuery = encodeURI(
-          `${librivoxAudiobooksAPI}/?genre=${genre}&fields={${fields}}&extended=1&format=json&limit=${amountOfAudiobooks}`
+          `${librivoxAudiobooksAPI}/?genre=${searchQuery}&fields={${fields}}&extended=1&format=json&limit=${amountOfAudiobooks}`
         );
         break;
       default:
         break;
     }
-    if (props.apiSettings["searchBy"]) {
+    if (apiSettings["searchBy"]) {
       fetch(apiFetchQuery)
         .then((response) => response.json())
         .then((json) => setAudiobooks(json))
@@ -97,11 +103,11 @@ export default function Audiobooks(props: any) {
   useEffect(() => {
     setLoadingAudioBooks(true);
     requestAudiobooksFromAPI();
-  }, [props.apiSettings, props.searchBarInputSubmitted]);
+  }, [apiSettings, searchBarInputSubmitted]);
 
   useEffect(() => {
     requestAudiobooksFromAPI();
-  }, [props.requestAudiobookAmount]);
+  }, [requestAudiobookAmount]);
 
   const bookCoverURL: any[] = [];
   const reviewsURL: any[] = [];
@@ -264,8 +270,6 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   audiobookContainer: {
-    paddingBottom: 15,
-    marginBottom: 10,
     marginTop: 2,
     borderRadius: 2,
   },
