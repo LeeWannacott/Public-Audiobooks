@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { SearchBar, Overlay } from "@rneui/themed";
 import Slider from "@react-native-community/slider";
 import AudioBooks from "../components/Audiobooks";
-import { View, Dimensions, Text, FlatList, Pressable } from "react-native";
+import { View, Dimensions, Text, FlatList } from "react-native";
 import { StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
@@ -27,6 +27,7 @@ function Search(props: any) {
   const [authorFuse, setAuthorFuse] = useState<Fuse>("");
   const [suggestions, setSuggestions] = useState<Fuse>("");
   const [suggestionVisible, setSuggestionsVisible] = useState<boolean>(false);
+  const [selectedSuggestionID, setSelelectedSuggestionID] = useState<any>();
 
   const refToSearchbar = useRef(null);
   const [apiSettings, setApiSettings] = useState({
@@ -132,12 +133,9 @@ function Search(props: any) {
       }
     }
     generateFuse();
-    console.log(suggestions);
   };
 
   function submitUserInput(item) {
-    console.log(typeof item);
-    console.log(item);
     switch (props.route.params.searchBy) {
       case "genre":
         setSearch(item.item);
@@ -148,30 +146,26 @@ function Search(props: any) {
     }
   }
 
-  const renderSuggestions = ({ item }) => {
+  const renderSuggestions = ({ item, index }) => {
     return (
       <>
-        <Pressable
-          children={( {pressed} ) => (
-            <Text
-              style={{
-                color: pressed ? "red" : "green",
-                backgroundColor: pressed ? "black" : "yellow",
-                fontSize: 20,
-                paddingLeft: 5,
-              }}
-              onPress={() => {
-                submitUserInput(item);
-                setTimeout(() => (setSuggestionsVisible(false), 500));
-              }}
-            >
-              {apiSettings.searchBy == "author"
-                ? item.item.first_name + " " + item.item.last_name
-                : item.item}
-            {console.log(pressed)}
-            </Text>
-          )}
-        />
+        <Text
+          style={{
+            color: selectedSuggestionID === index ? "#2aa198" : "white",
+            backgroundColor: "black",
+            fontSize: 20,
+            paddingLeft: 5,
+          }}
+          onPress={() => {
+            setSelelectedSuggestionID(index);
+            submitUserInput(item);
+            setTimeout(() => (setSuggestionsVisible(false),setSelelectedSuggestionID(null), 100000));
+          }}
+        >
+          {apiSettings.searchBy == "author"
+            ? item.item.first_name + " " + item.item.last_name
+            : item.item}
+        </Text>
         <Divider style={{ backgroundColor: "#2aa198" }} />
       </>
     );
