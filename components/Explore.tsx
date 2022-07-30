@@ -3,14 +3,14 @@ import React, { useState, useRef, useEffect } from "react";
 import { SearchBar, Overlay } from "@rneui/themed";
 import Slider from "@react-native-community/slider";
 import AudioBooks from "../components/Audiobooks";
-import { View, Dimensions, Text, FlatList } from "react-native";
+import { View, Dimensions, Text, FlatList, Pressable } from "react-native";
 import { StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 import authorsListJson from "../assets/resources/audiobookAuthorsList.json";
 import { genreList } from "../assets/resources/audiobookGenreList";
 import { getAsyncData, storeAsyncData } from "../db/database_functions";
-import { Button } from "react-native-paper";
+import { Divider, Button } from "react-native-paper";
 import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
 import * as NavigationBar from "expo-navigation-bar";
@@ -25,7 +25,8 @@ function Search(props: any) {
   const [audiobookAmountRequested, setAudiobooksAmountRequested] = useState(64);
   const [genreFuse, setGenreFuse] = useState<Fuse>("");
   const [authorFuse, setAuthorFuse] = useState<Fuse>("");
-  const [genreFlatList, setGenreFlatList] = useState<Fuse>("");
+  const [suggestions, setSuggestions] = useState<Fuse>("");
+  const [suggestionVisible, setSuggestionsVisible] = useState<boolean>(false);
 
   const refToSearchbar = useRef(null);
   const [apiSettings, setApiSettings] = useState({
@@ -111,26 +112,32 @@ function Search(props: any) {
   }, []);
 
   const updateSearch = (search: any) => {
+    if (
+      props.route.params.searchBy !== "title" ||
+      props.route.params.searchBy == "author"
+    ) {
+      setSuggestionsVisible(true);
+    }
     setSearch(search);
 
     function generateFuse() {
       switch (props.route.params.searchBy) {
         case "genre":
           const resultGenreFuse = genreFuse.search(search);
-          return setGenreFlatList(resultGenreFuse);
+          return setSuggestions(resultGenreFuse);
         case "author":
           const resultAuthorFuse = authorFuse.search(search);
-          return setGenreFlatList(resultAuthorFuse);
+          return setSuggestions(resultAuthorFuse);
         default:
       }
     }
     generateFuse();
-    console.log(genreFlatList);
+    console.log(suggestions);
   };
 
   function submitUserInput(item) {
-    console.log(typeof item)
-    console.log(item)
+    console.log(typeof item);
+    console.log(item);
     switch (props.route.params.searchBy) {
       case "genre":
         setSearch(item.item);
@@ -140,27 +147,33 @@ function Search(props: any) {
         return setUserInputEntered(item.item.last_name);
     }
   }
-  const renderItem = ({ item }) => {
-    // console.log(item.item)
+
+  const renderSuggestions = ({ item }) => {
     return (
-      <Text
-        style={{
-          backgroundColor: "black",
-          color: "white",
-          fontSize: 20,
-          paddingLeft: 5,
-        }}
-        onPress={() => {
-          {
-          }
-          submitUserInput(item);
-          setGenreFlatList("");
-        }}
-      >
-        {apiSettings.searchBy == "author"
-          ? item.item.first_name + " " + item.item.last_name
-          : item.item}
-      </Text>
+      <>
+        <Pressable
+          children={( {pressed} ) => (
+            <Text
+              style={{
+                color: pressed ? "red" : "green",
+                backgroundColor: pressed ? "black" : "yellow",
+                fontSize: 20,
+                paddingLeft: 5,
+              }}
+              onPress={() => {
+                submitUserInput(item);
+                setTimeout(() => (setSuggestionsVisible(false), 500));
+              }}
+            >
+              {apiSettings.searchBy == "author"
+                ? item.item.first_name + " " + item.item.last_name
+                : item.item}
+            {console.log(pressed)}
+            </Text>
+          )}
+        />
+        <Divider style={{ backgroundColor: "#2aa198" }} />
+      </>
     );
   };
 
@@ -176,7 +189,6 @@ function Search(props: any) {
           width: windowWidth,
           height: 80,
           paddingTop: 10,
-          right: 10,
         }}
       >
         <View style={styles.searchStyle}>
@@ -203,11 +215,15 @@ function Search(props: any) {
               height: 55,
             }}
             searchIcon={{ color: Colors[colorScheme].searchBarSearchIcon }}
-            clearIcon={{ color: Colors[colorScheme].searchBarClearIcon }}
+            clearIcon={{
+              color: Colors[colorScheme].searchBarClearIcon,
+              size: 25,
+            }}
             placeholderTextColor={Colors[colorScheme].searchBarClearIcon}
+            onClear={() => setSuggestionsVisible(false)}
             containerStyle={{
               backgroundColor: Colors[colorScheme].searchBarContainerStyle,
-              height: 70,
+
               borderTopWidth: 0,
               borderBottomWidth: 0,
             }}
@@ -220,6 +236,7 @@ function Search(props: any) {
           mode={Colors[colorScheme].buttonMode}
           style={{
             backgroundColor: currentColorScheme.buttonBackgroundColor,
+            right: 4,
           }}
         >
           <MaterialCommunityIcons
@@ -311,21 +328,23 @@ function Search(props: any) {
           </View>
         </Overlay>
       </View>
-      <FlatList
-        style={{
-          position: "absolute",
-          top: 80,
-          left: 10,
-          zIndex: 1000,
-          height: 300,
-          width: 250,
-        }}
-        data={genreFlatList}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.refIndex}
-        initialNumToRender={20}
-        extraData={genreFlatList}
-      />
+      {suggestionVisible ? (
+        <FlatList
+          style={{
+            position: "absolute",
+            top: 80,
+            left: 10,
+            zIndex: 1000,
+            height: 268,
+            width: 250,
+          }}
+          data={suggestions}
+          renderItem={renderSuggestions}
+          keyExtractor={(item) => item.refIndex}
+          initialNumToRender={20}
+          extraData={suggestions}
+        />
+      ) : undefined}
       <View style={styles.scrollStyle}>
         <AudioBooks
           apiSettings={apiSettings}
