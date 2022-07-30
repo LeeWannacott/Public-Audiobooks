@@ -50,7 +50,7 @@ export default function Audiobooks(props: any) {
   };
 
   const requestAudiobooksFromAPI = () => {
-    const searchQuery = encodeURIComponent(searchBarCurrentText);
+    const searchQuery = encodeURIComponent(searchBarInputSubmitted);
     const genre = encodeURIComponent(apiSettings["audiobookGenre"]);
     const author = encodeURIComponent(apiSettings["authorLastName"]);
     const amountOfAudiobooks = encodeURIComponent(requestAudiobookAmount);

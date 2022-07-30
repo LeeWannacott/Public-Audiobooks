@@ -24,6 +24,7 @@ function Search(props: any) {
   const [visible, setVisible] = useState(false);
   const [audiobookAmountRequested, setAudiobooksAmountRequested] = useState(64);
   const [genreFuse, setGenreFuse] = useState<Fuse>("");
+  const [authorFuse, setAuthorFuse] = useState<Fuse>("");
   const [genreFlatList, setGenreFlatList] = useState<Fuse>("");
 
   const refToSearchbar = useRef(null);
@@ -86,23 +87,59 @@ function Search(props: any) {
   }
 
   useEffect(() => {
-    const options = {
+    const genreOptions = {
       includeScore: true,
     };
-    console.log(genreList);
-    const fuse = new Fuse(genreList, options);
+    const authorOptions = {
+      includeScore: true,
+      keys: ["last_name", "first_name"],
+    };
+    function makeFuse() {
+      switch (props.route.params.searchBy) {
+        case "genre":
+          return setGenreFuse(new Fuse(genreList, genreOptions));
+        case "author":
+          return setAuthorFuse(
+            new Fuse(authorsListJson["authors"], authorOptions)
+          );
+        default:
+      }
+    }
+    makeFuse();
 
-    setGenreFuse(fuse);
     // console.log(fuse);
   }, []);
 
   const updateSearch = (search: any) => {
     setSearch(search);
-    const result = genreFuse.search(search);
-    // console.log(result)
-    setGenreFlatList(result);
+
+    function generateFuse() {
+      switch (props.route.params.searchBy) {
+        case "genre":
+          const resultGenreFuse = genreFuse.search(search);
+          return setGenreFlatList(resultGenreFuse);
+        case "author":
+          const resultAuthorFuse = authorFuse.search(search);
+          return setGenreFlatList(resultAuthorFuse);
+        default:
+      }
+    }
+    generateFuse();
+    console.log(genreFlatList);
   };
 
+  function submitUserInput(item) {
+    console.log(typeof item)
+    console.log(item)
+    switch (props.route.params.searchBy) {
+      case "genre":
+        setSearch(item.item);
+        return setUserInputEntered(item.item);
+      case "author":
+        setSearch(item.item.first_name + " " + item.item.last_name);
+        return setUserInputEntered(item.item.last_name);
+    }
+  }
   const renderItem = ({ item }) => {
     // console.log(item.item)
     return (
@@ -114,18 +151,19 @@ function Search(props: any) {
           paddingLeft: 5,
         }}
         onPress={() => {
-          setSearch(item.item),
-            setUserInputEntered(item.item),
-            setGenreFlatList("");
+          {
+          }
+          submitUserInput(item);
+          setGenreFlatList("");
         }}
       >
-        {item.item}
+        {apiSettings.searchBy == "author"
+          ? item.item.first_name + " " + item.item.last_name
+          : item.item}
       </Text>
     );
   };
 
-  console.log("test", genreFlatList);
-  console.log(typeof genreFlatList);
   return (
     <View style={{ display: "flex" }}>
       <View
