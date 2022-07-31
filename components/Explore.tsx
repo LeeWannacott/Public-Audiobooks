@@ -6,7 +6,6 @@ import AudioBooks from "../components/Audiobooks";
 import { View, Dimensions, Text, FlatList } from "react-native";
 import { StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Picker } from "@react-native-picker/picker";
 import authorsListJson from "../assets/resources/audiobookAuthorsList.json";
 import { genreList } from "../assets/resources/audiobookGenreList";
 import { getAsyncData, storeAsyncData } from "../db/database_functions";
@@ -82,9 +81,9 @@ function Search(props: any) {
       case "title":
         return "Search by Title:";
       case "author":
-        return `Author: ${apiSettings["authorLastName"]}`;
+        return `Search by Author:`;
       case "genre":
-        return `Genre: ${apiSettings["audiobookGenre"]}`;
+        return `Search by Genre:`;
     }
   }
 
@@ -146,6 +145,10 @@ function Search(props: any) {
     }
   }
 
+  function suggestionTimeout() {
+    setSuggestionsVisible(false), setSelelectedSuggestionID(null);
+  }
+
   const renderSuggestions = ({ item, index }) => {
     return (
       <>
@@ -159,7 +162,9 @@ function Search(props: any) {
           onPress={() => {
             setSelelectedSuggestionID(index);
             submitUserInput(item);
-            setTimeout(() => (setSuggestionsVisible(false),setSelelectedSuggestionID(null), 100000));
+            setTimeout(() => {
+              suggestionTimeout();
+            }, 1000);
           }}
         >
           {apiSettings.searchBy == "author"
@@ -200,6 +205,7 @@ function Search(props: any) {
               backgroundColor: Colors[colorScheme].searchBarInputContainerStyle,
               borderWidth: 1,
               borderBottomWidth: 1,
+                width:windowWidth-90,
               borderColor: Colors[colorScheme].bookshelfPickerBorderColor,
               height: 55,
             }}
@@ -230,7 +236,6 @@ function Search(props: any) {
           mode={Colors[colorScheme].buttonMode}
           style={{
             backgroundColor: currentColorScheme.buttonBackgroundColor,
-            right: 4,
           }}
         >
           <MaterialCommunityIcons
@@ -352,11 +357,12 @@ function Search(props: any) {
 }
 
 const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
+// const windowHeight = Dimensions.get("window").height;
 export default Search;
 
 const styles = StyleSheet.create({
   searchStyle: {
+    right:5,
     width: windowWidth - 80,
     display: "flex",
     justifyContent: "center",
@@ -373,7 +379,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   scrollStyle: {
-    margin: 0,
-    height: windowHeight / 1.225,
+    left:8,
+    height: 525,
   },
 });

@@ -99,26 +99,6 @@ const ExploreTopTab = createMaterialTopTabNavigator();
 
 function SearchTopTabs() {
   const colorScheme = useColorScheme();
-  const [apiSettings, setApiSettings] = React.useState({
-    searchBy: "title",
-    audiobookGenre: "*Non-fiction",
-    authorLastName: "Hoffmann",
-  });
-  const [apiSettings2, setApiSettings2] = React.useState({
-    searchBy: "recent",
-    audiobookGenre: "*Non-fiction",
-    authorLastName: "Hoffmann",
-  });
-  const [apiSettings3, setApiSettings3] = React.useState({
-    searchBy: "genre",
-    audiobookGenre: "*Non-fiction",
-    authorLastName: "Hoffmann",
-  });
-  const [apiSettings4, setApiSettings4] = React.useState({
-    searchBy: "author",
-    audiobookGenre: "*Non-fiction",
-    authorLastName: "Hoffmann",
-  });
   const [visible, setVisible] = React.useState(false);
   const [userInputEntered, setUserInputEntered] = React.useState("");
   const [search, updateSearch] = React.useState("");
@@ -129,7 +109,6 @@ function SearchTopTabs() {
       <ExploreTopTab.Navigator screenOptions={{ swipeEnabled: false }}>
         <ExploreTopTab.Screen
           initialParams={{
-            apiSettings: apiSettings,
             searchBy: "title",
             isSearchDisabled: false,
             searchBarInputSubmitted: userInputEntered,
@@ -141,7 +120,6 @@ function SearchTopTabs() {
         />
         <ExploreTopTab.Screen
           initialParams={{
-            apiSettings: apiSettings2,
             searchBy: "recent",
             isSearchDisabled: true,
             searchBarInputSubmitted: userInputEntered,
@@ -153,7 +131,6 @@ function SearchTopTabs() {
         />
         <ExploreTopTab.Screen
           initialParams={{
-            apiSettings: apiSettings3,
             searchBy: "genre",
             isSearchDisabled: false,
             searchBarInputSubmitted: userInputEntered,
@@ -165,7 +142,6 @@ function SearchTopTabs() {
         />
         <ExploreTopTab.Screen
           initialParams={{
-            apiSettings: apiSettings4,
             searchBy: "author",
             isSearchDisabled: false,
             searchBarInputSubmitted: userInputEntered,
