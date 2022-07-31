@@ -1,5 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
-import { ActivityIndicator, Dimensions, Image } from "react-native";
+import {
+  ActivityIndicator,
+  Dimensions,
+  Image,
+  TouchableOpacity,
+  TouchableNativeFeedback,
+} from "react-native";
 import { ListItem, LinearProgress, Card } from "@rneui/themed";
 import { Rating } from "react-native-ratings";
 import * as rssParser from "react-native-rss-parser";
@@ -44,6 +50,9 @@ function Audiotracks(props: any) {
   const [URLSToPlayAudiotracks, setURLSToPlayAudiotracks] = useState<any[]>([]);
   const [reviews, setAudiobookReviews] = useState([]);
   const [AudioBookDescription, setAudioBookDescription] = useState("");
+  const [isAudiobookDescriptionExpanded, setIsAudiobookDescriptionExpanded] =
+    useState<boolean>(true);
+
   const currentAudioTrackIndex = useRef(0);
   const [loadingAudiobookData, setLoadingAudioBookData] = useState(true);
   const [loadingAudioListeningLinks, setLoadingAudioListeningLinks] =
@@ -128,9 +137,9 @@ function Audiotracks(props: any) {
             accessibilityHint="Contains options such as changing speed of audiotrack."
             mode={Colors[colorScheme].buttonMode}
             onPress={() => toggleSettingsOverlay()}
-          style={{
-            backgroundColor: Colors[colorScheme].buttonBackgroundColor,
-          }}
+            style={{
+              backgroundColor: Colors[colorScheme].buttonBackgroundColor,
+            }}
           >
             <MaterialCommunityIcons
               name="cog"
@@ -764,9 +773,9 @@ function Audiotracks(props: any) {
         onPress={() => PlayFromStartOfTrack(index)}
         style={{ margin: 0, padding: 0 }}
         mode={Colors[colorScheme].buttonMode}
-          style={{
-            backgroundColor: Colors[colorScheme].buttonBackgroundColor,
-          }}
+        style={{
+          backgroundColor: Colors[colorScheme].buttonBackgroundColor,
+        }}
       >
         <MaterialCommunityIcons
           name="book-arrow-left"
@@ -846,9 +855,9 @@ function Audiotracks(props: any) {
       </ListItem.Content>
       <Button
         mode={Colors[colorScheme].buttonMode}
-          style={{
-            backgroundColor: Colors[colorScheme].buttonBackgroundColor,
-          }}
+        style={{
+          backgroundColor: Colors[colorScheme].buttonBackgroundColor,
+        }}
         accessibilityLabel={`Resume playing ${item?.section_number}: ${
           item?.title
         } ${GetDurationFormat(
@@ -1062,6 +1071,7 @@ function Audiotracks(props: any) {
               Author: {authorFirstName} {authorLastName}
             </Text>
             <Text
+              numberOfLines={isAudiobookDescriptionExpanded ? undefined : 6}
               style={[
                 styles.bookDescription,
                 { color: Colors[colorScheme].text },
@@ -1069,6 +1079,23 @@ function Audiotracks(props: any) {
             >
               {AudioBookDescription}
             </Text>
+
+            <Button
+              accessibilityLabel={`${
+                isAudiobookDescriptionExpanded ? "compress ↑" : "expand ↓"
+              } audiobook description`}
+              mode="text"
+              onPress={() => {
+                setIsAudiobookDescriptionExpanded(
+                  !isAudiobookDescriptionExpanded
+                );
+              }}
+            >
+              <Text style={{ color: "#268bd2" }}>
+                {isAudiobookDescriptionExpanded ? "compress ↑" : "expand ↓"}
+              </Text>
+            </Button>
+
             <Rating
               showRating
               ratingCount={5}
@@ -1092,10 +1119,7 @@ function Audiotracks(props: any) {
       return (
         <Button
           accessibilityLabel="Opens overlay for writing a review on the audiobook."
-            mode={Colors[colorScheme].buttonMode}
-          style={{
-            backgroundColor: Colors[colorScheme].buttonBackgroundColor,
-          }}
+          mode={Colors[colorScheme].buttonMode}
           onPress={() => toggleWriteReviewOverlay()}
           style={{
             backgroundColor: Colors[colorScheme].buttonBackgroundColor,
