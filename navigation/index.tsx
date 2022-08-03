@@ -37,6 +37,7 @@ import {
   audiobookHistoryTableName,
   audiobookProgressTableName,
 } from "../db/database_functions";
+import { getAsyncData } from "../db/database_functions";
 
 export default function Navigation({
   colorScheme,
@@ -98,12 +99,7 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 const ExploreTopTab = createMaterialTopTabNavigator();
 
 function SearchTopTabs() {
-  const colorScheme = useColorScheme();
-  const [visible, setVisible] = React.useState(false);
-  const [userInputEntered, setUserInputEntered] = React.useState("");
-  const [search, updateSearch] = React.useState("");
-  const [audiobookAmountRequested, setAudiobooksAmountRequested] =
-    React.useState(64);
+  const audiobookAmountRequested = 64;
   return (
     <>
       <ExploreTopTab.Navigator screenOptions={{ swipeEnabled: false }}>
@@ -111,8 +107,6 @@ function SearchTopTabs() {
           initialParams={{
             searchBy: "title",
             isSearchDisabled: false,
-            searchBarInputSubmitted: userInputEntered,
-            searchBarCurrentText: search,
             requestAudiobookAmount: audiobookAmountRequested,
           }}
           name="Title"
@@ -122,8 +116,6 @@ function SearchTopTabs() {
           initialParams={{
             searchBy: "recent",
             isSearchDisabled: true,
-            searchBarInputSubmitted: userInputEntered,
-            searchBarCurrentText: search,
             requestAudiobookAmount: audiobookAmountRequested,
           }}
           name="New"
@@ -133,8 +125,6 @@ function SearchTopTabs() {
           initialParams={{
             searchBy: "genre",
             isSearchDisabled: false,
-            searchBarInputSubmitted: userInputEntered,
-            searchBarCurrentText: search,
             requestAudiobookAmount: audiobookAmountRequested,
           }}
           name="Genre"
@@ -144,30 +134,11 @@ function SearchTopTabs() {
           initialParams={{
             searchBy: "author",
             isSearchDisabled: false,
-            searchBarInputSubmitted: userInputEntered,
-            searchBarCurrentText: search,
             requestAudiobookAmount: audiobookAmountRequested,
           }}
           name="Author"
           component={Explore}
         />
-        {/*<ExploreTopTab.Screen
-        initialParams={{
-        }}
-        name="New Releases"
-        component={AudioBooks}
-      />
-      <ExploreTopTab.Screen
-        initialParams={{}}
-        name="Genre"
-        component={HomeScreen}
-      />
-      <ExploreTopTab.Screen
-        initialParams={{}}
-        name="Authors"
-        component={HomeScreen}
-      />
-        */}
       </ExploreTopTab.Navigator>
     </>
   );

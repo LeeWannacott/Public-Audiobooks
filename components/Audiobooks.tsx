@@ -34,6 +34,7 @@ export default function Audiobooks(props: any) {
     requestAudiobookAmount,
     searchBarCurrentText,
     searchBarInputSubmitted,
+    searchBy,
   } = props;
 
   React.useEffect(() => {
@@ -51,8 +52,6 @@ export default function Audiobooks(props: any) {
 
   const requestAudiobooksFromAPI = () => {
     const searchQuery = encodeURIComponent(searchBarInputSubmitted);
-    const genre = encodeURIComponent(apiSettings["audiobookGenre"]);
-    const author = encodeURIComponent(apiSettings["authorLastName"]);
     const amountOfAudiobooks = encodeURIComponent(requestAudiobookAmount);
     const librivoxAudiobooksAPI = encodeURI(
       "https://librivox.org/api/feed/audiobooks"
@@ -62,7 +61,7 @@ export default function Audiobooks(props: any) {
     const fields =
       "id,title,url_text_source,language,copyright_year,num_sections,url_rss,url_zip_file,url_project,url_librivox,url_iarchive,url_other,totaltime,totaltimesecs,authors,genres";
     let apiFetchQuery;
-    switch (apiSettings["searchBy"]) {
+    switch (searchBy) {
       case "recent":
         const oneMonthsAgoInUnixTime =
           // TODO: Add a range slider for period of time; currently is for past month...
@@ -89,7 +88,7 @@ export default function Audiobooks(props: any) {
       default:
         break;
     }
-    if (apiSettings["searchBy"]) {
+    if (searchBy) {
       fetch(apiFetchQuery)
         .then((response) => response.json())
         .then((json) => setAudiobooks(json))
@@ -103,7 +102,7 @@ export default function Audiobooks(props: any) {
   useEffect(() => {
     setLoadingAudioBooks(true);
     requestAudiobooksFromAPI();
-  }, [apiSettings, searchBarInputSubmitted]);
+  }, [searchBarInputSubmitted]);
 
   useEffect(() => {
     requestAudiobooksFromAPI();
@@ -211,7 +210,6 @@ export default function Audiobooks(props: any) {
           >
             <Image
               source={{ uri: bookCovers[index] }}
-              loadingIndicatorSource={{}}
               style={{
                 width: resizeCoverImageWidth,
                 height: resizeCoverImageHeight,

@@ -29,28 +29,36 @@ function Search(props: any) {
   const [selectedSuggestionID, setSelelectedSuggestionID] = useState<any>();
 
   const refToSearchbar = useRef(null);
-  const [apiSettings, setApiSettings] = useState({
-    searchBy: props.route.params.searchBy,
-    audiobookGenre: "*Non-fiction",
-    authorLastName: "Hoffmann",
-  });
+  const searchBy = props.route.params.searchBy;
 
   React.useState(() => {
     try {
-      // getAsyncData("apiSettings").then((apiSettingsFromStorage) => {
-      // apiSettingsFromStorage
-      // ? setApiSettings(apiSettingsFromStorage)
-      // : setApiSettings({
-      // ["searchBy"]: "recent",
-      // ["audiobookGenre"]: "*Non-fiction",
-      // ["authorLastName"]: "Hoffmann",
-      // });
-      // });
+      switch (searchBy) {
+        case "genre":
+          getAsyncData("userSearchGenre").then((userSearchGenreRetrieved) => {
+            userSearchGenreRetrieved
+              ? (setSearch(userSearchGenreRetrieved),setUserInputEntered(userSearchGenreRetrieved))
+              : undefined;
+          });
+          break;
+        case "author":
+          getAsyncData("userSearchAuthor").then((userSearchAuthorRetrieved) => {
+            userSearchAuthorRetrieved
+              ? setSearch(userSearchAuthorRetrieved)
+              : undefined;
+          });
+          getAsyncData("userInputAuthorSubmitted").then((userInputAuthorRetrieved) => {
+            userInputAuthorRetrieved
+              ? setUserInputEntered(userInputAuthorRetrieved)
+              : undefined;
+          });
+          break;
+      }
       getAsyncData("audiobookAmountRequested").then(
         (audiobookAmountRequestedRetrieved) => {
           audiobookAmountRequestedRetrieved
             ? setAudiobooksAmountRequested(audiobookAmountRequestedRetrieved)
-            : setAudiobooksAmountRequested(64);
+            : undefined;
         }
       );
     } catch (err) {
@@ -58,14 +66,17 @@ function Search(props: any) {
     }
   }, []);
 
-  const storeApiSettings = (tempApiSettings: any) => {
-    storeAsyncData("apiSettings", tempApiSettings);
-  };
-
   function setAndStoreAudiobookAmountRequested(amount: number) {
     setAudiobooksAmountRequested(amount);
     storeAsyncData("audiobookAmountRequested", amount);
   }
+
+  const storeSearchText = (searchType: string, userInput: string) => {
+    storeAsyncData(searchType, userInput);
+  };
+  const storeSearchBarSubmitted = (searchType: string, userInput: string) => {
+    storeAsyncData(searchType, userInput);
+  };
 
   const toggleSearchOptionsOverlay = () => {
     NavigationBar.setBackgroundColorAsync(
@@ -75,7 +86,7 @@ function Search(props: any) {
   };
 
   function searchBarPlaceholder() {
-    switch (apiSettings["searchBy"]) {
+    switch (searchBy) {
       case "recent":
         return "New Releases";
       case "title":
@@ -96,7 +107,7 @@ function Search(props: any) {
       keys: ["last_name", "first_name"],
     };
     function makeFuse() {
-      switch (props.route.params.searchBy) {
+      switch (searchBy) {
         case "genre":
           return setGenreFuse(new Fuse(genreList, genreOptions));
         case "author":
@@ -112,16 +123,13 @@ function Search(props: any) {
   }, []);
 
   const updateSearch = (search: any) => {
-    if (
-      props.route.params.searchBy !== "title" ||
-      props.route.params.searchBy == "author"
-    ) {
+    if (searchBy !== "title" || searchBy === "author") {
       setSuggestionsVisible(true);
     }
     setSearch(search);
 
     function generateFuse() {
-      switch (props.route.params.searchBy) {
+      switch (searchBy) {
         case "genre":
           const resultGenreFuse = genreFuse.search(search);
           return setSuggestions(resultGenreFuse);
@@ -135,12 +143,21 @@ function Search(props: any) {
   };
 
   function submitUserInput(item) {
-    switch (props.route.params.searchBy) {
+    switch (searchBy) {
       case "genre":
         setSearch(item.item);
+        storeSearchText("userSearchGenre", item.item);
         return setUserInputEntered(item.item);
       case "author":
         setSearch(item.item.first_name + " " + item.item.last_name);
+        storeSearchText(
+          "userSearchAuthor",
+          item.item.first_name + " " + item.item.last_name
+        );
+        storeSearchBarSubmitted(
+          "userInputAuthorSubmitted",
+          item.item.last_name
+        );
         return setUserInputEntered(item.item.last_name);
     }
   }
@@ -167,7 +184,7 @@ function Search(props: any) {
             }, 1000);
           }}
         >
-          {apiSettings.searchBy == "author"
+          {searchBy == "author"
             ? item.item.first_name + " " + item.item.last_name
             : item.item}
         </Text>
@@ -205,7 +222,7 @@ function Search(props: any) {
               backgroundColor: Colors[colorScheme].searchBarInputContainerStyle,
               borderWidth: 1,
               borderBottomWidth: 1,
-                width:windowWidth-90,
+              width: windowWidth - 90,
               borderColor: Colors[colorScheme].bookshelfPickerBorderColor,
               height: 55,
             }}
@@ -346,7 +363,7 @@ function Search(props: any) {
       ) : undefined}
       <View style={styles.scrollStyle}>
         <AudioBooks
-          apiSettings={apiSettings}
+          searchBy={searchBy}
           searchBarInputSubmitted={userInputEntered}
           searchBarCurrentText={search}
           requestAudiobookAmount={audiobookAmountRequested}
@@ -362,7 +379,7 @@ export default Search;
 
 const styles = StyleSheet.create({
   searchStyle: {
-    right:5,
+    right: 5,
     width: windowWidth - 80,
     display: "flex",
     justifyContent: "center",
@@ -379,7 +396,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   scrollStyle: {
-    left:8,
+    left: 8,
     height: 525,
   },
 });
