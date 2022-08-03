@@ -6,8 +6,6 @@ import AudioBooks from "../components/Audiobooks";
 import { View, Dimensions, Text, FlatList } from "react-native";
 import { StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import authorsListJson from "../assets/resources/audiobookAuthorsList.json";
-import { genreList } from "../assets/resources/audiobookGenreList";
 import { getAsyncData, storeAsyncData } from "../db/database_functions";
 import { Divider, Button } from "react-native-paper";
 import useColorScheme from "../hooks/useColorScheme";
@@ -27,7 +25,6 @@ function Search(props: any) {
   const [suggestions, setSuggestions] = useState<Fuse>("");
   const [suggestionVisible, setSuggestionsVisible] = useState<boolean>(false);
   const [selectedSuggestionID, setSelelectedSuggestionID] = useState<any>();
-
   const refToSearchbar = useRef(null);
   const searchBy = props.route.params.searchBy;
 
@@ -37,7 +34,8 @@ function Search(props: any) {
         case "genre":
           getAsyncData("userSearchGenre").then((userSearchGenreRetrieved) => {
             userSearchGenreRetrieved
-              ? (setSearch(userSearchGenreRetrieved),setUserInputEntered(userSearchGenreRetrieved))
+              ? (setSearch(userSearchGenreRetrieved),
+                setUserInputEntered(userSearchGenreRetrieved))
               : undefined;
           });
           break;
@@ -47,11 +45,13 @@ function Search(props: any) {
               ? setSearch(userSearchAuthorRetrieved)
               : undefined;
           });
-          getAsyncData("userInputAuthorSubmitted").then((userInputAuthorRetrieved) => {
-            userInputAuthorRetrieved
-              ? setUserInputEntered(userInputAuthorRetrieved)
-              : undefined;
-          });
+          getAsyncData("userInputAuthorSubmitted").then(
+            (userInputAuthorRetrieved) => {
+              userInputAuthorRetrieved
+                ? setUserInputEntered(userInputAuthorRetrieved)
+                : undefined;
+            }
+          );
           break;
       }
       getAsyncData("audiobookAmountRequested").then(
@@ -109,10 +109,10 @@ function Search(props: any) {
     function makeFuse() {
       switch (searchBy) {
         case "genre":
-          return setGenreFuse(new Fuse(genreList, genreOptions));
+          return setGenreFuse(new Fuse(props.route.params.genreList, genreOptions));
         case "author":
           return setAuthorFuse(
-            new Fuse(authorsListJson["authors"], authorOptions)
+            new Fuse(props.route.params.authorsListJSON["authors"], authorOptions)
           );
         default:
       }
@@ -216,7 +216,9 @@ function Search(props: any) {
             onChangeText={(val: string) => {
               updateSearch(val);
             }}
-            onSubmitEditing={() => setUserInputEntered(search)}
+            onSubmitEditing={() => (
+              (setUserInputEntered(search), setSuggestionsVisible(false))
+            )}
             value={search}
             inputContainerStyle={{
               backgroundColor: Colors[colorScheme].searchBarInputContainerStyle,

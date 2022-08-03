@@ -38,6 +38,8 @@ import {
   audiobookProgressTableName,
 } from "../db/database_functions";
 import { getAsyncData } from "../db/database_functions";
+import authorsListJson from "../assets/resources/audiobookAuthorsList.json";
+import { genreList } from "../assets/resources/audiobookGenreList";
 
 export default function Navigation({
   colorScheme,
@@ -126,6 +128,7 @@ function SearchTopTabs() {
             searchBy: "genre",
             isSearchDisabled: false,
             requestAudiobookAmount: audiobookAmountRequested,
+            genreList : genreList,
           }}
           name="Genre"
           component={Explore}
@@ -135,6 +138,7 @@ function SearchTopTabs() {
             searchBy: "author",
             isSearchDisabled: false,
             requestAudiobookAmount: audiobookAmountRequested,
+            authorsListJSON : authorsListJson,
           }}
           name="Author"
           component={Explore}
