@@ -8,7 +8,7 @@ import {
   Pressable,
 } from "react-native";
 import { ListItem } from "@rneui/themed";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import React, { useState, useEffect, useContext } from "react";
 
 import AudiobookAccordionList from "../components/audiobookAccordionList";
@@ -17,12 +17,14 @@ import { openDatabase } from "../db/utils";
 import {
   createHistoryTableDB,
   addAudiobookToHistoryDB,
+  storeAsyncData,
 } from "../db/database_functions";
 import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
 const db = openDatabase();
 
 export default function Audiobooks(props: any) {
+  const navigation = useNavigation();
   const colorScheme = useColorScheme();
   const [loadingAudioBooks, setLoadingAudioBooks] = useState(true);
   const [data, setAudiobooks] = useState<any>([]);
@@ -36,6 +38,30 @@ export default function Audiobooks(props: any) {
     searchBarInputSubmitted,
     searchBy,
   } = props;
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      // The screen is focused
+      // Call any action
+      switch (searchBy) {
+        case "title":
+          console.log(1);
+          return () => storeAsyncData("initialRouteNameExplore", "Title");
+        case "recent":
+          console.log(2);
+          return () => storeAsyncData("initialRouteNameExplore", "New");
+        case "genre":
+          console.log(3);
+          return () => storeAsyncData("initialRouteNameExplore", "Genre");
+        case "author":
+          console.log(4);
+          return () => storeAsyncData("initialRouteNameExplore", "Author");
+      }
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
 
   React.useEffect(() => {
     createHistoryTableDB(db);
@@ -137,7 +163,6 @@ export default function Audiobooks(props: any) {
 
   const resizeCoverImageHeight = windowHeight / 5;
   const resizeCoverImageWidth = windowWidth / 2 - 42;
-  const navigation = useNavigation();
   const keyExtractor = (item: any, index: any) => index.toString();
   const renderItem = ({ item, index }) => (
     <View>

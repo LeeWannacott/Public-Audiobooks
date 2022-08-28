@@ -101,49 +101,70 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 const ExploreTopTab = createMaterialTopTabNavigator();
 
 function SearchTopTabs() {
+  const [statusKeyLoaded, setStatusKeyLoaded] = React.useState(false);
+  const [initialRoute, setInitialRoute] = React.useState("Title");
   const audiobookAmountRequested = 64;
+
+  React.useEffect(() => {
+    getAsyncData("initialRouteNameExplore").then(
+      (audioModeSettingsRetrieved: any) => {
+        audioModeSettingsRetrieved;
+        if (audioModeSettingsRetrieved) {
+          console.log(audioModeSettingsRetrieved);
+          setInitialRoute(audioModeSettingsRetrieved);
+          setStatusKeyLoaded(true);
+        }
+      }
+    );
+  }, []);
+
   return (
     <>
-      <ExploreTopTab.Navigator screenOptions={{ swipeEnabled: false }}>
-        <ExploreTopTab.Screen
-          initialParams={{
-            searchBy: "title",
-            isSearchDisabled: false,
-            requestAudiobookAmount: audiobookAmountRequested,
-          }}
-          name="Title"
-          component={Explore}
-        />
-        <ExploreTopTab.Screen
-          initialParams={{
-            searchBy: "recent",
-            isSearchDisabled: true,
-            requestAudiobookAmount: audiobookAmountRequested,
-          }}
-          name="New"
-          component={Explore}
-        />
-        <ExploreTopTab.Screen
-          initialParams={{
-            searchBy: "genre",
-            isSearchDisabled: false,
-            requestAudiobookAmount: audiobookAmountRequested,
-            genreList : genreList,
-          }}
-          name="Genre"
-          component={Explore}
-        />
-        <ExploreTopTab.Screen
-          initialParams={{
-            searchBy: "author",
-            isSearchDisabled: false,
-            requestAudiobookAmount: audiobookAmountRequested,
-            authorsListJSON : authorsListJson,
-          }}
-          name="Author"
-          component={Explore}
-        />
-      </ExploreTopTab.Navigator>
+      {statusKeyLoaded && (
+        <ExploreTopTab.Navigator
+          screenOptions={{ swipeEnabled: false }}
+          initialRouteName={initialRoute}
+        >
+          <ExploreTopTab.Screen
+            initialParams={{
+              searchBy: "title",
+              isSearchDisabled: false,
+              requestAudiobookAmount: audiobookAmountRequested,
+            }}
+            name="Title"
+            component={Explore}
+          />
+          <ExploreTopTab.Screen
+            initialParams={{
+              searchBy: "recent",
+              isSearchDisabled: true,
+              requestAudiobookAmount: audiobookAmountRequested,
+            }}
+            name="New"
+            component={Explore}
+          />
+          <ExploreTopTab.Screen
+            initialParams={{
+              searchBy: "genre",
+              isSearchDisabled: false,
+              requestAudiobookAmount: audiobookAmountRequested,
+              genreList: genreList,
+            }}
+            name="Genre"
+            component={Explore}
+          />
+          <ExploreTopTab.Screen
+            initialParams={{
+              searchBy: "author",
+              isSearchDisabled: false,
+              requestAudiobookAmount: audiobookAmountRequested,
+              authorsListJSON: authorsListJson,
+            }}
+            name="Author"
+            component={Explore}
+          />
+        </ExploreTopTab.Navigator>
+      )}
     </>
   );
 }
