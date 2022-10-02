@@ -109,10 +109,15 @@ function Search(props: any) {
     function makeFuse() {
       switch (searchBy) {
         case "genre":
-          return setGenreFuse(new Fuse(props.route.params.genreList, genreOptions));
+          return setGenreFuse(
+            new Fuse(props.route.params.genreList, genreOptions)
+          );
         case "author":
           return setAuthorFuse(
-            new Fuse(props.route.params.authorsListJSON["authors"], authorOptions)
+            new Fuse(
+              props.route.params.authorsListJSON["authors"],
+              authorOptions
+            )
           );
         default:
       }
@@ -217,7 +222,7 @@ function Search(props: any) {
               updateSearch(val);
             }}
             onSubmitEditing={() => (
-              (setUserInputEntered(search), setSuggestionsVisible(false))
+              setUserInputEntered(search), setSuggestionsVisible(false)
             )}
             value={search}
             inputContainerStyle={{

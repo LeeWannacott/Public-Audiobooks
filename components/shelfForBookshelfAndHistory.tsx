@@ -305,32 +305,6 @@ function ShelfForBookshelfAndHistory(props: any) {
           storeAsyncData={storeAsyncData}
           asyncDataKeyName={props.asyncDataKeyName}
         />
-        <View
-          style={[
-            styles.flatListStyle,
-            {
-              backgroundColor: Colors[colorScheme].audiobookImageContainerColor,
-              height: windowHeight - props.shelfHeightOffset,
-            },
-          ]}
-        >
-          <View
-            style={[
-              styles.ActivityIndicatorStyle,
-              {
-                backgroundColor:
-                  Colors[colorScheme].shelfIndicatorContainerBGColor,
-                color: Colors[colorScheme].activityIndicatorColor,
-              },
-            ]}
-          >
-            <ActivityIndicator
-              size="large"
-              color={Colors[colorScheme].activityIndicatorColor}
-              accessibilityLabel={"loading"}
-            />
-          </View>
-        </View>
       </View>
     );
   }

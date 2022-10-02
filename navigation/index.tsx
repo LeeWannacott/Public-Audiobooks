@@ -104,7 +104,9 @@ function SearchTopTabs() {
   const audiobookAmountRequested = 64;
   return (
     <>
-      <ExploreTopTab.Navigator screenOptions={{ swipeEnabled: false }}>
+      <ExploreTopTab.Navigator
+        screenOptions={{ swipeEnabled: false, lazy: true }}
+      >
         <ExploreTopTab.Screen
           initialParams={{
             searchBy: "title",
@@ -128,7 +130,7 @@ function SearchTopTabs() {
             searchBy: "genre",
             isSearchDisabled: false,
             requestAudiobookAmount: audiobookAmountRequested,
-            genreList : genreList,
+            genreList: genreList,
           }}
           name="Genre"
           component={Explore}
@@ -138,7 +140,7 @@ function SearchTopTabs() {
             searchBy: "author",
             isSearchDisabled: false,
             requestAudiobookAmount: audiobookAmountRequested,
-            authorsListJSON : authorsListJson,
+            authorsListJSON: authorsListJson,
           }}
           name="Author"
           component={Explore}
