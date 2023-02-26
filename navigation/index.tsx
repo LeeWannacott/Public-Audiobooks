@@ -10,34 +10,29 @@ import {
   DefaultTheme,
   DarkTheme,
 } from "@react-navigation/native";
-import { SearchBar, Overlay } from "@rneui/themed";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
-import { ColorSchemeName, Pressable, Text, View } from "react-native";
+import { ColorSchemeName} from "react-native";
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import {
   RootStackParamList,
   RootTabParamList,
-  RootTabScreenProps,
 } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
 import { StatusBar } from "expo-status-bar";
-import HomeScreen from "../screens/Homescreen";
 import Audiotracks from "../screens/Audiotracks";
 import History from "../screens/History";
 import Bookshelf from "../screens/Bookshelf";
 import Settings from "../screens/Settings";
-import AudioBooks from "../components/Audiobooks";
 import Explore from "../components/Explore";
-import { Button } from "react-native-paper";
 import * as NavigationBar from "expo-navigation-bar";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import {
   audiobookHistoryTableName,
   audiobookProgressTableName,
 } from "../db/database_functions";
-import { getAsyncData } from "../db/database_functions";
+// import { getAsyncData } from "../db/database_functions";
 import authorsListJson from "../assets/resources/audiobookAuthorsList.json";
 import { genreList } from "../assets/resources/audiobookGenreList";
 
@@ -100,8 +95,8 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 const ExploreTopTab = createMaterialTopTabNavigator();
 
+
 function SearchTopTabs() {
-  const audiobookAmountRequested = 64;
   return (
     <>
       <ExploreTopTab.Navigator
@@ -111,7 +106,6 @@ function SearchTopTabs() {
           initialParams={{
             searchBy: "title",
             isSearchDisabled: false,
-            requestAudiobookAmount: audiobookAmountRequested,
           }}
           name="Title"
           component={Explore}
@@ -120,7 +114,6 @@ function SearchTopTabs() {
           initialParams={{
             searchBy: "recent",
             isSearchDisabled: true,
-            requestAudiobookAmount: audiobookAmountRequested,
           }}
           name="New"
           component={Explore}
@@ -129,7 +122,6 @@ function SearchTopTabs() {
           initialParams={{
             searchBy: "genre",
             isSearchDisabled: false,
-            requestAudiobookAmount: audiobookAmountRequested,
             genreList: genreList,
           }}
           name="Genre"
@@ -139,7 +131,6 @@ function SearchTopTabs() {
           initialParams={{
             searchBy: "author",
             isSearchDisabled: false,
-            requestAudiobookAmount: audiobookAmountRequested,
             authorsListJSON: authorsListJson,
           }}
           name="Author"
