@@ -11,6 +11,7 @@ import { Divider, Button } from "react-native-paper";
 import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
 import * as NavigationBar from "expo-navigation-bar";
+import { useNavigation } from "@react-navigation/native";
 import Fuse from "fuse.js";
 
 function Search(props: any) {
@@ -20,16 +21,24 @@ function Search(props: any) {
   const [userInputEntered, setUserInputEntered] = useState("");
   const [visible, setVisible] = useState(false);
   const [audiobookAmountRequested, setAudiobooksAmountRequested] = useState(64);
-  const [genreFuse, setGenreFuse] = useState<Fuse>("");
-  const [authorFuse, setAuthorFuse] = useState<Fuse>("");
-  const [suggestions, setSuggestions] = useState<Fuse>("");
+  const [genreFuse, setGenreFuse] = useState("");
+  const [authorFuse, setAuthorFuse] = useState("");
+  const [suggestions, setSuggestions] = useState("");
   const [suggestionVisible, setSuggestionsVisible] = useState<boolean>(false);
   const [selectedSuggestionID, setSelelectedSuggestionID] = useState<any>();
   const refToSearchbar = useRef(null);
   const searchBy = props.route.params.searchBy;
+  const navigation = useNavigation();
 
-  React.useState(() => {
-    try {
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      getAsyncData("audiobookAmountRequested").then(
+        (audiobookAmountRequestedRetrieved) => {
+          audiobookAmountRequestedRetrieved
+            ? setAudiobooksAmountRequested(audiobookAmountRequestedRetrieved)
+            : undefined;
+        }
+      );
       switch (searchBy) {
         case "genre":
           getAsyncData("userSearchGenre").then((userSearchGenreRetrieved) => {
@@ -54,17 +63,10 @@ function Search(props: any) {
           );
           break;
       }
-      getAsyncData("audiobookAmountRequested").then(
-        (audiobookAmountRequestedRetrieved) => {
-          audiobookAmountRequestedRetrieved
-            ? setAudiobooksAmountRequested(audiobookAmountRequestedRetrieved)
-            : undefined;
-        }
-      );
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
+    });
+    return unsubscribe;
+  }, [navigation]);
+
 
   function setAndStoreAudiobookAmountRequested(amount: number) {
     setAudiobooksAmountRequested(amount);
