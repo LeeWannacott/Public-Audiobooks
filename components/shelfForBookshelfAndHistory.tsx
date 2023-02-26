@@ -9,7 +9,7 @@ import Colors from "../constants/Colors";
 
 import {
   FlatList,
-  ActivityIndicator,
+  // ActivityIndicator,
   Dimensions,
   Image,
   Pressable,
@@ -314,7 +314,7 @@ export default ShelfForBookshelfAndHistory;
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-const flatlistHeight = windowHeight - 200;
+// const flatlistHeight = windowHeight - 200;
 const ImageContainerWidth = windowWidth / 2 - 40;
 
 const styles = StyleSheet.create({
