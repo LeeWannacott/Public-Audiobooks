@@ -21,8 +21,8 @@ function Search(props: any) {
   const [userInputEntered, setUserInputEntered] = useState("");
   const [visible, setVisible] = useState(false);
   const [audiobookAmountRequested, setAudiobooksAmountRequested] = useState(64);
-  const [genreFuse, setGenreFuse] = useState("");
-  const [authorFuse, setAuthorFuse] = useState("");
+  const [genreFuse, setGenreFuse] = useState<Fuse>("");
+  const [authorFuse, setAuthorFuse] = useState<Fuse>("");
   const [suggestions, setSuggestions] = useState("");
   const [suggestionVisible, setSuggestionsVisible] = useState<boolean>(false);
   const [selectedSuggestionID, setSelelectedSuggestionID] = useState<any>();

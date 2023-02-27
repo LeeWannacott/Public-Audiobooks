@@ -12,13 +12,10 @@ import {
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
-import { ColorSchemeName} from "react-native";
+import { ColorSchemeName } from "react-native";
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
-import {
-  RootStackParamList,
-  RootTabParamList,
-} from "../types";
+import { RootStackParamList, RootTabParamList } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
 import { StatusBar } from "expo-status-bar";
 import Audiotracks from "../screens/Audiotracks";
@@ -94,7 +91,6 @@ function RootNavigator() {
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 const ExploreTopTab = createMaterialTopTabNavigator();
-
 
 function SearchTopTabs() {
   return (

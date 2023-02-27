@@ -3,8 +3,6 @@ import {
   ActivityIndicator,
   Dimensions,
   Image,
-  TouchableOpacity,
-  TouchableNativeFeedback,
 } from "react-native";
 import { ListItem, LinearProgress, Card } from "@rneui/themed";
 import { Rating } from "react-native-ratings";
@@ -51,7 +49,7 @@ function Audiotracks(props: any) {
   const [reviews, setAudiobookReviews] = useState([]);
   const [AudioBookDescription, setAudioBookDescription] = useState("");
   const [isAudiobookDescriptionExpanded, setIsAudiobookDescriptionExpanded] =
-    useState<boolean>(true);
+    useState<boolean>(false);
 
   const currentAudioTrackIndex = useRef(0);
   const [loadingAudiobookData, setLoadingAudioBookData] = useState(true);
