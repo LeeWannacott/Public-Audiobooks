@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Switch } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Overlay } from "@rneui/themed";
 import { Button } from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons.js";
@@ -13,108 +13,109 @@ function AudioTrackSettings(props: any) {
     toggleOverlay,
     audioPlayerSettings,
     setAudioPlayerSettings,
+    storeAudioTrackSettings,
     sound,
   } = props;
 
   const colorScheme = useColorScheme();
   const currentColorScheme = Colors[colorScheme];
 
-  async function onToggleMuteSwitch(muteToggled: boolean) {
-    try {
-      props.setAudioPlayerSettings({
-        ...props.audioPlayerSettings,
-        isMuted: !props.audioPlayerSettings.isMuted,
-      });
-      const result = await props.sound.current.getStatusAsync();
-      if (muteToggled) {
-        if (result.isLoaded === true) {
-          await props.sound.current.setIsMutedAsync(true);
-        }
-      } else if (!muteToggled) {
-        if (result.isLoaded === true) {
-          await props.sound.current.setIsMutedAsync(false);
-        }
-      }
-      await props.storeAudioTrackSettings({
-        ...props.audioPlayerSettings,
-        isMuted: !props.audioPlayerSettings.isMuted,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  }
+  // async function onToggleMuteSwitch(muteToggled: boolean) {
+  // try {
+  // setAudioPlayerSettings({
+  // ...audioPlayerSettings,
+  // isMuted: !audioPlayerSettings.isMuted,
+  // });
+  // const result = await sound.current.getStatusAsync();
+  // if (muteToggled) {
+  // if (result.isLoaded === true) {
+  // await sound.current.setIsMutedAsync(true);
+  // }
+  // } else if (!muteToggled) {
+  // if (result.isLoaded === true) {
+  // await sound.current.setIsMutedAsync(false);
+  // }
+  // }
+  // await storeAudioTrackSettings({
+  // ...audioPlayerSettings,
+  // isMuted: !audioPlayerSettings.isMuted,
+  // });
+  // } catch (e) {
+  // console.log(e);
+  // }
+  // }
 
-  async function onTogglePitchSwitch(pitchToggled: boolean) {
-    try {
-      props.setAudioPlayerSettings({
-        ...props.audioPlayerSettings,
-        shouldCorrectPitch: !props.audioPlayerSettings.shouldCorrectPitch,
-      });
-      const result = await props.sound.current.getStatusAsync();
-      if (pitchToggled) {
-        if (result.isLoaded === true) {
-          await props.sound.current.setRateAsync(
-            props.audioPlayerSettings.rate,
-            true
-          );
-        }
-      } else if (!pitchToggled) {
-        if (result.isLoaded === true) {
-          await props.sound.current.setRateAsync(
-            props.audioPlayerSettings.rate,
-            false
-          );
-        }
-      }
-      await props.storeAudioTrackSettings({
-        ...props.audioPlayerSettings,
-        shouldCorrectPitch: !props.audioPlayerSettings.shouldCorrectPitch,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  async function onToggleLoopSwitch(loopToggled: boolean) {
-    try {
-      props.setAudioPlayerSettings({
-        ...props.audioPlayerSettings,
-        isLooping: !props.audioPlayerSettings.isLooping,
-      });
-      const result = await props.sound.current.getStatusAsync();
-      if (loopToggled) {
-        if (result.isLoaded === true) {
-          await props.sound.current.setIsLoopingAsync(true);
-        }
-      } else if (!loopToggled) {
-        if (result.isLoaded === true) {
-          await props.sound.current.setIsLoopingAsync(false);
-        }
-      }
-      await props.storeAudioTrackSettings({
-        ...props.audioPlayerSettings,
-        isLooping: !props.audioPlayerSettings.isLooping,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  }
+  // async function onTogglePitchSwitch(pitchToggled: boolean) {
+  // try {
+  // setAudioPlayerSettings({
+  // ...audioPlayerSettings,
+  // shouldCorrectPitch: !audioPlayerSettings.shouldCorrectPitch,
+  // });
+  // const result = await sound.current.getStatusAsync();
+  // if (pitchToggled) {
+  // if (result.isLoaded === true) {
+  // await sound.current.setRateAsync(
+  // audioPlayerSettings.rate,
+  // true
+  // );
+  // }
+  // } else if (!pitchToggled) {
+  // if (result.isLoaded === true) {
+  // await sound.current.setRateAsync(
+  // audioPlayerSettings.rate,
+  // false
+  // );
+  // }
+  // }
+  // await storeAudioTrackSettings({
+  // ...audioPlayerSettings,
+  // shouldCorrectPitch: !audioPlayerSettings.shouldCorrectPitch,
+  // });
+  // } catch (e) {
+  // console.log(e);
+  // }
+  // }
+  //
+  // async function onToggleLoopSwitch(loopToggled: boolean) {
+    // try {
+      // setAudioPlayerSettings({
+        // ...audioPlayerSettings,
+        // isLooping: !audioPlayerSettings.isLooping,
+      // });
+      // const result = await sound.current.getStatusAsync();
+      // if (loopToggled) {
+        // if (result.isLoaded === true) {
+          // await sound.current.setIsLoopingAsync(true);
+        // }
+      // } else if (!loopToggled) {
+        // if (result.isLoaded === true) {
+          // await sound.current.setIsLoopingAsync(false);
+        // }
+      // }
+      // await storeAudioTrackSettings({
+        // ...audioPlayerSettings,
+        // isLooping: !audioPlayerSettings.isLooping,
+      // });
+    // } catch (e) {
+      // console.log(e);
+    // }
+  // }
 
   async function updateAudtiotrackSpeed(updateRate: number) {
     try {
-      props.setAudioPlayerSettings({
-        ...props.audioPlayerSettings,
+      setAudioPlayerSettings({
+        ...audioPlayerSettings,
         rate: updateRate,
       });
-      const result = await props.sound.current.getStatusAsync();
+      const result = await sound.current.getStatusAsync();
       if (result.isLoaded === true) {
-        await props.sound.current.setRateAsync(
+        await sound.current.setRateAsync(
           updateRate,
-          props.audioPlayerSettings.shouldCorrectPitch
+          audioPlayerSettings.shouldCorrectPitch
         );
       }
-      await props.storeAudioTrackSettings({
-        ...props.audioPlayerSettings,
+      await storeAudioTrackSettings({
+        ...audioPlayerSettings,
         rate: updateRate,
       });
     } catch (e) {
@@ -124,16 +125,16 @@ function AudioTrackSettings(props: any) {
 
   async function updateAudiotrackVolume(newVolumeLevel: number) {
     try {
-      const result = await props.sound.current.getStatusAsync();
-      props.setAudioPlayerSettings({
-        ...props.audioPlayerSettings,
+      const result = await sound.current.getStatusAsync();
+      setAudioPlayerSettings({
+        ...audioPlayerSettings,
         volume: newVolumeLevel,
       });
       if (result.isLoaded === true) {
-        await props.sound.current.setVolumeAsync(newVolumeLevel);
+        await sound.current.setVolumeAsync(newVolumeLevel);
       }
-      await props.storeAudioTrackSettings({
-        ...props.audioPlayerSettings,
+      await storeAudioTrackSettings({
+        ...audioPlayerSettings,
         volume: newVolumeLevel,
       });
     } catch (e) {
@@ -143,23 +144,23 @@ function AudioTrackSettings(props: any) {
 
   return (
     <Overlay
-      isVisible={props.visible}
-      onBackdropPress={props.toggleOverlay}
+      isVisible={visible}
+      onBackdropPress={toggleOverlay}
       fullScreen={false}
       overlayStyle={{
         backgroundColor: currentColorScheme.overlayBackgroundColor,
       }}
     >
-      <Text style={{ marginBottom: 10, color: currentColorScheme.text }}>
-        Volume of Audiotrack: {props.audioPlayerSettings.volume}
+      <Text style={{ marginBottom: 10, color: currentColorScheme.text}}>
+        Volume of Audiotrack: {audioPlayerSettings.volume}
       </Text>
       <View style={styles.sliderWithIconsOnSides}>
         <Button
           accessibilityLabel="Decrease Volume"
-          accessibilityHint={`Current volume level: ${props.audioPlayerSettings.volume} `}
+          accessibilityHint={`Current volume level: ${audioPlayerSettings.volume} `}
           onPress={() => {
             audioPlayerSettings.volume >= 0.25
-              ? updateAudiotrackVolume(props.audioPlayerSettings.volume - 0.25)
+              ? updateAudiotrackVolume(audioPlayerSettings.volume - 0.25)
               : undefined;
           }}
           mode={Colors[colorScheme].buttonMode}
@@ -174,7 +175,7 @@ function AudioTrackSettings(props: any) {
           />
         </Button>
         <Slider
-          value={props.audioPlayerSettings.volume}
+          value={audioPlayerSettings.volume}
           style={{ width: 200, height: 40 }}
           minimumValue={0.0}
           maximumValue={1.0}
@@ -187,10 +188,10 @@ function AudioTrackSettings(props: any) {
         />
         <Button
           accessibilityLabel="Decrease Volume"
-          accessibilityHint={`Current volume level: ${props.audioPlayerSettings.volume} `}
+          accessibilityHint={`Current volume level: ${audioPlayerSettings.volume} `}
           onPress={() => {
             audioPlayerSettings.volume <= 0.75
-              ? updateAudiotrackVolume(props.audioPlayerSettings.volume + 0.25)
+              ? updateAudiotrackVolume(audioPlayerSettings.volume + 0.25)
               : undefined;
           }}
           style={{
@@ -205,45 +206,48 @@ function AudioTrackSettings(props: any) {
           />
         </Button>
       </View>
-      <Text
+      {/*<Text
         style={{
           marginBottom: 10,
           marginTop: 10,
           color: currentColorScheme.text,
         }}
       >
-        Pitch Correction: {props.audioPlayerSettings.shouldCorrectPitch}
+        Pitch Correction: {audioPlayerSettings.shouldCorrectPitch}
       </Text>
       <Switch
-        accessibilityLabel={`pitch switch: currently: ${props.audioPlayerSettings.shouldCorrectPitch}`}
-        value={props.audioPlayerSettings.shouldCorrectPitch}
+        accessibilityLabel={`pitch switch: currently: ${audioPlayerSettings.shouldCorrectPitch}`}
+        value={audioPlayerSettings.shouldCorrectPitch}
         onValueChange={onTogglePitchSwitch}
       />
+        */}
+      {/*
       <Text style={{ marginBottom: 10, color: currentColorScheme.text }}>
-        Mute : {props.audioPlayerSettings.isMuted}
+        Mute : {audioPlayerSettings.isMuted}
       </Text>
       <Switch
-        accessibilityLabel={`mute switch: currently ${props.audioPlayerSettings.isMuted}`}
-        value={props.audioPlayerSettings.isMuted}
+        accessibilityLabel={`mute switch: currently ${audioPlayerSettings.isMuted}`}
+        value={audioPlayerSettings.isMuted}
         onValueChange={onToggleMuteSwitch}
       />
+      /*}
       {/*
-      <Text>looping: {props.audioPlayerSettings.isLooping}</Text>
+      <Text>looping: {audioPlayerSettings.isLooping}</Text>
       <Switch
-        value={props.audioPlayerSettings.isLooping}
+        value={audioPlayerSettings.isLooping}
         onValueChange={onToggleLoopSwitch}
       />
       */}
       <Text style={{ marginBottom: 10, color: currentColorScheme.text }}>
-        Speed of Audiotrack: {props.audioPlayerSettings.rate}X
+        Speed of Audiotrack: {audioPlayerSettings.rate}X
       </Text>
       <View style={styles.sliderWithIconsOnSides}>
         <Button
           accessibilityLabel="Decrease speed of audiotrack"
-          accessibilityHint={`Current speed: ${props.audioPlayerSettings.rate}X `}
+          accessibilityHint={`Current speed: ${audioPlayerSettings.rate}X `}
           onPress={() => {
             audioPlayerSettings.rate >= 0.5
-              ? updateAudtiotrackSpeed(props.audioPlayerSettings.rate - 0.25)
+              ? updateAudtiotrackSpeed(audioPlayerSettings.rate - 0.25)
               : undefined;
           }}
           style={{
@@ -258,7 +262,7 @@ function AudioTrackSettings(props: any) {
           />
         </Button>
         <Slider
-          value={props.audioPlayerSettings.rate}
+          value={audioPlayerSettings.rate}
           style={{ width: 200, height: 40 }}
           minimumValue={0.25}
           maximumValue={2.0}
@@ -271,10 +275,10 @@ function AudioTrackSettings(props: any) {
         />
         <Button
           accessibilityLabel="Decrease speed of audiotrack"
-          accessibilityHint={`Current speed: ${props.audioPlayerSettings.rate}x `}
+          accessibilityHint={`Current speed: ${audioPlayerSettings.rate}x `}
           onPress={() => {
             audioPlayerSettings.rate <= 1.75
-              ? updateAudtiotrackSpeed(props.audioPlayerSettings.rate + 0.25)
+              ? updateAudtiotrackSpeed(audioPlayerSettings.rate + 0.25)
               : undefined;
           }}
           style={{ backgroundColor: currentColorScheme.buttonBackgroundColor }}
