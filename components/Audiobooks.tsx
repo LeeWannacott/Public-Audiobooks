@@ -7,16 +7,24 @@ import {
   Image,
   Pressable,
 } from "react-native";
-import { ListItem } from "@rneui/themed";
+import { ListItem, LinearProgress } from "@rneui/themed";
+import { Rating } from "react-native-ratings";
 import { useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect, useContext } from "react";
 
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+import { Button } from "react-native-paper";
 import AudiobookAccordionList from "../components/audiobookAccordionList";
 
 import { openDatabase } from "../db/utils";
 import {
   createHistoryTableDB,
+  createAudioBookDataTable,
   addAudiobookToHistoryDB,
+  audiobookHistoryTableName,
+  audiobookProgressTableName,
+  updateIfBookShelvedDB,
 } from "../db/database_functions";
 import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
@@ -29,6 +37,7 @@ export default function Audiobooks(props: any) {
   const [bookCovers, setBookCovers] = useState<any[]>([]);
   const [reviewURLS, setReviewsUrlList] = useState<any[]>([]);
   const [avatarOnPressEnabled, setAvatarOnPressEnabled] = useState(true);
+  const [audiobooksProgress, setAudiobooksProgress] = useState({});
   const {
     apiSettings,
     requestAudiobookAmount,
@@ -37,8 +46,13 @@ export default function Audiobooks(props: any) {
     searchBy,
   } = props;
 
-  React.useEffect(() => {
-    createHistoryTableDB(db);
+  useEffect(() => {
+    try {
+      createAudioBookDataTable(db);
+      createHistoryTableDB(db);
+    } catch (err) {
+      console.log(err);
+    }
   }, []);
 
   const addAudiobookToHistory = (bookDataForHistory: {
@@ -132,9 +146,21 @@ export default function Audiobooks(props: any) {
     }
   }, [data.books]);
 
+  useEffect(() => {
+    const query = `select * from ${audiobookProgressTableName}`;
+    let test = db.transaction((tx) => {
+      tx.executeSql(`${query}`, [], (_, { rows }) => {
+        const audioProgressData = {};
+        rows._array.forEach((row) => {
+          return (audioProgressData[row.audiobook_id] = row);
+        });
+        setAudiobooksProgress(audioProgressData);
+      });
+    }, null);
+  }, []);
+
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
-
   const resizeCoverImageHeight = windowHeight / 5;
   const resizeCoverImageWidth = windowWidth / 2 - 42;
   const navigation = useNavigation();
@@ -215,9 +241,73 @@ export default function Audiobooks(props: any) {
                 height: resizeCoverImageHeight,
               }}
             />
+
+            <Button
+              key={item.id}
+              accessibilityLabel={`Shelve audiobook: ${item.title} currently ${
+                "shelved" + "not shelved"
+              }`}
+              mode="text"
+              onPress={() => {
+                // pressedToShelveBook(audioBookId);
+                let audiobook_id = item?.id;
+                let isShelved = audiobooksProgress[item?.id]?.audiobook_shelved;
+                let audiobookItem = audiobooksProgress[audiobook_id]
+                audiobookItem.audiobook_shelved = !isShelved
+                updateIfBookShelvedDB(db, audiobook_id, !isShelved);
+                // let tempShelve;
+
+                console.log(audiobook_id, audiobookItem);
+                setAudiobooksProgress((audiobooksProgress) => ({
+                  ...audiobooksProgress,
+                  audiobook_id: {
+                    audiobookItem
+                  },
+                }));
+
+              }}
+              style={{
+                margin: 2,
+                position: "absolute",
+                top: 0,
+                right: 0,
+                width: 27,
+                height: 55,
+              }}
+            >
+              <MaterialCommunityIcons
+                key={item.id}
+                name={
+                  audiobooksProgress[item?.id]?.audiobook_shelved
+                    ? "star"
+                    : "star-outline"
+                }
+                size={30}
+                color={Colors[colorScheme].shelveAudiobookIconColor}
+              />
+            </Button>
           </Pressable>
+          <LinearProgress
+            color={Colors[colorScheme].audiobookProgressColor}
+            value={audiobooksProgress[item?.id]?.listening_progress_percent}
+            variant="determinate"
+            trackColor={Colors[colorScheme].audiobookProgressTrackColor}
+            animation={false}
+          />
         </View>
       </ListItem>
+      {/* {console.log(item.audiobook_id,audiobooksProgress[item?.id]?.audiobook_id,audiobooksProgress[item?.id]?.audiobook_rating)} */}
+      {audiobooksProgress[item?.id]?.audiobook_id == item?.id &&
+      audiobooksProgress[item?.id]?.audiobook_rating > 0 ? (
+        <Rating
+          showRating={false}
+          imageSize={20}
+          ratingCount={5}
+          startingValue={audiobooksProgress[item?.id]?.audiobook_rating}
+          readonly={true}
+          tintColor={Colors[colorScheme].ratingBackgroundColor}
+        />
+      ) : undefined}
       <AudiobookAccordionList
         accordionTitle={item?.title}
         audiobookTitle={item?.title}
