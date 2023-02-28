@@ -24,7 +24,6 @@ import Colors from "../constants/Colors";
 
 const db = openDatabase();
 import {
-  createAudioBookDataTable,
   updateAudioTrackPositionsDB,
   updateIfBookShelvedDB,
   initialAudioBookStoreDB,
@@ -176,13 +175,6 @@ function Audiotracks(props: any) {
     await storeAsyncData("audioTrackSettingsTest", settings);
   };
 
-  useEffect(() => {
-    try {
-      createAudioBookDataTable(db);
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
 
   const updateAudioBookPosition = async (
     audiobook_id: any,
