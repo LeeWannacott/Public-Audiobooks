@@ -212,6 +212,7 @@ function Audiotracks(props: any) {
   ) => {
     updateIfBookShelvedDB(db, audiobook_id, audiobook_shelved);
   };
+
   const initialAudioBookStore = (initAudioBookData: any) => {
     initAudioBookData.audiotrack_progress_bars = JSON.stringify(
       initAudioBookData.audiotrack_progress_bars
@@ -227,32 +228,32 @@ function Audiotracks(props: any) {
           `select * from ${audiobookProgressTableName}`,
           [],
           (_, { rows }) => {
-            rows["_array"].forEach((element) => {
-              if (initAudioBookData.audiobook_id === element.audiobook_id) {
-                if (element?.current_audiotrack_index) {
+            rows["_array"].forEach((row) => {
+              if (initAudioBookData.audiobook_id === row.audiobook_id) {
+                if (row?.current_audiotrack_index) {
                   currentAudioTrackIndex.current =
-                    element?.current_audiotrack_index;
+                    row?.current_audiotrack_index;
                 }
                 const TotalListenTimeAndProgress = updateCoverBookProgress(
-                  element?.current_audiotrack_positions
+                  row?.current_audiotrack_positions
                 );
                 setAudiotracksData({
                   ...audiotracksData,
                   linearProgessBars: JSON.parse(
-                    element?.audiotrack_progress_bars
+                    row?.audiotrack_progress_bars
                   ),
                   currentAudiotrackPositionsMs: JSON.parse(
-                    element?.current_audiotrack_positions
+                    row?.current_audiotrack_positions
                   ),
-                  shelveIconToggle: element?.audiobook_shelved,
-                  audiobookRating: element?.audiobook_rating,
+                  shelveIconToggle: row?.audiobook_shelved,
+                  audiobookRating: row?.audiobook_rating,
                   totalAudioBookListeningTimeMS: TotalListenTimeAndProgress[0],
                   totalAudioBookListeningProgress:
                     TotalListenTimeAndProgress[1],
                 });
-                if (element?.users_audiobook_review !== undefined) {
+                if (row?.users_audiobook_review !== undefined) {
                   setReviewInformation(
-                    JSON.parse(element?.users_audiobook_review)
+                    JSON.parse(row?.users_audiobook_review)
                   );
                 }
               }
@@ -262,7 +263,7 @@ function Audiotracks(props: any) {
       } catch (err) {
         console.log(err);
       }
-    }, null);
+    }, undefined);
   };
 
   useEffect(() => {
@@ -384,7 +385,7 @@ function Audiotracks(props: any) {
         linearProgessBars: initialAudioBookSections,
         currentAudiotrackPositionsMs: initialAudioBookSections,
       });
-      // will only happen if no entry in db already.
+      // will only happen if no row in db already.
 
       initialAudioBookStore({
         audiobook_id: audioBookId,
