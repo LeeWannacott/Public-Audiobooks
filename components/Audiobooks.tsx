@@ -25,6 +25,7 @@ import {
   audiobookHistoryTableName,
   audiobookProgressTableName,
   updateIfBookShelvedDB,
+  initialAudioBookStoreDB,
 } from "../db/database_functions";
 import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
@@ -146,24 +147,27 @@ export default function Audiobooks(props: any) {
     }
   }, [data.books]);
 
+  const navigation = useNavigation();
   useEffect(() => {
-    const query = `select * from ${audiobookProgressTableName}`;
-    let test = db.transaction((tx) => {
-      tx.executeSql(`${query}`, [], (_, { rows }) => {
-        const audioProgressData = {};
-        rows._array.forEach((row) => {
-          return (audioProgressData[row.audiobook_id] = row);
+    const unsubscribe = navigation.addListener("focus", () => {
+      const query = `select * from ${audiobookProgressTableName}`;
+      db.transaction((tx) => {
+        tx.executeSql(`${query}`, [], (_, { rows }) => {
+          const audioProgressData = {};
+          rows._array.forEach((row) => {
+            return (audioProgressData[row.audiobook_id] = row);
+          });
+          setAudiobooksProgress(audioProgressData);
         });
-        setAudiobooksProgress(audioProgressData);
-      });
-    }, null);
-  }, []);
+      }, undefined);
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const resizeCoverImageHeight = windowHeight / 5;
   const resizeCoverImageWidth = windowWidth / 2 - 42;
-  const navigation = useNavigation();
   const keyExtractor = (item: any, index: any) => index.toString();
   const renderItem = ({ item, index }) => (
     <View>
@@ -249,22 +253,87 @@ export default function Audiobooks(props: any) {
               }`}
               mode="text"
               onPress={() => {
-                // pressedToShelveBook(audioBookId);
-                let audiobook_id = item?.id;
-                let isShelved = audiobooksProgress[item?.id]?.audiobook_shelved;
-                let audiobookItem = audiobooksProgress[audiobook_id]
-                audiobookItem.audiobook_shelved = !isShelved
-                updateIfBookShelvedDB(db, audiobook_id, !isShelved);
-                // let tempShelve;
-
-                console.log(audiobook_id, audiobookItem);
-                setAudiobooksProgress((audiobooksProgress) => ({
-                  ...audiobooksProgress,
-                  audiobook_id: {
-                    audiobookItem
-                  },
-                }));
-
+                const audiobook_id = item?.id;
+                if (audiobooksProgress[item?.id]) {
+                  const isShelved =
+                    audiobooksProgress[item?.id]?.audiobook_shelved;
+                  const audiobookItem = audiobooksProgress[audiobook_id];
+                  audiobookItem.audiobook_shelved = !isShelved;
+                  updateIfBookShelvedDB(db, audiobook_id, !isShelved);
+                  console.log(audiobook_id, audiobookItem);
+                  setAudiobooksProgress((audiobooksProgress) => ({
+                    ...audiobooksProgress,
+                    audiobook_id: {
+                      audiobookItem,
+                    },
+                  }));
+                } else {
+                  addAudiobookToHistory({
+                    audiobook_rss_url: item?.url_rss,
+                    audiobook_id: item?.id,
+                    audiobook_image: bookCovers[index],
+                    audiobook_num_sections: item?.num_sections,
+                    audiobook_ebook_url: item?.url_text_source,
+                    audiobook_zip: item?.url_zip_file,
+                    audiobook_title: item?.title,
+                    audiobook_author_first_name: item?.authors[0]?.first_name,
+                    audiobook_author_last_name: item?.authors[0]?.last_name,
+                    audiobook_total_time: item?.totaltime,
+                    audiobook_total_time_secs: item?.totaltimesecs,
+                    audiobook_copyright_year: item?.copyright_year,
+                    audiobook_genres: item?.genres,
+                    audiobook_review_url: reviewURLS[index],
+                    audiobook_language: item?.language,
+                    audiobook_project_url: item?.url_project,
+                    audiobook_librivox_url: item?.url_librivox,
+                    audiobook_iarchive_url: item?.url_iarchive,
+                  });
+                  let initialAudioBookSections = new Array(
+                    item?.num_sections
+                  ).fill(0);
+                  if (reviewURLS[index]) {
+                    let initialValue = 0;
+                    fetch(reviewURLS[index])
+                      .then((response) => response.json())
+                      .then((json) => {
+                        if (json?.result !== undefined) {
+                          let stars = json?.result
+                            .map((review) => Number(review?.stars))
+                            .reduce(
+                              (accumulator, currentValue) =>
+                                accumulator + currentValue,
+                              initialValue
+                            );
+                          const averageReview = stars / json?.result.length;
+                          if (!isNaN(averageReview)) {
+                            return averageReview;
+                          }
+                        }
+                      })
+                      .then((avgReview) => {
+                        const initAudioBookData = {
+                          audiobook_id: item?.id,
+                          audiotrack_progress_bars: JSON.stringify(
+                            initialAudioBookSections
+                          ),
+                          current_audiotrack_positions: JSON.stringify(
+                            initialAudioBookSections
+                          ),
+                          audiobook_shelved: true,
+                          audiotrack_rating: avgReview,
+                        };
+                        audiobooksProgress[item?.id] = initAudioBookData;
+                        setAudiobooksProgress((audiobooksProgress) => ({
+                          ...audiobooksProgress,
+                          audiobook_id: {
+                            initAudioBookData,
+                          },
+                        }));
+                        initialAudioBookStoreDB(db, initAudioBookData);
+                      })
+                      .catch((error) => console.log("Error: ", error));
+                  }
+                }
               }}
               style={{
                 margin: 2,
@@ -296,7 +365,6 @@ export default function Audiobooks(props: any) {
           />
         </View>
       </ListItem>
-      {/* {console.log(item.audiobook_id,audiobooksProgress[item?.id]?.audiobook_id,audiobooksProgress[item?.id]?.audiobook_rating)} */}
       {audiobooksProgress[item?.id]?.audiobook_id == item?.id &&
       audiobooksProgress[item?.id]?.audiobook_rating > 0 ? (
         <Rating
