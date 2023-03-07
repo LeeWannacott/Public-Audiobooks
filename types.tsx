@@ -36,6 +36,36 @@ export type RootTabParamList = {
   Settings: undefined;
 };
 
+export interface Audiobook {
+  url_rss: string;
+  id: number;
+  num_sections: number;
+  url_text_source: string;
+  url_zip_file: string;
+  title: string;
+  authors: {
+    first_name: string;
+    last_name: string;
+  }[];
+  totaltime: string;
+  totaltimesecs: number;
+  copyright_year: number;
+  genres: string;
+  language: string;
+  url_project: string;
+  url_librivox: string;
+  url_iarchive: string;
+}
+
+export interface Review {
+  createdate?: string;
+  reviewbody?: string;
+  reviewdate?: string;
+  reviewer?: string;
+  reviewtitle?: string;
+  stars?: number;
+}
+
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
   CompositeScreenProps<
     BottomTabScreenProps<RootTabParamList, Screen>,
