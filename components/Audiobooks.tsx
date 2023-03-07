@@ -10,7 +10,8 @@ import {
 import { ListItem, LinearProgress } from "@rneui/themed";
 import { Rating } from "react-native-ratings";
 import { useNavigation } from "@react-navigation/native";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
+import { Audiobook, Review } from "../types.js";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -22,7 +23,6 @@ import {
   createHistoryTableDB,
   createAudioBookDataTable,
   addAudiobookToHistoryDB,
-  audiobookHistoryTableName,
   audiobookProgressTableName,
   updateIfBookShelvedDB,
   initialAudioBookStoreDB,
@@ -38,6 +38,7 @@ export default function Audiobooks(props: any) {
   const [bookCovers, setBookCovers] = useState<any[]>([]);
   const [reviewURLS, setReviewsUrlList] = useState<any[]>([]);
   const [avatarOnPressEnabled, setAvatarOnPressEnabled] = useState(true);
+
   const [audiobooksProgress, setAudiobooksProgress] = useState({});
   const {
     apiSettings,
@@ -56,14 +57,28 @@ export default function Audiobooks(props: any) {
     }
   }, []);
 
-  const addAudiobookToHistory = (bookDataForHistory: {
-    audiobook_genres: string;
-  }) => {
-    bookDataForHistory.audiobook_genres = JSON.stringify(
-      bookDataForHistory.audiobook_genres
-    );
-    addAudiobookToHistoryDB(db, bookDataForHistory);
-  };
+  function addAudiobookToHistory(index: number, item: Audiobook): void {
+    addAudiobookToHistoryDB(db, {
+      audiobook_rss_url: item?.url_rss,
+      audiobook_id: item?.id,
+      audiobook_image: bookCovers[index],
+      audiobook_num_sections: item?.num_sections,
+      audiobook_ebook_url: item?.url_text_source,
+      audiobook_zip: item?.url_zip_file,
+      audiobook_title: item?.title,
+      audiobook_author_first_name: item?.authors[0]?.first_name,
+      audiobook_author_last_name: item?.authors[0]?.last_name,
+      audiobook_total_time: item?.totaltime,
+      audiobook_total_time_secs: item?.totaltimesecs,
+      audiobook_copyright_year: item?.copyright_year,
+      audiobook_genres: JSON.stringify(item?.genres),
+      audiobook_review_url: reviewURLS[index],
+      audiobook_language: item?.language,
+      audiobook_project_url: item?.url_project,
+      audiobook_librivox_url: item?.url_librivox,
+      audiobook_iarchive_url: item?.url_iarchive,
+    });
+  }
 
   const requestAudiobooksFromAPI = () => {
     const searchQuery = encodeURIComponent(searchBarInputSubmitted);
@@ -115,22 +130,21 @@ export default function Audiobooks(props: any) {
   };
 
   useEffect(() => {
+    requestAudiobooksFromAPI();
+  }, [requestAudiobookAmount]);
+
+  useEffect(() => {
     setLoadingAudioBooks(true);
     requestAudiobooksFromAPI();
   }, [searchBarInputSubmitted]);
 
-  useEffect(() => {
-    requestAudiobooksFromAPI();
-  }, [requestAudiobookAmount]);
-
-  const bookCoverURL: any[] = [];
-  const reviewsURL: any[] = [];
+  const bookCoverURL: string[] = [];
+  const reviewsURL: string[] = [];
   useEffect(() => {
     if (data.books) {
       const dataKeys = Object.values(data.books);
       let bookCoverImagePath;
       dataKeys.forEach((bookCoverURLPath: any) => {
-        // console.log(bookCoverURLPath)
         bookCoverImagePath = bookCoverURLPath.url_zip_file.split("/");
         bookCoverImagePath = bookCoverImagePath[bookCoverImagePath.length - 2];
         const reviewUrl = encodeURI(
@@ -168,7 +182,7 @@ export default function Audiobooks(props: any) {
   const windowHeight = Dimensions.get("window").height;
   const resizeCoverImageHeight = windowHeight / 5;
   const resizeCoverImageWidth = windowWidth / 2 - 42;
-  const keyExtractor = (item: any, index: any) => index.toString();
+  const keyExtractor = (item: any, index: number) => index.toString();
   const renderItem = ({ item, index }) => (
     <View>
       <ListItem
@@ -191,26 +205,7 @@ export default function Audiobooks(props: any) {
             style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1.0 }]}
             onPress={() => {
               if (avatarOnPressEnabled) {
-                addAudiobookToHistory({
-                  audiobook_rss_url: item?.url_rss,
-                  audiobook_id: item?.id,
-                  audiobook_image: bookCovers[index],
-                  audiobook_num_sections: item?.num_sections,
-                  audiobook_ebook_url: item?.url_text_source,
-                  audiobook_zip: item?.url_zip_file,
-                  audiobook_title: item?.title,
-                  audiobook_author_first_name: item?.authors[0]?.first_name,
-                  audiobook_author_last_name: item?.authors[0]?.last_name,
-                  audiobook_total_time: item?.totaltime,
-                  audiobook_total_time_secs: item?.totaltimesecs,
-                  audiobook_copyright_year: item?.copyright_year,
-                  audiobook_genres: item?.genres,
-                  audiobook_review_url: reviewURLS[index],
-                  audiobook_language: item?.language,
-                  audiobook_project_url: item?.url_project,
-                  audiobook_librivox_url: item?.url_librivox,
-                  audiobook_iarchive_url: item?.url_iarchive,
-                });
+                addAudiobookToHistory(index, item);
                 navigation.navigate("Audio", {
                   audioBookId: item?.id,
                   urlRss: item?.url_rss,
@@ -260,7 +255,6 @@ export default function Audiobooks(props: any) {
                   const audiobookItem = audiobooksProgress[audiobook_id];
                   audiobookItem.audiobook_shelved = !isShelved;
                   updateIfBookShelvedDB(db, audiobook_id, !isShelved);
-                  console.log(audiobook_id, audiobookItem);
                   setAudiobooksProgress((audiobooksProgress) => ({
                     ...audiobooksProgress,
                     audiobook_id: {
@@ -268,26 +262,7 @@ export default function Audiobooks(props: any) {
                     },
                   }));
                 } else {
-                  addAudiobookToHistory({
-                    audiobook_rss_url: item?.url_rss,
-                    audiobook_id: item?.id,
-                    audiobook_image: bookCovers[index],
-                    audiobook_num_sections: item?.num_sections,
-                    audiobook_ebook_url: item?.url_text_source,
-                    audiobook_zip: item?.url_zip_file,
-                    audiobook_title: item?.title,
-                    audiobook_author_first_name: item?.authors[0]?.first_name,
-                    audiobook_author_last_name: item?.authors[0]?.last_name,
-                    audiobook_total_time: item?.totaltime,
-                    audiobook_total_time_secs: item?.totaltimesecs,
-                    audiobook_copyright_year: item?.copyright_year,
-                    audiobook_genres: item?.genres,
-                    audiobook_review_url: reviewURLS[index],
-                    audiobook_language: item?.language,
-                    audiobook_project_url: item?.url_project,
-                    audiobook_librivox_url: item?.url_librivox,
-                    audiobook_iarchive_url: item?.url_iarchive,
-                  });
+                  addAudiobookToHistory(index, item);
                   let initialAudioBookSections = new Array(
                     item?.num_sections
                   ).fill(0);
@@ -298,9 +273,9 @@ export default function Audiobooks(props: any) {
                       .then((json) => {
                         if (json?.result !== undefined) {
                           let stars = json?.result
-                            .map((review) => Number(review?.stars))
+                            .map((review: Review) => Number(review?.stars))
                             .reduce(
-                              (accumulator, currentValue) =>
+                              (accumulator: number, currentValue: number) =>
                                 accumulator + currentValue,
                               initialValue
                             );
