@@ -465,7 +465,7 @@ function Audiotracks(props: any) {
           setPlaying(false);
           setAudioPaused(true);
         } else {
-          return HandleNext();
+          return HandleNextTrack();
         }
       } else if (data.positionMillis && data.durationMillis) {
         updateAndStoreAudiobookPositions(data);
@@ -623,7 +623,7 @@ function Audiotracks(props: any) {
     }
   };
 
-  const HandleNext = async () => {
+  const HandleNextTrack = async () => {
     try {
       if (currentAudioTrackIndex.current < URLSToPlayAudiotracks.length - 1) {
         const unloadSound = await sound.current.unloadAsync();
@@ -661,7 +661,7 @@ function Audiotracks(props: any) {
     }
   };
 
-  const HandlePrev = async () => {
+  const HandlePrevTrack = async () => {
     try {
       if (currentAudioTrackIndex.current - 1 >= 0) {
         const unloadSound = await sound.current.unloadAsync();
@@ -1271,8 +1271,8 @@ function Audiotracks(props: any) {
         />
 
         <AudioTrackControls
-          HandlePrev={HandlePrev}
-          HandleNext={HandleNext}
+          HandlePrevTrack={HandlePrevTrack}
+          HandleNextTrack={HandleNextTrack}
           LoadAudio={LoadAudio}
           PlayAudio={PlayAudio}
           Playing={Playing}
