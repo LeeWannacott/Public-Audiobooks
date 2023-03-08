@@ -13,10 +13,9 @@ import { useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
 import { Audiobook, Review } from "../types.js";
 
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-
 import { Button } from "react-native-paper";
 import AudiobookAccordionList from "../components/audiobookAccordionList";
+import AudiobookCover from "./AudiobookCover";
 
 import { openDatabase } from "../db/utils";
 import {
@@ -24,8 +23,6 @@ import {
   createAudioBookDataTable,
   addAudiobookToHistoryDB,
   audiobookProgressTableName,
-  updateIfBookShelvedDB,
-  initialAudioBookStoreDB,
 } from "../db/database_functions";
 import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
@@ -37,7 +34,6 @@ export default function Audiobooks(props: any) {
   const [data, setAudiobooks] = useState<any>([]);
   const [bookCovers, setBookCovers] = useState<any[]>([]);
   const [reviewURLS, setReviewsUrlList] = useState<any[]>([]);
-  const [avatarOnPressEnabled, setAvatarOnPressEnabled] = useState(true);
 
   const [audiobooksProgress, setAudiobooksProgress] = useState({});
   const {
@@ -185,161 +181,20 @@ export default function Audiobooks(props: any) {
   const keyExtractor = (item: any, index: number) => index.toString();
   const renderItem = ({ item, index }) => (
     <View>
-      <ListItem
-        topDivider
-        containerStyle={{
-          backgroundColor: Colors[colorScheme].colorAroundAudiobookImage,
-        }}
-        key={item.id}
-      >
-        <View
-          style={[
-            styles.ImageContainer,
-            {
-              backgroundColor: Colors[colorScheme].audiobookBackgroundColor,
-            },
-          ]}
-        >
-          <Pressable
-            accessibilityLabel={`${item?.title}`}
-            style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1.0 }]}
-            onPress={() => {
-              if (avatarOnPressEnabled) {
-                addAudiobookToHistory(index, item);
-                navigation.navigate("Audio", {
-                  audioBookId: item?.id,
-                  urlRss: item?.url_rss,
-                  coverImage: bookCovers[index],
-                  numSections: item?.num_sections,
-                  urlTextSource: item?.url_text_source,
-                  urlZipFile: item?.url_zip_file,
-                  title: item?.title,
-                  authorFirstName: item?.authors[0]?.first_name,
-                  authorLastName: item?.authors[0]?.last_name,
-                  totalTime: item?.totaltime,
-                  totalTimeSecs: item?.totaltimesecs,
-                  copyrightYear: item?.copyright_year,
-                  genres: item?.genres,
-                  urlReview: reviewURLS[index],
-                  language: item?.language,
-                  urlProject: item?.url_project,
-                  urlLibrivox: item?.url_librivox,
-                  urlIArchive: item?.url_iarchive,
-                });
-              }
-              setAvatarOnPressEnabled(false);
-              setTimeout(() => {
-                setAvatarOnPressEnabled(true);
-              }, 2000);
-            }}
-          >
-            <Image
-              source={{ uri: bookCovers[index] }}
-              style={{
-                width: resizeCoverImageWidth,
-                height: resizeCoverImageHeight,
-              }}
-            />
-
-            <Button
-              key={item.id}
-              accessibilityLabel={`Shelve audiobook: ${item.title} currently ${
-                "shelved" + "not shelved"
-              }`}
-              mode="text"
-              onPress={() => {
-                const audiobook_id = item?.id;
-                if (audiobooksProgress[item?.id]) {
-                  const isShelved =
-                    audiobooksProgress[item?.id]?.audiobook_shelved;
-                  const audiobookItem = audiobooksProgress[audiobook_id];
-                  audiobookItem.audiobook_shelved = !isShelved;
-                  updateIfBookShelvedDB(db, audiobook_id, !isShelved);
-                  setAudiobooksProgress((audiobooksProgress) => ({
-                    ...audiobooksProgress,
-                    audiobook_id: {
-                      audiobookItem,
-                    },
-                  }));
-                } else {
-                  addAudiobookToHistory(index, item);
-                  let initialAudioBookSections = new Array(
-                    item?.num_sections
-                  ).fill(0);
-                  if (reviewURLS[index]) {
-                    let initialValue = 0;
-                    fetch(reviewURLS[index])
-                      .then((response) => response.json())
-                      .then((json) => {
-                        if (json?.result !== undefined) {
-                          let stars = json?.result
-                            .map((review: Review) => Number(review?.stars))
-                            .reduce(
-                              (accumulator: number, currentValue: number) =>
-                                accumulator + currentValue,
-                              initialValue
-                            );
-                          const averageReview = stars / json?.result.length;
-                          if (!isNaN(averageReview)) {
-                            return averageReview;
-                          }
-                        }
-                      })
-                      .then((avgReview) => {
-                        const initAudioBookData = {
-                          audiobook_id: item?.id,
-                          audiotrack_progress_bars: JSON.stringify(
-                            initialAudioBookSections
-                          ),
-                          current_audiotrack_positions: JSON.stringify(
-                            initialAudioBookSections
-                          ),
-                          audiobook_shelved: true,
-                          audiotrack_rating: avgReview,
-                        };
-                        audiobooksProgress[item?.id] = initAudioBookData;
-                        setAudiobooksProgress((audiobooksProgress) => ({
-                          ...audiobooksProgress,
-                          audiobook_id: {
-                            initAudioBookData,
-                          },
-                        }));
-                        initialAudioBookStoreDB(db, initAudioBookData);
-                      })
-                      .catch((error) => console.log("Error: ", error));
-                  }
-                }
-              }}
-              style={{
-                margin: 2,
-                position: "absolute",
-                top: 0,
-                right: 0,
-                width: 27,
-                height: 55,
-              }}
-            >
-              <MaterialCommunityIcons
-                key={item.id}
-                name={
-                  audiobooksProgress[item?.id]?.audiobook_shelved
-                    ? "star"
-                    : "star-outline"
-                }
-                size={30}
-                color={Colors[colorScheme].shelveAudiobookIconColor}
-              />
-            </Button>
-          </Pressable>
-          <LinearProgress
-            color={Colors[colorScheme].audiobookProgressColor}
-            value={audiobooksProgress[item?.id]?.listening_progress_percent}
-            variant="determinate"
-            trackColor={Colors[colorScheme].audiobookProgressTrackColor}
-            animation={false}
-          />
-        </View>
-      </ListItem>
+      <AudiobookCover
+        item={item}
+        index={index}
+        db={db}
+        audiobooksProgress={audiobooksProgress}
+        setAudiobooksProgress={setAudiobooksProgress}
+        addAudiobookToHistory={addAudiobookToHistory(index, item)}
+        bookCovers={bookCovers}
+        reviewURLS={reviewURLS}
+        resizeCoverImageWidth={resizeCoverImageWidth}
+        resizeCoverImageHeight={resizeCoverImageHeight}
+        windowWidth={windowWidth}
+        windowHeight={windowHeight}
+      />
       {audiobooksProgress[item?.id]?.audiobook_id == item?.id &&
       audiobooksProgress[item?.id]?.audiobook_rating > 0 ? (
         <Rating
