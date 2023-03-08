@@ -4,10 +4,6 @@ import { useState } from "react";
 import { View } from "react-native";
 
 import { openDatabase } from "../db/utils";
-import {
-  audiobookHistoryTableName,
-  audiobookProgressTableName,
-} from "../db/database_functions";
 
 import ShelfForBookshelfAndHistory from "../components/shelfForBookshelfAndHistory";
 
@@ -29,7 +25,6 @@ function Bookshelf(props:any) {
         `${sqlQuery} ${pickerAndQueryStatePassedIn.orderBy} ${pickerAndQueryStatePassedIn.order}`,
         [],
         (_, { rows }) => {
-          // let start = performance.now();
           let newHistory = [];
           for (let row of rows._array) {
             if (
@@ -42,9 +37,6 @@ function Bookshelf(props:any) {
             }
           }
           setAudiobookHistory(newHistory);
-          // setAudiobookHistory(rows["_array"]);
-          // let end = performance.now();
-          // console.log("time: ", end - start);
           setLoadingHistory(false);
         }
       );

@@ -4,19 +4,21 @@ import {
   View,
   ActivityIndicator,
   Dimensions,
-  Image,
-  Pressable,
 } from "react-native";
-import { ListItem } from "@rneui/themed";
+import { Rating } from "react-native-ratings";
 import { useNavigation } from "@react-navigation/native";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
+import { Audiobook, Review } from "../types.js";
 
 import AudiobookAccordionList from "../components/audiobookAccordionList";
+import AudiobookCover from "./AudiobookCover";
 
 import { openDatabase } from "../db/utils";
 import {
   createHistoryTableDB,
+  createAudioBookDataTable,
   addAudiobookToHistoryDB,
+  audiobookProgressTableName,
 } from "../db/database_functions";
 import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
@@ -28,7 +30,7 @@ export default function Audiobooks(props: any) {
   const [data, setAudiobooks] = useState<any>([]);
   const [bookCovers, setBookCovers] = useState<any[]>([]);
   const [reviewURLS, setReviewsUrlList] = useState<any[]>([]);
-  const [avatarOnPressEnabled, setAvatarOnPressEnabled] = useState(true);
+  const [audiobooksProgress, setAudiobooksProgress] = useState({});
   const {
     apiSettings,
     requestAudiobookAmount,
@@ -37,18 +39,37 @@ export default function Audiobooks(props: any) {
     searchBy,
   } = props;
 
-  React.useEffect(() => {
-    createHistoryTableDB(db);
+  useEffect(() => {
+    try {
+      createAudioBookDataTable(db);
+      createHistoryTableDB(db);
+    } catch (err) {
+      console.log(err);
+    }
   }, []);
 
-  const addAudiobookToHistory = (bookDataForHistory: {
-    audiobook_genres: string;
-  }) => {
-    bookDataForHistory.audiobook_genres = JSON.stringify(
-      bookDataForHistory.audiobook_genres
-    );
-    addAudiobookToHistoryDB(db, bookDataForHistory);
-  };
+  function addAudiobookToHistory(index: number, item: Audiobook): void {
+    addAudiobookToHistoryDB(db, {
+      audiobook_rss_url: item?.url_rss,
+      audiobook_id: item?.id,
+      audiobook_image: bookCovers[index],
+      audiobook_num_sections: item?.num_sections,
+      audiobook_ebook_url: item?.url_text_source,
+      audiobook_zip: item?.url_zip_file,
+      audiobook_title: item?.title,
+      audiobook_author_first_name: item?.authors[0]?.first_name,
+      audiobook_author_last_name: item?.authors[0]?.last_name,
+      audiobook_total_time: item?.totaltime,
+      audiobook_total_time_secs: item?.totaltimesecs,
+      audiobook_copyright_year: item?.copyright_year,
+      audiobook_genres: JSON.stringify(item?.genres),
+      audiobook_review_url: reviewURLS[index],
+      audiobook_language: item?.language,
+      audiobook_project_url: item?.url_project,
+      audiobook_librivox_url: item?.url_librivox,
+      audiobook_iarchive_url: item?.url_iarchive,
+    });
+  }
 
   const requestAudiobooksFromAPI = () => {
     const searchQuery = encodeURIComponent(searchBarInputSubmitted);
@@ -100,22 +121,21 @@ export default function Audiobooks(props: any) {
   };
 
   useEffect(() => {
+    requestAudiobooksFromAPI();
+  }, [requestAudiobookAmount]);
+
+  useEffect(() => {
     setLoadingAudioBooks(true);
     requestAudiobooksFromAPI();
   }, [searchBarInputSubmitted]);
 
-  useEffect(() => {
-    requestAudiobooksFromAPI();
-  }, [requestAudiobookAmount]);
-
-  const bookCoverURL: any[] = [];
-  const reviewsURL: any[] = [];
+  const bookCoverURL: string[] = [];
+  const reviewsURL: string[] = [];
   useEffect(() => {
     if (data.books) {
       const dataKeys = Object.values(data.books);
       let bookCoverImagePath;
       dataKeys.forEach((bookCoverURLPath: any) => {
-        // console.log(bookCoverURLPath)
         bookCoverImagePath = bookCoverURLPath.url_zip_file.split("/");
         bookCoverImagePath = bookCoverImagePath[bookCoverImagePath.length - 2];
         const reviewUrl = encodeURI(
@@ -132,92 +152,55 @@ export default function Audiobooks(props: any) {
     }
   }, [data.books]);
 
+  const navigation = useNavigation();
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      const query = `select * from ${audiobookProgressTableName}`;
+      db.transaction((tx) => {
+        tx.executeSql(`${query}`, [], (_, { rows }) => {
+          const audioProgressData = {};
+          rows._array.forEach((row) => {
+            return (audioProgressData[row.audiobook_id] = row);
+          });
+          setAudiobooksProgress(audioProgressData);
+        });
+      }, undefined);
+    });
+    return unsubscribe;
+  }, [navigation]);
+
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
-
   const resizeCoverImageHeight = windowHeight / 5;
   const resizeCoverImageWidth = windowWidth / 2 - 42;
-  const navigation = useNavigation();
-  const keyExtractor = (item: any, index: any) => index.toString();
+  const keyExtractor = (item: any, index: number) => index.toString();
   const renderItem = ({ item, index }) => (
     <View>
-      <ListItem
-        topDivider
-        containerStyle={{
-          backgroundColor: Colors[colorScheme].colorAroundAudiobookImage,
-        }}
-        key={item.id}
-      >
-        <View
-          style={[
-            styles.ImageContainer,
-            {
-              backgroundColor: Colors[colorScheme].audiobookBackgroundColor,
-            },
-          ]}
-        >
-          <Pressable
-            accessibilityLabel={`${item?.title}`}
-            style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1.0 }]}
-            onPress={() => {
-              if (avatarOnPressEnabled) {
-                addAudiobookToHistory({
-                  audiobook_rss_url: item?.url_rss,
-                  audiobook_id: item?.id,
-                  audiobook_image: bookCovers[index],
-                  audiobook_num_sections: item?.num_sections,
-                  audiobook_ebook_url: item?.url_text_source,
-                  audiobook_zip: item?.url_zip_file,
-                  audiobook_title: item?.title,
-                  audiobook_author_first_name: item?.authors[0]?.first_name,
-                  audiobook_author_last_name: item?.authors[0]?.last_name,
-                  audiobook_total_time: item?.totaltime,
-                  audiobook_total_time_secs: item?.totaltimesecs,
-                  audiobook_copyright_year: item?.copyright_year,
-                  audiobook_genres: item?.genres,
-                  audiobook_review_url: reviewURLS[index],
-                  audiobook_language: item?.language,
-                  audiobook_project_url: item?.url_project,
-                  audiobook_librivox_url: item?.url_librivox,
-                  audiobook_iarchive_url: item?.url_iarchive,
-                });
-                navigation.navigate("Audio", {
-                  audioBookId: item?.id,
-                  urlRss: item?.url_rss,
-                  coverImage: bookCovers[index],
-                  numSections: item?.num_sections,
-                  urlTextSource: item?.url_text_source,
-                  urlZipFile: item?.url_zip_file,
-                  title: item?.title,
-                  authorFirstName: item?.authors[0]?.first_name,
-                  authorLastName: item?.authors[0]?.last_name,
-                  totalTime: item?.totaltime,
-                  totalTimeSecs: item?.totaltimesecs,
-                  copyrightYear: item?.copyright_year,
-                  genres: item?.genres,
-                  urlReview: reviewURLS[index],
-                  language: item?.language,
-                  urlProject: item?.url_project,
-                  urlLibrivox: item?.url_librivox,
-                  urlIArchive: item?.url_iarchive,
-                });
-              }
-              setAvatarOnPressEnabled(false);
-              setTimeout(() => {
-                setAvatarOnPressEnabled(true);
-              }, 2000);
-            }}
-          >
-            <Image
-              source={{ uri: bookCovers[index] }}
-              style={{
-                width: resizeCoverImageWidth,
-                height: resizeCoverImageHeight,
-              }}
-            />
-          </Pressable>
-        </View>
-      </ListItem>
+      <AudiobookCover
+        item={item}
+        index={index}
+        db={db}
+        audiobooksProgress={audiobooksProgress}
+        setAudiobooksProgress={setAudiobooksProgress}
+        addAudiobookToHistory={addAudiobookToHistory(index, item)}
+        bookCovers={bookCovers}
+        reviewURLS={reviewURLS}
+        resizeCoverImageWidth={resizeCoverImageWidth}
+        resizeCoverImageHeight={resizeCoverImageHeight}
+        windowWidth={windowWidth}
+        windowHeight={windowHeight}
+      />
+      {audiobooksProgress[item?.id]?.audiobook_id == item?.id &&
+      audiobooksProgress[item?.id]?.audiobook_rating > 0 ? (
+        <Rating
+          showRating={false}
+          imageSize={20}
+          ratingCount={5}
+          startingValue={audiobooksProgress[item?.id]?.audiobook_rating}
+          readonly={true}
+          tintColor={Colors[colorScheme].ratingBackgroundColor}
+        />
+      ) : undefined}
       <AudiobookAccordionList
         accordionTitle={item?.title}
         audiobookTitle={item?.title}
