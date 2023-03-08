@@ -66,6 +66,13 @@ export interface Review {
   stars?: number;
 }
 
+export interface Suggestion {
+  item: any;
+  index: number;
+  last_name: string;
+  first_name: string;
+}
+
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
   CompositeScreenProps<
     BottomTabScreenProps<RootTabParamList, Screen>,

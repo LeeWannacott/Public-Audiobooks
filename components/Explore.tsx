@@ -12,6 +12,7 @@ import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
 import * as NavigationBar from "expo-navigation-bar";
 import { useNavigation } from "@react-navigation/native";
+import { Suggestion } from "../types";
 import Fuse from "fuse.js";
 
 function Search(props: any) {
@@ -66,7 +67,6 @@ function Search(props: any) {
     });
     return unsubscribe;
   }, [navigation]);
-
 
   function setAndStoreAudiobookAmountRequested(amount: number) {
     setAudiobooksAmountRequested(amount);
@@ -129,7 +129,7 @@ function Search(props: any) {
     // console.log(fuse);
   }, []);
 
-  const updateSearch = (search: any) => {
+  const updateSearch = (search: string) => {
     if (searchBy !== "title" || searchBy === "author") {
       setSuggestionsVisible(true);
     }
@@ -149,23 +149,25 @@ function Search(props: any) {
     generateFuse();
   };
 
-  function submitUserInput(item) {
+  function submitUserInput(item: Suggestion) {
     switch (searchBy) {
       case "genre":
-        setSearch(item.item);
-        storeSearchText("userSearchGenre", item.item);
-        return setUserInputEntered(item.item);
+        setSearch(item?.item);
+        storeSearchText("userSearchGenre", item?.item);
+        setUserInputEntered(item?.item);
+        break;
       case "author":
-        setSearch(item.item.first_name + " " + item.item.last_name);
+        setSearch(item?.item?.first_name + " " + item?.item?.last_name);
         storeSearchText(
           "userSearchAuthor",
-          item.item.first_name + " " + item.item.last_name
+          item?.item?.first_name + " " + item?.item?.last_name
         );
         storeSearchBarSubmitted(
           "userInputAuthorSubmitted",
-          item.item.last_name
+          item?.item?.last_name
         );
-        return setUserInputEntered(item.item.last_name);
+        setUserInputEntered(item?.item?.last_name);
+        break;
     }
   }
 
@@ -173,7 +175,7 @@ function Search(props: any) {
     setSuggestionsVisible(false), setSelelectedSuggestionID(null);
   }
 
-  const renderSuggestions = ({ item, index }) => {
+  const renderSuggestions = ({ item, index }: Suggestion) => {
     return (
       <>
         <Text
