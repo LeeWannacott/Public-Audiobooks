@@ -4,16 +4,12 @@ import {
   View,
   ActivityIndicator,
   Dimensions,
-  Image,
-  Pressable,
 } from "react-native";
-import { ListItem, LinearProgress } from "@rneui/themed";
 import { Rating } from "react-native-ratings";
 import { useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
 import { Audiobook, Review } from "../types.js";
 
-import { Button } from "react-native-paper";
 import AudiobookAccordionList from "../components/audiobookAccordionList";
 import AudiobookCover from "./AudiobookCover";
 
@@ -34,7 +30,6 @@ export default function Audiobooks(props: any) {
   const [data, setAudiobooks] = useState<any>([]);
   const [bookCovers, setBookCovers] = useState<any[]>([]);
   const [reviewURLS, setReviewsUrlList] = useState<any[]>([]);
-
   const [audiobooksProgress, setAudiobooksProgress] = useState({});
   const {
     apiSettings,
