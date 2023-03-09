@@ -182,7 +182,7 @@ export default function Audiobooks(props: any) {
         db={db}
         audiobooksProgress={audiobooksProgress}
         setAudiobooksProgress={setAudiobooksProgress}
-        addAudiobookToHistory={addAudiobookToHistory(index, item)}
+        addAudiobookToHistory={addAudiobookToHistory}
         bookCovers={bookCovers}
         reviewURLS={reviewURLS}
         resizeCoverImageWidth={resizeCoverImageWidth}
