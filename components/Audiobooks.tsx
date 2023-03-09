@@ -50,24 +50,24 @@ export default function Audiobooks(props: any) {
 
   function addAudiobookToHistory(index: number, item: Audiobook): void {
     addAudiobookToHistoryDB(db, {
-      audiobook_rss_url: item?.url_rss,
+      url_rss: item?.url_rss,
       audiobook_id: item?.id,
-      audiobook_image: bookCovers[index],
-      audiobook_num_sections: item?.num_sections,
-      audiobook_ebook_url: item?.url_text_source,
-      audiobook_zip: item?.url_zip_file,
-      audiobook_title: item?.title,
-      audiobook_author_first_name: item?.authors[0]?.first_name,
-      audiobook_author_last_name: item?.authors[0]?.last_name,
-      audiobook_total_time: item?.totaltime,
-      audiobook_total_time_secs: item?.totaltimesecs,
-      audiobook_copyright_year: item?.copyright_year,
-      audiobook_genres: JSON.stringify(item?.genres),
-      audiobook_review_url: reviewURLS[index],
-      audiobook_language: item?.language,
-      audiobook_project_url: item?.url_project,
-      audiobook_librivox_url: item?.url_librivox,
-      audiobook_iarchive_url: item?.url_iarchive,
+      image: bookCovers[index],
+      num_sections: item?.num_sections,
+      url_text_source: item?.url_text_source,
+      url_zip_file: item?.url_zip_file,
+      title: item?.title,
+      authors_first_name: item?.authors[0]?.first_name,
+      authors_last_name: item?.authors[0]?.last_name,
+      totaltime: item?.totaltime,
+      totaltimesecs: item?.totaltimesecs,
+      copyright_year: item?.copyright_year,
+      genres: item?.genres,
+      url_review: reviewURLS[index],
+      language: item?.language,
+      url_project: item?.url_project,
+      url_librivox: item?.url_librivox,
+      url_iarchive: item?.url_iarchive,
     });
   }
 
@@ -208,7 +208,7 @@ export default function Audiobooks(props: any) {
         audiobookAuthorLastName={item?.authors[0]?.last_name}
         audiobookTotalTime={item?.totaltime}
         audiobookCopyrightYear={item?.copyright_year}
-        audiobookGenres={JSON.stringify(item?.genres)}
+        audiobookGenres={item?.genres}
         audiobookLanguage={item?.language}
       />
     </View>

@@ -1,9 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import {
-  ActivityIndicator,
-  Dimensions,
-  Image,
-} from "react-native";
+import { ActivityIndicator, Dimensions, Image } from "react-native";
 import { ListItem, LinearProgress, Card } from "@rneui/themed";
 import { Rating } from "react-native-ratings";
 import * as rssParser from "react-native-rss-parser";
@@ -175,7 +171,6 @@ function Audiotracks(props: any) {
     await storeAsyncData("audioTrackSettingsTest", settings);
   };
 
-
   const updateAudioBookPosition = async (
     audiobook_id: any,
     audiotrack_progress_bars: any,
@@ -206,20 +201,7 @@ function Audiotracks(props: any) {
     }
   };
 
-  const updateBookShelve = (
-    audiobook_id: number | string,
-    audiobook_shelved: boolean
-  ) => {
-    updateIfBookShelvedDB(db, audiobook_id, audiobook_shelved);
-  };
-
   const initialAudioBookStore = (initAudioBookData: any) => {
-    initAudioBookData.audiotrack_progress_bars = JSON.stringify(
-      initAudioBookData.audiotrack_progress_bars
-    );
-    initAudioBookData.current_audiotrack_positions = JSON.stringify(
-      initAudioBookData.current_audiotrack_positions
-    );
     initialAudioBookStoreDB(db, initAudioBookData);
     // initial load of audiotrack data from DB.
     db.transaction((tx) => {
@@ -239,9 +221,7 @@ function Audiotracks(props: any) {
                 );
                 setAudiotracksData({
                   ...audiotracksData,
-                  linearProgessBars: JSON.parse(
-                    row?.audiotrack_progress_bars
-                  ),
+                  linearProgessBars: JSON.parse(row?.audiotrack_progress_bars),
                   currentAudiotrackPositionsMs: JSON.parse(
                     row?.current_audiotrack_positions
                   ),
@@ -252,9 +232,7 @@ function Audiotracks(props: any) {
                     TotalListenTimeAndProgress[1],
                 });
                 if (row?.users_audiobook_review !== undefined) {
-                  setReviewInformation(
-                    JSON.parse(row?.users_audiobook_review)
-                  );
+                  setReviewInformation(JSON.parse(row?.users_audiobook_review));
                 }
               }
             });
@@ -389,8 +367,8 @@ function Audiotracks(props: any) {
 
       initialAudioBookStore({
         audiobook_id: audioBookId,
-        audiotrack_progress_bars: initialAudioBookSections,
-        current_audiotrack_positions: initialAudioBookSections,
+        audiotrack_progress_bars: JSON.stringify(initialAudioBookSections),
+        current_audiotrack_positions: JSON.stringify(initialAudioBookStore),
         audiobook_shelved: audiotracksData.shelveIconToggle,
         audiotrack_rating: audiotracksData.audiobookRating,
       });
@@ -959,12 +937,20 @@ function Audiotracks(props: any) {
     switch (audiotracksData.shelveIconToggle) {
       case 0:
         setAudiotracksData({ ...audiotracksData, shelveIconToggle: 1 });
-        updateBookShelve(audiobook_id, !audiotracksData.shelveIconToggle);
+        updateIfBookShelvedDB(
+          db,
+          audiobook_id,
+          !audiotracksData.shelveIconToggle
+        );
         break;
       case 1:
         // remove from db
         setAudiotracksData({ ...audiotracksData, shelveIconToggle: 0 });
-        updateBookShelve(audiobook_id, !audiotracksData.shelveIconToggle);
+        updateIfBookShelvedDB(
+          db,
+          audiobook_id,
+          !audiotracksData.shelveIconToggle
+        );
         break;
     }
   }

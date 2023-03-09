@@ -28,11 +28,11 @@ function Bookshelf(props:any) {
           let newHistory = [];
           for (let row of rows._array) {
             if (
-              Object.prototype.hasOwnProperty.call(lolcache, row.audiobook_id)
+              Object.prototype.hasOwnProperty.call(lolcache, row?.audiobook_id)
             ) {
-              newHistory.push(lolcache[row.audiobook_id]);
+              newHistory.push(lolcache[row?.audiobook_id]);
             } else {
-              lolcache[row.audiobook_id] = row;
+              lolcache[row?.audiobook_id] = row;
               newHistory.push(row);
             }
           }

@@ -125,8 +125,6 @@ function Search(props: any) {
       }
     }
     makeFuse();
-
-    // console.log(fuse);
   }, []);
 
   const updateSearch = (search: string) => {

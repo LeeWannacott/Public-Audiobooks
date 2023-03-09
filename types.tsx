@@ -39,6 +39,7 @@ export type RootTabParamList = {
 export interface Audiobook {
   url_rss: string;
   id: number;
+  audiobook_id?: number;
   num_sections: number;
   url_text_source: string;
   url_zip_file: string;

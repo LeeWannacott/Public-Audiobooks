@@ -83,7 +83,8 @@ function ShelfForBookshelfAndHistory(props: any) {
     }
   }
 
-  const keyExtractor = (item, index) => item.audiobook_id.toString();
+  const keyExtractor = (item, index) =>
+    item?.audiobook_id?.toString();
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const navigation = useNavigation();
@@ -93,29 +94,30 @@ function ShelfForBookshelfAndHistory(props: any) {
   function selectAccordionPickerTitle(pickerIndex, item) {
     switch (pickerIndex) {
       case 0:
-        return item?.id + ". " + item?.audiobook_title;
+        return item?.id + ". " + item?.title;
       case 1:
-        return item?.audiobook_title;
+        return item?.title;
       case 2:
         return audioBookInfo[item?.audiobook_id]?.audiobook_rating;
       case 3:
         return (
           roundNumberTwoDecimal(
-            audioBookInfo[item?.audiobook_id]?.listening_progress_percent * 100
+            audioBookInfo[item?.audiobook_id]?.listening_progress_percent *
+              100
           ) + "%"
         );
       case 4:
-        return item?.audiobook_author_first_name;
+        return item?.authors_first_name;
       case 5:
-        return item?.audiobook_author_last_name;
+        return item?.authors_last_name;
       case 6:
-        return item?.audiobook_total_time;
+        return item?.totaltime;
       case 7:
-        return item?.audiobook_language;
+        return item?.language;
       case 8:
-        return JSON.parse(item.audiobook_genres)[0].name;
+        return item?.genres[0]?.name;
       case 9:
-        return item?.audiobook_copyright_year;
+        return item?.copyright_year;
     }
   }
 
@@ -134,29 +136,29 @@ function ShelfForBookshelfAndHistory(props: any) {
           ]}
         >
           <Pressable
-            accessibilityLabel={`${item?.audiobook_title}`}
+            accessibilityLabel={`${item?.title}`}
             style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1.0 }]}
             onPress={() => {
               if (avatarOnPressEnabled) {
                 navigation.navigate("Audio", {
                   audioBookId: item?.audiobook_id,
-                  urlRss: item?.audiobook_rss_url,
-                  coverImage: item?.audiobook_image,
-                  title: item?.audiobook_title,
-                  authorFirstName: item?.audiobook_author_first_name,
-                  authorLastName: item?.audiobook_author_last_name,
-                  totalTime: item?.audiobook_total_time,
-                  totalTimeSecs: item?.audiobook_total_time_secs,
-                  copyrightYear: item?.audiobook_copyright_year,
-                  genres: JSON.parse(item?.audiobook_genres),
-                  language: item?.audiobook_language,
-                  urlReview: item?.audiobook_review_url,
-                  numSections: item?.audiobook_num_sections,
-                  urlTextSource: item?.audiobook_ebook_url,
-                  urlZipFile: item?.audiobook_zip,
-                  urlProject: item?.audiobook_project_url,
-                  urlLibrivox: item?.audiobook_librivox_url,
-                  urlIArchive: item?.audiobook_iarchive_url,
+                  urlRss: item?.url_rss,
+                  coverImage: item?.image,
+                  title: item?.title,
+                  authorFirstName: item?.authors_first_name,
+                  authorLastName: item?.authors_last_name,
+                  totalTime: item?.totaltime,
+                  totalTimeSecs: item?.totaltimesecs,
+                  copyrightYear: item?.copyright_year,
+                  genres: item?.genres,
+                  language: item?.language,
+                  urlReview: item?.url_review,
+                  numSections: item?.num_sections,
+                  urlTextSource: item?.url_text_source,
+                  urlZipFile: item?.url_zip_file,
+                  urlProject: item?.url_project,
+                  urlLibrivox: item?.url_librivox,
+                  urlIArchive: item?.url_iarchive,
                 });
               }
               setAvatarOnPressEnabled(false);
@@ -166,7 +168,7 @@ function ShelfForBookshelfAndHistory(props: any) {
             }}
           >
             <Image
-              source={{ uri: item.audiobook_image }}
+              source={{ uri: item?.image }}
               style={{
                 width: resizeCoverImageWidth,
                 height: resizeCoverImageHeight,
@@ -175,7 +177,7 @@ function ShelfForBookshelfAndHistory(props: any) {
 
             <MaterialCommunityIcons
               name={
-                audioBookInfo[item.audiobook_id]?.audiobook_shelved
+                audioBookInfo[item?.audiobook_id]?.audiobook_shelved
                   ? "star"
                   : undefined
               }
@@ -194,20 +196,25 @@ function ShelfForBookshelfAndHistory(props: any) {
 
           <LinearProgress
             color={Colors[colorScheme].audiobookProgressColor}
-            value={audioBookInfo[item.audiobook_id]?.listening_progress_percent}
+            value={
+              audioBookInfo[item?.audiobook_id]?.listening_progress_percent
+            }
             variant="determinate"
             trackColor={Colors[colorScheme].audiobookProgressTrackColor}
             animation={false}
           />
         </View>
       </ListItem>
-      {audioBookInfo[item.audiobook_id]?.audiobook_id == item.audiobook_id &&
-      audioBookInfo[item.audiobook_id]?.audiobook_rating > 0 ? (
+      {audioBookInfo[item?.audiobook_id]?.audiobook_id ==
+        item?.audiobook_id &&
+      audioBookInfo[item?.audiobook_id]?.audiobook_rating > 0 ? (
         <Rating
           showRating={false}
           imageSize={20}
           ratingCount={5}
-          startingValue={audioBookInfo[item.audiobook_id]?.audiobook_rating}
+          startingValue={
+            audioBookInfo[item?.audiobook_id]?.audiobook_rating
+          }
           readonly={true}
           tintColor={Colors[colorScheme].ratingBackgroundColor}
         />
@@ -217,13 +224,13 @@ function ShelfForBookshelfAndHistory(props: any) {
           pickerAndQueryState.pickerIndex,
           item
         )}
-        audiobookTitle={item?.audiobook_title}
-        audiobookAuthorFirstName={item?.audiobook_author_first_name}
-        audiobookAuthorLastName={item?.audiobook_author_last_name}
-        audiobookTotalTime={item?.audiobook_total_time}
-        audiobookCopyrightYear={item?.audiobook_copyright_year}
-        audiobookGenres={item?.audiobook_genres}
-        audiobookLanguage={item?.audiobook_language}
+        audiobookTitle={item?.title}
+        audiobookAuthorFirstName={item?.authors_first_name}
+        audiobookAuthorLastName={item?.authors_last_name}
+        audiobookTotalTime={item?.totaltime}
+        audiobookCopyrightYear={item?.copyright_year}
+        audiobookGenres={item?.genres}
+        audiobookLanguage={item?.language}
       />
     </View>
   );
@@ -238,9 +245,8 @@ function ShelfForBookshelfAndHistory(props: any) {
             (_, { rows }) => {
               const audioProgressData = {};
               rows._array.forEach((row) => {
-                return (audioProgressData[row.audiobook_id] = row);
+                return (audioProgressData[row?.audiobook_id] = row);
               });
-              // console.log(audioProgressData);
               setAudioBookInfo(audioProgressData);
             }
           );

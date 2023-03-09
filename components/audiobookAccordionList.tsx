@@ -108,9 +108,11 @@ function AudiobookAccordionList(props: any) {
             size={20}
           ></MaterialIconCommunity>
           {": "}
-          {JSON.parse(props?.audiobookGenres).map((genre) => {
-            return `${genre?.name} `;
-          })}
+          {props?.audiobookGenres
+            ? (props?.audiobookGenres).map((genre) => {
+                return `${genre?.name} `;
+              })
+            : undefined}
         </ListItem.Subtitle>
         <Divider />
         <ListItem.Subtitle
