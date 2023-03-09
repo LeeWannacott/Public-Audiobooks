@@ -24,7 +24,7 @@ import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
 const db = openDatabase();
 
-export default function Audiobooks(props: any) {
+export default function ExploreShelf(props: any) {
   const colorScheme = useColorScheme();
   const [loadingAudioBooks, setLoadingAudioBooks] = useState(true);
   const [data, setAudiobooks] = useState<any>([]);

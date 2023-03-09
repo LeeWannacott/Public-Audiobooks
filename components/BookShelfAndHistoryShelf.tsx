@@ -28,7 +28,7 @@ import {
 
 const db = openDatabase();
 
-function ShelfForBookshelfAndHistory(props: any) {
+export default function BookShelfAndHistoryShelf(props: any) {
   const colorScheme = useColorScheme();
   const [audioBookInfo, setAudioBookInfo] = useState({});
   const [avatarOnPressEnabled, setAvatarOnPressEnabled] = useState(true);
@@ -309,8 +309,6 @@ function ShelfForBookshelfAndHistory(props: any) {
     );
   }
 }
-
-export default ShelfForBookshelfAndHistory;
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
