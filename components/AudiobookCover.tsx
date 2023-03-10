@@ -19,6 +19,7 @@ export default function AudiobookCover(props) {
     index,
     db,
     addAudiobookToHistory,
+    getAverageAudiobookReview,
     bookCovers,
     reviewURLS,
     resizeCoverImageWidth,
@@ -113,50 +114,29 @@ export default function AudiobookCover(props) {
                 let initialAudioBookSections = new Array(
                   item?.num_sections
                 ).fill(0);
-                if (reviewURLS[index]) {
-                  let initialValue = 0;
-                  fetch(reviewURLS[index])
-                    .then((response) => response.json())
-                    .then((json) => {
-                      if (json?.result !== undefined) {
-                        let stars = json?.result
-                          .map((review: Review) => Number(review?.stars))
-                          .reduce(
-                            (accumulator: number, currentValue: number) =>
-                              accumulator + currentValue,
-                            initialValue
-                          );
-                        const averageReview = stars / json?.result.length;
-                        if (!isNaN(averageReview)) {
-                          return averageReview;
-                        }
-                      }
-                    })
-                    .then((avgReview) => {
-                      const initAudioBookData = {
-                        audiobook_id: item?.id,
-                        audiotrack_progress_bars: JSON.stringify(
-                          initialAudioBookSections
-                        ),
-                        current_audiotrack_positions: JSON.stringify(
-                          initialAudioBookSections
-                        ),
-                        audiobook_shelved: true,
-                        audiobook_rating: avgReview,
-                      };
-                      audiobooksProgress[item?.id] = initAudioBookData;
-                      // console.log(audiobook_id, initAudioBookData);
-
-                      setAudiobooksProgress((audiobooksProgress) => ({
-                        ...audiobooksProgress,
-                        audiobook_id: {
-                          initAudioBookData,
-                        },
-                      }));
-                      initialAudioBookStoreDB(db, initAudioBookData);
-                    })
-                    .catch((error) => console.log("Error: ", error));
-                }
+                getAverageAudiobookReview(index)
+                  .then((avgReview) => {
+                    const initAudioBookData = {
+                      audiobook_id: item?.id,
+                      audiotrack_progress_bars: JSON.stringify(
+                        initialAudioBookSections
+                      ),
+                      current_audiotrack_positions: JSON.stringify(
+                        initialAudioBookSections
+                      ),
+                      audiobook_shelved: true,
+                      audiobook_rating: avgReview,
+                    };
+                    audiobooksProgress[item?.id] = initAudioBookData;
+                    setAudiobooksProgress((audiobooksProgress) => ({
+                      ...audiobooksProgress,
+                      audiobook_id: {
+                        initAudioBookData,
+                      },
+                    }));
+                    initialAudioBookStoreDB(db, initAudioBookData);
+                  })
+                  .catch((error) => console.error(error));
               }
             }}
             style={{

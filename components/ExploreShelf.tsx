@@ -4,6 +4,7 @@ import {
   View,
   ActivityIndicator,
   Dimensions,
+  Text,
 } from "react-native";
 import { Rating } from "react-native-ratings";
 import { useNavigation } from "@react-navigation/native";
@@ -22,6 +23,7 @@ import {
 } from "../db/database_functions";
 import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
+import { Pressable } from "react-native";
 const db = openDatabase();
 
 export default function ExploreShelf(props: any) {
@@ -69,6 +71,31 @@ export default function ExploreShelf(props: any) {
       audiobook_librivox_url: item?.url_librivox,
       audiobook_iarchive_url: item?.url_iarchive,
     });
+  }
+
+  function getAverageAudiobookReview(index: number) {
+    if (reviewURLS[index]) {
+      let initialValue = 0;
+      const averageReview = fetch(reviewURLS[index])
+        .then((response) => response.json())
+        .then((json) => {
+          if (json?.result !== undefined) {
+            let stars = json?.result
+              .map((review: Review) => Number(review?.stars))
+              .reduce(
+                (accumulator: number, currentValue: number) =>
+                  accumulator + currentValue,
+                initialValue
+              );
+            const averageReview = stars / json?.result.length;
+            if (!isNaN(averageReview)) {
+              return averageReview;
+            }
+          }
+        })
+        .catch((err) => console.error(err));
+      return averageReview;
+    }
   }
 
   const requestAudiobooksFromAPI = () => {
@@ -183,6 +210,7 @@ export default function ExploreShelf(props: any) {
         audiobooksProgress={audiobooksProgress}
         setAudiobooksProgress={setAudiobooksProgress}
         addAudiobookToHistory={addAudiobookToHistory}
+        getAverageAudiobookReview={getAverageAudiobookReview}
         bookCovers={bookCovers}
         reviewURLS={reviewURLS}
         resizeCoverImageWidth={resizeCoverImageWidth}
@@ -200,7 +228,21 @@ export default function ExploreShelf(props: any) {
           readonly={true}
           tintColor={Colors[colorScheme].ratingBackgroundColor}
         />
-      ) : undefined}
+      ) : (
+        <Pressable
+          style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1.0 }]}
+          onPress={() => {
+            getAverageAudiobookReview(index).then((avgReview) => {
+
+            });
+          }}
+        >
+          {/* todo: find appropiate color for get rating text */}
+          <Text style={{ color: "green", textAlign: "center" }}>
+            Get rating
+          </Text>
+        </Pressable>
+      )}
       <AudiobookAccordionList
         accordionTitle={item?.title}
         audiobookTitle={item?.title}
