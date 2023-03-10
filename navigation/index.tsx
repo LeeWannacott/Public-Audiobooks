@@ -22,7 +22,7 @@ import Audiotracks from "../screens/Audiotracks";
 import History from "../screens/History";
 import Bookshelf from "../screens/Bookshelf";
 import Settings from "../screens/Settings";
-import Explore from "../components/Explore";
+import Explore from "../screens/Explore";
 import * as NavigationBar from "expo-navigation-bar";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import {

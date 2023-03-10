@@ -9,7 +9,7 @@ import {
   audiobookProgressTableName,
 } from "../db/database_functions";
 
-import ShelfForBookshelfAndHistory from "../components/shelfForBookshelfAndHistory";
+import BookShelfAndHistoryShelf from "../components/BookShelfAndHistoryShelf";
 
 const db = openDatabase();
 
@@ -50,7 +50,7 @@ function History() {
 
   return (
     <View>
-      <ShelfForBookshelfAndHistory
+      <BookShelfAndHistoryShelf
         getShelvedBooks={getShelvedBooks}
         audiobookHistory={audiobookHistory}
         loadingHistory={loadingHistory}

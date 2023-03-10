@@ -5,7 +5,7 @@ import { View } from "react-native";
 
 import { openDatabase } from "../db/utils";
 
-import ShelfForBookshelfAndHistory from "../components/shelfForBookshelfAndHistory";
+import BookShelfAndHistoryShelf from "../components/BookShelfAndHistoryShelf";
 
 const db = openDatabase();
 
@@ -46,7 +46,7 @@ function Bookshelf(props:any) {
 
   return (
     <View>
-      <ShelfForBookshelfAndHistory
+      <BookShelfAndHistoryShelf
         getShelvedBooks={getShelvedBooks}
         audiobookHistory={audiobookHistory}
         loadingHistory={loadingHistory}
