@@ -160,12 +160,12 @@ export default function AudiobookCover(props) {
               }
             }}
             style={{
-              margin: 2,
+              margin: 0,
               position: "absolute",
               top: 0,
               right: 0,
-              width: 27,
-              height: 55,
+              width: 30,
+              height: 60,
             }}
           >
             <MaterialCommunityIcons
