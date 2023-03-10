@@ -10,9 +10,10 @@ function AudioTrackControls(props: any) {
   const {
     loadingCurrentAudiotrack,
     rewindTenSeconds,
-    HandlePrev,
-    HandleNext,
+    HandlePrevTrack,
+    HandleNextTrack,
     PlayAudio,
+    isPlaying,
     forwardTenSeconds,
     currentAudioTrackIndex,
     trackPositions,
@@ -33,7 +34,7 @@ function AudioTrackControls(props: any) {
             backgroundColor: Colors[colorScheme].buttonBackgroundColor,
           }}
           mode={Colors[colorScheme].buttonMode}
-          onPress={() => HandlePrev()}
+          onPress={() => HandlePrevTrack()}
           accessibilityLabel="Previous chapter."
         >
           <MaterialIcons
@@ -86,7 +87,7 @@ function AudioTrackControls(props: any) {
               color={Colors[colorScheme].buttonIconColor}
             />
           </Button>
-        ) : props.Playing ? (
+        ) : isPlaying ? (
           <Button
             style={{
               backgroundColor: Colors[colorScheme].buttonBackgroundColor,
@@ -144,7 +145,7 @@ function AudioTrackControls(props: any) {
             backgroundColor: Colors[colorScheme].buttonBackgroundColor,
           }}
           mode={Colors[colorScheme].buttonMode}
-          onPress={() => HandleNext()}
+          onPress={() => HandleNextTrack()}
           accessibilityLabel="Next chapter."
         >
           <MaterialIcons

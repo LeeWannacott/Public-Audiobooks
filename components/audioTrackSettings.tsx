@@ -9,7 +9,7 @@ import Colors from "../constants/Colors";
 
 function AudioTrackSettings(props: any) {
   const {
-    visible,
+    isVisible,
     toggleOverlay,
     audioPlayerSettings,
     setAudioPlayerSettings,
@@ -144,7 +144,7 @@ function AudioTrackSettings(props: any) {
 
   return (
     <Overlay
-      isVisible={visible}
+      isVisible={isVisible}
       onBackdropPress={toggleOverlay}
       fullScreen={false}
       overlayStyle={{

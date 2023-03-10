@@ -48,25 +48,23 @@ function Audiotracks(props: any) {
     useState<boolean>(false);
 
   const currentAudioTrackIndex = useRef(0);
-  const [loadingAudiobookData, setLoadingAudioBookData] = useState(true);
-  const [loadingAudioListeningLinks, setLoadingAudioListeningLinks] =
+  const [isLoadingAudiobookData, setIsLoadingAudioBookData] = useState(true);
+  const [isLoadingAudiotrackUrls, setIsLoadingAudiotrackUrls] =
     useState(true);
   const [audiotrackLoadingStatuses, setAudiotrackLoadingStatuses] = useState({
     loadedCurrentAudiotrack: false,
     loadingCurrentAudiotrack: false,
   });
-  const [audioPaused, setAudioPaused] = useState(false);
-  const [Playing, setPlaying] = useState(false);
-  const [currentAudiotrackPlayingInfo, setCurrentPlayingInformation] = useState(
-    {
-      audioTrackChapterPlayingTitle: "",
-      audioTrackReader: "",
-      Duration: 0,
-    }
-  );
+  const [isAudioPaused, setIsAudioPaused] = useState(false);
+  const [isPlaying, SetIsPlaying] = useState(false);
+  const [currentAudiotrackPlaying, setCurrentAudiotrackPlaying] = useState({
+    audioTrackChapterPlayingTitle: "",
+    audioTrackReader: "",
+    duration: 0,
+  });
 
-  const [currentSliderPosition, setCurrentSliderPosition] = React.useState(0.0);
-  const [visible, setVisible] = useState(false);
+  const [currentSliderPosition, setCurrentSliderPosition] = useState(0.0);
+  const [isVisible, setIsVisible] = useState(false);
   const [makeReviewOptions, setMakeReviewOptions] = useState(false);
   const [audioPlayerSettings, setAudioPlayerSettings] = useState({
     rate: 1.0,
@@ -186,15 +184,13 @@ function Audiotracks(props: any) {
       );
       const listening_progress_percent =
         current_listening_time / 1000 / totalTimeSecs;
-      audiotrack_progress_bars = JSON.stringify(audiotrack_progress_bars);
-      current_audiotrack_positions = JSON.stringify(
-        current_audiotrack_positions
-      );
       updateAudioTrackPositionsDB(db, {
-        audiotrack_progress_bars,
+        audiotrack_progress_bars: JSON.stringify(audiotrack_progress_bars),
         listening_progress_percent,
         current_listening_time,
-        current_audiotrack_positions,
+        current_audiotrack_positions: JSON.stringify(
+          current_audiotrack_positions
+        ),
         audiobook_id,
       });
     } catch (err) {
@@ -280,7 +276,7 @@ function Audiotracks(props: any) {
       })
       .catch((error) => console.log("Error: ", error))
       .finally(() => {
-        setLoadingAudioListeningLinks(false);
+        setIsLoadingAudiotrackUrls(false);
       });
   }, []);
 
@@ -293,7 +289,7 @@ function Audiotracks(props: any) {
         return setChapters(json?.books?.[0]?.sections);
       })
       .catch((error) => console.log("Error: ", error))
-      .finally(() => setLoadingAudioBookData(false));
+      .finally(() => setIsLoadingAudioBookData(false));
   }, []);
 
   useEffect(() => {
@@ -440,10 +436,10 @@ function Audiotracks(props: any) {
           currentAudioTrackIndex.current >=
           URLSToPlayAudiotracks.length - 1
         ) {
-          setPlaying(false);
-          setAudioPaused(true);
+          SetIsPlaying(false);
+          setIsAudioPaused(true);
         } else {
-          return HandleNext();
+          return HandleNextTrack();
         }
       } else if (data.positionMillis && data.durationMillis) {
         updateAndStoreAudiobookPositions(data);
@@ -455,10 +451,11 @@ function Audiotracks(props: any) {
 
   const updateAudiotrackSlider = async (data: any) => {
     try {
-      const result = await sound.current.getStatusAsync();
-      if (result.isLoaded === true) {
-        const result = (data / 100) * currentAudiotrackPlayingInfo.Duration;
-        await sound.current.setPositionAsync(roundNumberTwoDecimal(result));
+      const soundStatus = await sound.current.getStatusAsync();
+      if (soundStatus.isLoaded === true) {
+        const currentPosition =
+          (data / 100) * currentAudiotrackPlaying.duration;
+        await sound.current.setPositionAsync(currentPosition);
       }
     } catch (error) {
       console.log("Error: ", error);
@@ -467,13 +464,13 @@ function Audiotracks(props: any) {
 
   const forwardTenSeconds = async () => {
     try {
-      const result = await sound.current.getStatusAsync();
-      if (result.isLoaded === true) {
-        const result =
+      const soundStatus = await sound.current.getStatusAsync();
+      if (soundStatus.isLoaded === true) {
+        const currentPosition =
           audiotracksData.currentAudiotrackPositionsMs[
             currentAudioTrackIndex.current
           ];
-        await sound.current.setPositionAsync(result + 10000);
+        await sound.current.setPositionAsync(currentPosition + 10000);
       }
     } catch (error) {
       console.log("Error: ", error);
@@ -482,13 +479,13 @@ function Audiotracks(props: any) {
 
   const rewindTenSeconds = async () => {
     try {
-      const result = await sound.current.getStatusAsync();
-      if (result.isLoaded === true) {
-        const result =
+      const soundStatus = await sound.current.getStatusAsync();
+      if (soundStatus.isLoaded === true) {
+        const currentPosition =
           audiotracksData.currentAudiotrackPositionsMs[
             currentAudioTrackIndex.current
           ];
-        await sound.current.setPositionAsync(result - 10000);
+        await sound.current.setPositionAsync(currentPosition - 10000);
       }
     } catch (error) {
       console.log("Error: ", error);
@@ -497,9 +494,9 @@ function Audiotracks(props: any) {
 
   const ResetPlayer = async () => {
     try {
-      const checkLoading = await sound.current.getStatusAsync();
-      if (checkLoading.isLoaded === true) {
-        setPlaying(false);
+      const soundStatus = await sound.current.getStatusAsync();
+      if (soundStatus.isLoaded === true) {
+        SetIsPlaying(false);
         await sound.current.setPositionAsync(0);
         await sound.current.stopAsync();
       }
@@ -539,12 +536,12 @@ function Audiotracks(props: any) {
             loadedCurrentAudiotrack: false,
           });
         } else {
-          setCurrentPlayingInformation({
-            ...currentAudiotrackPlayingInfo,
+          setCurrentAudiotrackPlaying({
+            ...currentAudiotrackPlaying,
             audioTrackReader: chapters[index]?.readers[0]?.display_name,
             audioTrackChapterPlayingTitle:
               chapters[index]?.section_number + ". " + chapters[index]?.title,
-            Duration: result?.durationMillis,
+            duration: result?.durationMillis,
           });
           setAudiotrackLoadingStatuses({
             ...audiotrackLoadingStatuses,
@@ -577,7 +574,7 @@ function Audiotracks(props: any) {
       if (result.isLoaded) {
         if (result.isPlaying === false) {
           await sound.current.playAsync();
-          setPlaying(true);
+          SetIsPlaying(true);
         }
       }
     } catch (error) {
@@ -587,13 +584,13 @@ function Audiotracks(props: any) {
 
   const PauseAudio = async () => {
     try {
-      setAudioPaused(false);
+      setIsAudioPaused(false);
       const result = await sound.current.getStatusAsync();
       if (result.isLoaded) {
         if (result.isPlaying === true) {
           await sound.current.pauseAsync();
-          setAudioPaused(true);
-          setPlaying(false);
+          setIsAudioPaused(true);
+          SetIsPlaying(false);
         }
       }
     } catch (error) {
@@ -601,7 +598,7 @@ function Audiotracks(props: any) {
     }
   };
 
-  const HandleNext = async () => {
+  const HandleNextTrack = async () => {
     try {
       if (currentAudioTrackIndex.current < URLSToPlayAudiotracks.length - 1) {
         const unloadSound = await sound.current.unloadAsync();
@@ -639,7 +636,7 @@ function Audiotracks(props: any) {
     }
   };
 
-  const HandlePrev = async () => {
+  const HandlePrevTrack = async () => {
     try {
       if (currentAudioTrackIndex.current - 1 >= 0) {
         const unloadSound = await sound.current.unloadAsync();
@@ -955,13 +952,13 @@ function Audiotracks(props: any) {
   }
 
   const toggleSettingsOverlay = () => {
-    setVisible(!visible);
+    setIsVisible(!isVisible);
   };
   const toggleWriteReviewOverlay = () => {
     setMakeReviewOptions(!makeReviewOptions);
   };
 
-  if (!loadingAudioListeningLinks && !loadingAudiobookData) {
+  if (!isLoadingAudiotrackUrls && !isLoadingAudiobookData) {
     const getHeader = () => {
       return (
         <View style={styles.bookHeader}>
@@ -1186,7 +1183,7 @@ function Audiotracks(props: any) {
         ]}
       >
         <AudioTrackSettings
-          visible={visible}
+          isVisible={isVisible}
           toggleOverlay={toggleSettingsOverlay}
           audioPlayerSettings={audioPlayerSettings}
           storeAudioTrackSettings={storeAudioTrackSettings}
@@ -1247,22 +1244,22 @@ function Audiotracks(props: any) {
           currentSliderPosition={currentSliderPosition}
           SeekUpdate={updateAudiotrackSlider}
           GetDurationFormat={GetDurationFormat}
-          Duration={currentAudiotrackPlayingInfo.Duration}
+          Duration={currentAudiotrackPlaying.duration}
           coverImage={coverImage}
           audioTrackChapterPlayingTitle={
-            currentAudiotrackPlayingInfo.audioTrackChapterPlayingTitle
+            currentAudiotrackPlaying.audioTrackChapterPlayingTitle
           }
-          audioTrackReader={currentAudiotrackPlayingInfo.audioTrackReader}
+          audioTrackReader={currentAudiotrackPlaying.audioTrackReader}
         />
 
         <AudioTrackControls
-          HandlePrev={HandlePrev}
-          HandleNext={HandleNext}
+          HandlePrevTrack={HandlePrevTrack}
+          HandleNextTrack={HandleNextTrack}
           LoadAudio={LoadAudio}
           PlayAudio={PlayAudio}
-          Playing={Playing}
+          isPlaying={isPlaying}
           PauseAudio={PauseAudio}
-          audioPaused={audioPaused}
+          isAudioPaused={isAudioPaused}
           loadingCurrentAudiotrack={
             audiotrackLoadingStatuses.loadingCurrentAudiotrack
           }
