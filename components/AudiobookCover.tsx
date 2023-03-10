@@ -142,9 +142,11 @@ export default function AudiobookCover(props) {
                           initialAudioBookSections
                         ),
                         audiobook_shelved: true,
-                        audiotrack_rating: avgReview,
+                        audiobook_rating: avgReview,
                       };
                       audiobooksProgress[item?.id] = initAudioBookData;
+                      // console.log(audiobook_id, initAudioBookData);
+
                       setAudiobooksProgress((audiobooksProgress) => ({
                         ...audiobooksProgress,
                         audiobook_id: {
@@ -188,9 +190,7 @@ export default function AudiobookCover(props) {
       </View>
     </ListItem>
   );
-
 }
-
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
