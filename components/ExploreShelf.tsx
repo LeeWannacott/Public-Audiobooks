@@ -256,13 +256,13 @@ export default function ExploreShelf(props: any) {
                 audiobook_rating: avgReview,
               };
               audiobooksProgress[item?.id] = initAudioBookData;
+              initialAudioBookStoreDB(db, initAudioBookData);
               setAudiobooksProgress((audiobooksProgress) => ({
                 ...audiobooksProgress,
                 audiobook_id: {
                   initAudioBookData,
                 },
               }));
-              initialAudioBookStoreDB(db, initAudioBookData);
             });
           }}
         >
