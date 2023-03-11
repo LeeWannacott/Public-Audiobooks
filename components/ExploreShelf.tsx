@@ -20,6 +20,7 @@ import {
   createAudioBookDataTable,
   addAudiobookToHistoryDB,
   audiobookProgressTableName,
+  initialAudioBookStoreDB,
 } from "../db/database_functions";
 import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
@@ -232,8 +233,36 @@ export default function ExploreShelf(props: any) {
         <Pressable
           style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1.0 }]}
           onPress={() => {
+            let initialAudioBookSections = new Array(item?.num_sections).fill(
+              0
+            );
+            let shelvedStatus: boolean;
+            if (audiobooksProgress[item?.id]) {
+              shelvedStatus = audiobooksProgress[item?.id]?.audiobook_shelved;
+            } else {
+              shelvedStatus = false;
+            }
             getAverageAudiobookReview(index).then((avgReview) => {
-
+              console.log(item?.id)
+              const initAudioBookData = {
+                audiobook_id: item?.id,
+                audiotrack_progress_bars: JSON.stringify(
+                  initialAudioBookSections
+                ),
+                current_audiotrack_positions: JSON.stringify(
+                  initialAudioBookSections
+                ),
+                audiobook_shelved: shelvedStatus,
+                audiobook_rating: avgReview,
+              };
+              audiobooksProgress[item?.id] = initAudioBookData;
+              setAudiobooksProgress((audiobooksProgress) => ({
+                ...audiobooksProgress,
+                audiobook_id: {
+                  initAudioBookData,
+                },
+              }));
+              initialAudioBookStoreDB(db, initAudioBookData);
             });
           }}
         >
