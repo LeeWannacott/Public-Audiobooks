@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { Rating } from "react-native-ratings";
 import { useNavigation } from "@react-navigation/native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { Audiobook, Review } from "../types.js";
 
 import AudiobookAccordionList from "../components/audiobookAccordionList";
@@ -154,11 +154,20 @@ export default function ExploreShelf(props: any) {
     }
   };
 
+  const updateCount = useRef(0);
+
+  // TODO: There will still be a bug if user is not retrieving from async data; should be an easy fix.
   useEffect(() => {
-    setLoadingAudiobookAmount(true);
-    requestAudiobooksFromAPI();
+    console.log(requestAudiobookAmount);
+    if (updateCount.current < 2) {
+      updateCount.current += 1;
+    } else {
+      setLoadingAudiobookAmount(true);
+      requestAudiobooksFromAPI();
+    }
   }, [requestAudiobookAmount]);
 
+  // TODO: This is causing a race condition.
   useEffect(() => {
     setLoadingAudioBooks(true);
     requestAudiobooksFromAPI();
@@ -279,7 +288,9 @@ export default function ExploreShelf(props: any) {
           }}
         >
           {/* todo: find appropiate color for get rating text */}
-          <Text style={{ color: "green", textAlign: "center" }}>get rating</Text>
+          <Text style={{ color: "green", textAlign: "center" }}>
+            get rating
+          </Text>
         </Pressable>
       )}
       <AudiobookAccordionList
