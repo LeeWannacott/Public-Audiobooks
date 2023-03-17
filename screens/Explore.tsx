@@ -13,6 +13,7 @@ import Colors from "../constants/Colors";
 import * as NavigationBar from "expo-navigation-bar";
 import { useNavigation } from "@react-navigation/native";
 import { Suggestion } from "../types";
+import { LinearProgress } from "@rneui/themed";
 import Fuse from "fuse.js";
 
 function Search(props: any) {
@@ -22,6 +23,7 @@ function Search(props: any) {
   const [userInputEntered, setUserInputEntered] = useState("");
   const [visible, setVisible] = useState(false);
   const [audiobookAmountRequested, setAudiobooksAmountRequested] = useState(64);
+  const [loadingAudiobookAmount, setLoadingAudiobookAmount] = useState(false);
   const [genreFuse, setGenreFuse] = useState<Fuse>("");
   const [authorFuse, setAuthorFuse] = useState<Fuse>("");
   const [suggestions, setSuggestions] = useState("");
@@ -256,6 +258,16 @@ function Search(props: any) {
               borderBottomWidth: 0,
             }}
           />
+          {loadingAudiobookAmount ? (
+            <LinearProgress
+              color={Colors[colorScheme].audiobookProgressColor}
+              value={100}
+              style={{ width: windowWidth - 20, left: 8, marginBottom: 2 }}
+              variant="indeterminate"
+              trackColor={Colors[colorScheme].audiobookProgressTrackColor}
+              animation={true}
+            />
+          ) : undefined}
         </View>
         <Button
           accessibilityLabel="Search options"
@@ -375,6 +387,7 @@ function Search(props: any) {
       <View style={styles.scrollStyle}>
         <ExploreShelf
           searchBy={searchBy}
+          setLoadingAudiobookAmount={setLoadingAudiobookAmount}
           searchBarInputSubmitted={userInputEntered}
           searchBarCurrentText={search}
           requestAudiobookAmount={audiobookAmountRequested}

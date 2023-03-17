@@ -25,6 +25,7 @@ import {
 import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
 import { Pressable } from "react-native";
+import { LinearProgress } from "@rneui/themed";
 const db = openDatabase();
 
 export default function ExploreShelf(props: any) {
@@ -37,6 +38,8 @@ export default function ExploreShelf(props: any) {
   const {
     apiSettings,
     requestAudiobookAmount,
+    loadingAudiobookAmount,
+    setLoadingAudiobookAmount,
     searchBarCurrentText,
     searchBarInputSubmitted,
     searchBy,
@@ -91,6 +94,8 @@ export default function ExploreShelf(props: any) {
             const averageReview = stars / json?.result.length;
             if (!isNaN(averageReview)) {
               return averageReview;
+            } else {
+              return undefined;
             }
           }
         })
@@ -144,11 +149,13 @@ export default function ExploreShelf(props: any) {
         .catch((error) => console.error(error))
         .finally(() => {
           setLoadingAudioBooks(false);
+          setLoadingAudiobookAmount(false);
         });
     }
   };
 
   useEffect(() => {
+    setLoadingAudiobookAmount(true);
     requestAudiobooksFromAPI();
   }, [requestAudiobookAmount]);
 
@@ -243,33 +250,36 @@ export default function ExploreShelf(props: any) {
               shelvedStatus = false;
             }
             getAverageAudiobookReview(index).then((avgReview) => {
-              console.log(item?.id)
-              const initAudioBookData = {
-                audiobook_id: item?.id,
-                audiotrack_progress_bars: JSON.stringify(
-                  initialAudioBookSections
-                ),
-                current_audiotrack_positions: JSON.stringify(
-                  initialAudioBookSections
-                ),
-                audiobook_shelved: shelvedStatus,
-                audiobook_rating: avgReview,
-              };
-              audiobooksProgress[item?.id] = initAudioBookData;
-              initialAudioBookStoreDB(db, initAudioBookData);
-              setAudiobooksProgress((audiobooksProgress) => ({
-                ...audiobooksProgress,
-                audiobook_id: {
-                  initAudioBookData,
-                },
-              }));
+              if (avgReview) {
+                console.log(item?.id);
+                const initAudioBookData = {
+                  audiobook_id: item?.id,
+                  audiotrack_progress_bars: JSON.stringify(
+                    initialAudioBookSections
+                  ),
+                  current_audiotrack_positions: JSON.stringify(
+                    initialAudioBookSections
+                  ),
+                  audiobook_shelved: shelvedStatus,
+                  audiobook_rating: avgReview,
+                };
+                audiobooksProgress[item?.id] = initAudioBookData;
+                initialAudioBookStoreDB(db, initAudioBookData);
+                setAudiobooksProgress((audiobooksProgress) => ({
+                  ...audiobooksProgress,
+                  audiobook_id: {
+                    initAudioBookData,
+                  },
+                }));
+              } else {
+                console.log("no review found");
+                console.log(audiobooksProgress[item?.id].audiobook_rating);
+              }
             });
           }}
         >
           {/* todo: find appropiate color for get rating text */}
-          <Text style={{ color: "green", textAlign: "center" }}>
-            Get rating
-          </Text>
+          <Text style={{ color: "green", textAlign: "center" }}>get rating</Text>
         </Pressable>
       )}
       <AudiobookAccordionList
