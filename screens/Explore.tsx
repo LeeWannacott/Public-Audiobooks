@@ -369,14 +369,7 @@ function Search(props: any) {
       </View>
       {suggestionVisible ? (
         <FlatList
-          style={{
-            position: "absolute",
-            top: 80,
-            left: 10,
-            zIndex: 1000,
-            height: 268,
-            width: 250,
-          }}
+          style={styles.suggestionStyle}
           data={suggestions}
           renderItem={renderSuggestions}
           keyExtractor={(item) => item.refIndex}
@@ -413,6 +406,14 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+  },
+  suggestionStyle: {
+    position: "absolute",
+    top: 80,
+    left: 10,
+    zIndex: 1000,
+    height: 268,
+    width: 250,
   },
   titleOrAuthorStringFlexbox: {
     display: "flex",
