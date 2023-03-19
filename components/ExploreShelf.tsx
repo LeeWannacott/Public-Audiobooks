@@ -1,5 +1,4 @@
 import {
-  FlatList,
   StyleSheet,
   View,
   ActivityIndicator,
@@ -25,6 +24,7 @@ import {
 import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
 import { Pressable } from "react-native";
+import { FlashList } from "@shopify/flash-list";
 const db = openDatabase();
 
 export default function ExploreShelf(props: any) {
@@ -320,11 +320,12 @@ export default function ExploreShelf(props: any) {
 
   if (!loadingAudioBooks) {
     return (
-      <View style={styles.audiobookContainer}>
-        <FlatList
+      <View style={styles.audiobooksContainer}>
+        <FlashList
           data={data.books}
           keyExtractor={keyExtractor}
           renderItem={renderItem}
+          estimatedItemSize={data.books.length}
           numColumns={2}
         />
       </View>
@@ -354,7 +355,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 2,
   },
-  audiobookContainer: {
+  audiobooksContainer: {
+    width: windowWidth - 20,
+    height: windowHeight - 200,
+    // backgroundColor: "red",
     marginTop: 2,
     borderRadius: 2,
   },

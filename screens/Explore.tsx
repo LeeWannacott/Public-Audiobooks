@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { SearchBar, Overlay } from "@rneui/themed";
 import Slider from "@react-native-community/slider";
 import ExploreShelf from "../components/ExploreShelf";
-import { View, Dimensions, Text, FlatList } from "react-native";
+import { View, Dimensions, Text } from "react-native";
 import { StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { getAsyncData, storeAsyncData } from "../db/database_functions";
@@ -14,6 +14,7 @@ import * as NavigationBar from "expo-navigation-bar";
 import { useNavigation } from "@react-navigation/native";
 import { Suggestion } from "../types";
 import { LinearProgress } from "@rneui/themed";
+import { FlashList } from "@shopify/flash-list";
 import Fuse from "fuse.js";
 
 function Search(props: any) {
@@ -57,7 +58,8 @@ function Search(props: any) {
         case "author":
           getAsyncData("userSearchAuthor").then((userSearchAuthorRetrieved) => {
             userSearchAuthorRetrieved
-              ? (setSearch(userSearchAuthorRetrieved),console.log(1,userSearchAuthorRetrieved))
+              ? (setSearch(userSearchAuthorRetrieved),
+                console.log(1, userSearchAuthorRetrieved))
               : setSearch("Fyodor Dostoyevsky");
           });
           getAsyncData("userInputAuthorSubmitted").then(
@@ -377,14 +379,15 @@ function Search(props: any) {
         </Overlay>
       </View>
       {suggestionVisible ? (
-        <FlatList
-          style={styles.suggestionStyle}
-          data={suggestions}
-          renderItem={renderSuggestions}
-          keyExtractor={(item) => item.refIndex}
-          initialNumToRender={20}
-          extraData={suggestions}
-        />
+        <View style={styles.suggestionStyle}>
+          <FlashList
+            data={suggestions}
+            renderItem={renderSuggestions}
+            keyExtractor={(item) => item.refIndex}
+            extraData={suggestions}
+            estimatedItemSize={suggestions.length}
+          />
+        </View>
       ) : undefined}
       <View style={styles.scrollStyle}>
         <ExploreShelf
@@ -422,7 +425,8 @@ const styles = StyleSheet.create({
     left: 10,
     zIndex: 1000,
     height: 268,
-    width: 250,
+    width: windowWidth - 100,
+    backgroundColor: "black",
   },
   titleOrAuthorStringFlexbox: {
     display: "flex",
