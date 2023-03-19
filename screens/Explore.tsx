@@ -22,7 +22,9 @@ function Search(props: any) {
   const [search, setSearch] = useState("");
   const [userInputEntered, setUserInputEntered] = useState("");
   const [visible, setVisible] = useState(false);
-  const [audiobookAmountRequested, setAudiobooksAmountRequested] = useState(64);
+  let amountOfAudiobooks = 64;
+  const [audiobookAmountRequested, setAudiobooksAmountRequested] =
+    useState(amountOfAudiobooks);
   const [loadingAudiobookAmount, setLoadingAudiobookAmount] = useState(false);
   const [genreFuse, setGenreFuse] = useState<Fuse>("");
   const [authorFuse, setAuthorFuse] = useState<Fuse>("");
@@ -39,7 +41,7 @@ function Search(props: any) {
         (audiobookAmountRequestedRetrieved) => {
           audiobookAmountRequestedRetrieved
             ? setAudiobooksAmountRequested(audiobookAmountRequestedRetrieved)
-            : undefined;
+            : setAudiobooksAmountRequested(amountOfAudiobooks);
         }
       );
       switch (searchBy) {
@@ -48,20 +50,21 @@ function Search(props: any) {
             userSearchGenreRetrieved
               ? (setSearch(userSearchGenreRetrieved),
                 setUserInputEntered(userSearchGenreRetrieved))
-              : undefined;
+              : (setSearch("*Non-fiction"),
+                setUserInputEntered("*Non-fiction"));
           });
           break;
         case "author":
           getAsyncData("userSearchAuthor").then((userSearchAuthorRetrieved) => {
             userSearchAuthorRetrieved
-              ? setSearch(userSearchAuthorRetrieved)
-              : undefined;
+              ? (setSearch(userSearchAuthorRetrieved),console.log(1,userSearchAuthorRetrieved))
+              : setSearch("Fyodor Dostoyevsky");
           });
           getAsyncData("userInputAuthorSubmitted").then(
             (userInputAuthorRetrieved) => {
               userInputAuthorRetrieved
                 ? setUserInputEntered(userInputAuthorRetrieved)
-                : undefined;
+                : setUserInputEntered("Fyodor Dostoyevsky");
             }
           );
           break;
@@ -152,6 +155,7 @@ function Search(props: any) {
   };
 
   function submitUserInput(item: Suggestion) {
+    console.log(item?.item);
     switch (searchBy) {
       case "genre":
         setSearch(item?.item);
@@ -205,7 +209,12 @@ function Search(props: any) {
   };
 
   return (
-    <View style={{ display: "flex" }}>
+    <View
+      style={{
+        display: "flex",
+        backgroundColor: Colors[colorScheme].background,
+      }}
+    >
       <View
         style={{
           display: "flex",

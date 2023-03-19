@@ -25,7 +25,6 @@ import {
 import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
 import { Pressable } from "react-native";
-import { LinearProgress } from "@rneui/themed";
 const db = openDatabase();
 
 export default function ExploreShelf(props: any) {
@@ -154,23 +153,36 @@ export default function ExploreShelf(props: any) {
     }
   };
 
-  const updateCount = useRef(0);
+  const timesAudiobookAmountSet = useRef(0);
 
-  // TODO: There will still be a bug if user is not retrieving from async data; should be an easy fix.
   useEffect(() => {
-    console.log(requestAudiobookAmount);
-    if (updateCount.current < 2) {
-      updateCount.current += 1;
+    if (timesAudiobookAmountSet.current < 2) {
+      timesAudiobookAmountSet.current += 1;
     } else {
       setLoadingAudiobookAmount(true);
       requestAudiobooksFromAPI();
     }
   }, [requestAudiobookAmount]);
 
-  // TODO: This is causing a race condition.
+  const timesSearchBarSet = useRef(0);
   useEffect(() => {
-    setLoadingAudioBooks(true);
-    requestAudiobooksFromAPI();
+    switch (searchBy) {
+      case "recent":
+      // TODO: title should be in the other cases as well.
+      case "title":
+        setLoadingAudioBooks(true);
+        requestAudiobooksFromAPI();
+        break;
+      case "genre":
+      case "author":
+        if (timesSearchBarSet.current < 1) {
+          timesSearchBarSet.current += 1;
+        } else {
+          setLoadingAudioBooks(true);
+          requestAudiobooksFromAPI();
+        }
+        break;
+    }
   }, [searchBarInputSubmitted]);
 
   const bookCoverURL: string[] = [];

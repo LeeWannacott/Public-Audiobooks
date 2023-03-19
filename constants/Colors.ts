@@ -113,7 +113,7 @@ export default {
   },
   dark: {
     text: boneWhite,
-    background: darkGray,
+    background: Base03,
     audiotracksBGColor: darkGray,
     tint: tintColorDark,
     statusBarBackground: darkGray,

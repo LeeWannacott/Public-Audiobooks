@@ -280,7 +280,7 @@ export default function BookShelfAndHistoryShelf(props: any) {
           style={[
             styles.flatListStyle,
             {
-              backgroundColor: Colors[colorScheme].audiobookImageContainerColor,
+              backgroundColor: Colors[colorScheme].background,
               height: windowHeight - props.shelfHeightOffset,
             },
           ]}
