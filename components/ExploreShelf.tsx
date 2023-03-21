@@ -42,6 +42,7 @@ export default function ExploreShelf(props: any) {
     searchBarCurrentText,
     searchBarInputSubmitted,
     searchBy,
+    setGettingAverageReview,
   } = props;
 
   useEffect(() => {
@@ -228,7 +229,7 @@ export default function ExploreShelf(props: any) {
   const windowHeight = Dimensions.get("window").height;
   const resizeCoverImageHeight = windowHeight / 5;
   const resizeCoverImageWidth = windowWidth / 2 - 42;
-  const keyExtractor = (item: any, index: number) => index.toString();
+  const keyExtractor = (item: any, index: number) => item?.id;
   const renderItem = ({ item, index }) => (
     <View>
       <AudiobookCover
@@ -269,38 +270,46 @@ export default function ExploreShelf(props: any) {
             } else {
               shelvedStatus = false;
             }
-            getAverageAudiobookReview(index).then((avgReview) => {
-              if (avgReview) {
-                console.log(item?.id);
-                const initAudioBookData = {
-                  audiobook_id: item?.id,
-                  audiotrack_progress_bars: JSON.stringify(
-                    initialAudioBookSections
-                  ),
-                  current_audiotrack_positions: JSON.stringify(
-                    initialAudioBookSections
-                  ),
-                  audiobook_shelved: shelvedStatus,
-                  audiobook_rating: avgReview,
-                };
-                audiobooksProgress[item?.id] = initAudioBookData;
-                initialAudioBookStoreDB(db, initAudioBookData);
-                setAudiobooksProgress((audiobooksProgress) => ({
-                  ...audiobooksProgress,
-                  audiobook_id: {
-                    initAudioBookData,
-                  },
-                }));
-              } else {
-                console.log("no review found");
-                console.log(audiobooksProgress[item?.id].audiobook_rating);
-              }
-            });
+            setGettingAverageReview(true);
+            getAverageAudiobookReview(index)
+              .then((avgReview) => {
+                if (avgReview) {
+                  console.log(item?.id);
+                  const initAudioBookData = {
+                    audiobook_id: item?.id,
+                    audiotrack_progress_bars: JSON.stringify(
+                      initialAudioBookSections
+                    ),
+                    current_audiotrack_positions: JSON.stringify(
+                      initialAudioBookSections
+                    ),
+                    audiobook_shelved: shelvedStatus,
+                    audiobook_rating: avgReview,
+                  };
+                  audiobooksProgress[item?.id] = initAudioBookData;
+                  initialAudioBookStoreDB(db, initAudioBookData);
+                  setAudiobooksProgress((audiobooksProgress) => ({
+                    ...audiobooksProgress,
+                    audiobook_id: {
+                      initAudioBookData,
+                    },
+                  }));
+                } else {
+                  // no review found logic
+                }
+              })
+              .catch((err) => console.log("ERROR: ", err))
+              .finally(() => setGettingAverageReview(false));
           }}
         >
           {/* todo: find appropiate color for get rating text */}
-          <Text style={{ color: "green", textAlign: "center" }}>
-            get rating
+          <Text
+            style={{
+              color: Colors[colorScheme].shelveAudiobookIconColor,
+              textAlign: "center",
+            }}
+          >
+            Get rating
           </Text>
         </Pressable>
       )}

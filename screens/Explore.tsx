@@ -26,6 +26,7 @@ function Search(props: any) {
   const [audiobookAmountRequested, setAudiobooksAmountRequested] =
     useState(amountOfAudiobooks);
   const [loadingAudiobookAmount, setLoadingAudiobookAmount] = useState(false);
+  const [gettingAverageReview, setGettingAverageReview] = useState(false);
   const [genreFuse, setGenreFuse] = useState<Fuse>("");
   const [authorFuse, setAuthorFuse] = useState<Fuse>("");
   const [suggestions, setSuggestions] = useState("");
@@ -226,13 +227,12 @@ function Search(props: any) {
       <View
         style={{
           display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
+          flexDirection: "column",
+          // justifyContent: "center",
+          // alignItems: "center",
           backgroundColor: Colors[colorScheme].searchBarBackground,
           width: windowWidth,
-          height: 80,
-          paddingTop: 10,
+          paddingRight: 8,
         }}
       >
         <View style={styles.searchStyle}>
@@ -274,37 +274,57 @@ function Search(props: any) {
             onClear={() => setSuggestionsVisible(false)}
             containerStyle={{
               backgroundColor: Colors[colorScheme].searchBarContainerStyle,
-
               borderTopWidth: 0,
               borderBottomWidth: 0,
             }}
           />
-          {loadingAudiobookAmount ? (
-            <LinearProgress
-              color={Colors[colorScheme].audiobookProgressColor}
-              value={100}
-              style={{ width: windowWidth - 20, left: 8, marginBottom: 2 }}
-              variant="indeterminate"
-              trackColor={Colors[colorScheme].audiobookProgressTrackColor}
-              animation={true}
-            />
-          ) : undefined}
+          <View
+            style={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Button
+              accessibilityLabel="Search options"
+              accessibilityHint="Opens options for searching by Title, Author, Genre and changing amount of audiobooks requested per search."
+              onPress={toggleSearchOptionsOverlay}
+              mode={Colors[colorScheme].buttonMode}
+              style={{
+                backgroundColor: currentColorScheme.buttonBackgroundColor,
+                height: 55,
+                // Should the button have a border :thinking?
+                // borderColor: Colors[colorScheme].bookshelfPickerBorderColor,
+                // borderWidth: 1,
+              }}
+            >
+              <MaterialCommunityIcons
+                name="cog"
+                size={35}
+                color={Colors[colorScheme].buttonIconColor}
+              />
+            </Button>
+          </View>
         </View>
-        <Button
-          accessibilityLabel="Search options"
-          accessibilityHint="Opens options for searching by Title, Author, Genre and changing amount of audiobooks requested per search."
-          onPress={toggleSearchOptionsOverlay}
-          mode={Colors[colorScheme].buttonMode}
-          style={{
-            backgroundColor: currentColorScheme.buttonBackgroundColor,
-          }}
-        >
-          <MaterialCommunityIcons
-            name="cog"
-            size={35}
-            color={Colors[colorScheme].buttonIconColor}
+        {loadingAudiobookAmount || gettingAverageReview ? (
+          <LinearProgress
+            color={Colors[colorScheme].audiobookProgressColor}
+            value={100}
+            style={{ width: windowWidth, marginBottom: 2 }}
+            variant="indeterminate"
+            trackColor={Colors[colorScheme].audiobookProgressTrackColor}
+            animation={true}
           />
-        </Button>
+        ) : (
+          <LinearProgress
+            color={Colors[colorScheme].audiobookProgressColor}
+            value={0}
+            style={{ width: windowWidth, marginBottom: 2 }}
+            variant="indeterminate"
+            trackColor={Colors[colorScheme].searchBarBackground}
+            animation={false}
+          />
+        )}
+
         <Overlay
           isVisible={visible}
           onBackdropPress={toggleSearchOptionsOverlay}
@@ -394,13 +414,14 @@ function Search(props: any) {
           data={suggestions}
           renderItem={renderSuggestions}
           keyExtractor={(item) => item.refIndex}
-          initialNumToRender={20}
+          initialNumToRender={32}
           extraData={suggestions}
         />
       ) : undefined}
       <View style={styles.scrollStyle}>
         <ExploreShelf
           searchBy={searchBy}
+          setGettingAverageReview={setGettingAverageReview}
           setLoadingAudiobookAmount={setLoadingAudiobookAmount}
           searchBarInputSubmitted={userInputEntered}
           searchBarCurrentText={search}
@@ -417,12 +438,10 @@ export default Search;
 
 const styles = StyleSheet.create({
   searchStyle: {
-    right: 5,
-    width: windowWidth - 80,
     display: "flex",
-    justifyContent: "center",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
   },
-  settingsIcon: {},
   checkboxRow: {
     display: "flex",
     flexDirection: "row",
@@ -433,8 +452,8 @@ const styles = StyleSheet.create({
     top: 80,
     left: 10,
     zIndex: 1000,
-    height: windowHeight - 250,
-    width: windowWidth - 100,
+    height: windowHeight - 200,
+    width: windowWidth - 20,
     backgroundColor: "black",
   },
   titleOrAuthorStringFlexbox: {
