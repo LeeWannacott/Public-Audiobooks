@@ -168,13 +168,12 @@ export default function ExploreShelf(props: any) {
   useEffect(() => {
     switch (searchBy) {
       case "recent":
-      // TODO: title should be in the other cases as well.
-      case "title":
         setLoadingAudioBooks(true);
         requestAudiobooksFromAPI();
         break;
       case "genre":
       case "author":
+      case "title":
         if (timesSearchBarSet.current < 1) {
           timesSearchBarSet.current += 1;
         } else {

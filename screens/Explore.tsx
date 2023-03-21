@@ -46,6 +46,14 @@ function Search(props: any) {
         }
       );
       switch (searchBy) {
+        case "title":
+          getAsyncData("userSearchTitle").then((userSearchTitleRetrieved) => {
+            userSearchTitleRetrieved
+              ? (setSearch(userSearchTitleRetrieved),
+                setUserInputEntered(userSearchTitleRetrieved))
+              : (setSearch(""), setUserInputEntered(""));
+          });
+          break;
         case "genre":
           getAsyncData("userSearchGenre").then((userSearchGenreRetrieved) => {
             userSearchGenreRetrieved
@@ -58,8 +66,7 @@ function Search(props: any) {
         case "author":
           getAsyncData("userSearchAuthor").then((userSearchAuthorRetrieved) => {
             userSearchAuthorRetrieved
-              ? (setSearch(userSearchAuthorRetrieved),
-                console.log(1, userSearchAuthorRetrieved))
+              ? setSearch(userSearchAuthorRetrieved)
               : setSearch("Fyodor Dostoyevsky");
           });
           getAsyncData("userInputAuthorSubmitted").then(
@@ -238,9 +245,13 @@ function Search(props: any) {
             onChangeText={(val: string) => {
               updateSearch(val);
             }}
-            onSubmitEditing={() => (
-              setUserInputEntered(search), setSuggestionsVisible(false)
-            )}
+            onSubmitEditing={() => {
+              setUserInputEntered(search), setSuggestionsVisible(false);
+              if (searchBy === "title") {
+                storeSearchText("userSearchTitle", search);
+                storeSearchBarSubmitted("userInputTitleSubmitted", search);
+              }
+            }}
             value={search}
             inputContainerStyle={{
               backgroundColor: Colors[colorScheme].searchBarInputContainerStyle,
@@ -403,7 +414,7 @@ function Search(props: any) {
 }
 
 const windowWidth = Dimensions.get("window").width;
-// const windowHeight = Dimensions.get("window").height;
+const windowHeight = Dimensions.get("window").height;
 export default Search;
 
 const styles = StyleSheet.create({
@@ -424,7 +435,7 @@ const styles = StyleSheet.create({
     top: 80,
     left: 10,
     zIndex: 1000,
-    height: 268,
+    height: windowHeight - 250,
     width: windowWidth - 100,
     backgroundColor: "black",
   },
