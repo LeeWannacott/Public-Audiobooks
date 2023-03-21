@@ -6,9 +6,9 @@ import { Rating } from "react-native-ratings";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
-import { FlashList } from "@shopify/flash-list";
 
 import {
+  FlatList,
   // ActivityIndicator,
   Dimensions,
   Image,
@@ -278,18 +278,17 @@ export default function BookShelfAndHistoryShelf(props: any) {
         />
         <View
           style={[
-            styles.audiobooksContainerStyle,
+            styles.flatListStyle,
             {
               backgroundColor: Colors[colorScheme].background,
               height: windowHeight - props.shelfHeightOffset,
             },
           ]}
         >
-          <FlashList
+          <FlatList
             data={props.audiobookHistory}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
-            estimatedItemSize={props.audiobookHistory.length}
             numColumns={2}
           />
         </View>
@@ -324,11 +323,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 2,
   },
-  audiobooksContainerStyle: {
+  flatListStyle: {
     padding: 10,
     paddingTop: 2,
     paddingBottom: 0,
-    width: windowWidth,
   },
   ActivityIndicatorStyle: {
     top: windowHeight / 3,

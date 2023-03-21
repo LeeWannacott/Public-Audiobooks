@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { SearchBar, Overlay } from "@rneui/themed";
 import Slider from "@react-native-community/slider";
 import ExploreShelf from "../components/ExploreShelf";
-import { View, Dimensions, Text } from "react-native";
+import { View, Dimensions, Text, FlatList } from "react-native";
 import { StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { getAsyncData, storeAsyncData } from "../db/database_functions";
@@ -14,7 +14,6 @@ import * as NavigationBar from "expo-navigation-bar";
 import { useNavigation } from "@react-navigation/native";
 import { Suggestion } from "../types";
 import { LinearProgress } from "@rneui/themed";
-import { FlashList } from "@shopify/flash-list";
 import Fuse from "fuse.js";
 
 function Search(props: any) {
@@ -390,15 +389,14 @@ function Search(props: any) {
         </Overlay>
       </View>
       {suggestionVisible ? (
-        <View style={styles.suggestionStyle}>
-          <FlashList
-            data={suggestions}
-            renderItem={renderSuggestions}
-            keyExtractor={(item) => item.refIndex}
-            extraData={suggestions}
-            estimatedItemSize={suggestions.length}
-          />
-        </View>
+        <FlatList
+          style={styles.suggestionStyle}
+          data={suggestions}
+          renderItem={renderSuggestions}
+          keyExtractor={(item) => item.refIndex}
+          initialNumToRender={20}
+          extraData={suggestions}
+        />
       ) : undefined}
       <View style={styles.scrollStyle}>
         <ExploreShelf
