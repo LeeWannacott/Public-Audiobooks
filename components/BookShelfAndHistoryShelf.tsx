@@ -113,7 +113,7 @@ export default function BookShelfAndHistoryShelf(props: any) {
       case 7:
         return item?.audiobook_language;
       case 8:
-        return JSON.parse(item.audiobook_genres)[0].name;
+        return JSON.parse(item?.audiobook_genres)[0]?.name;
       case 9:
         return item?.audiobook_copyright_year;
     }
