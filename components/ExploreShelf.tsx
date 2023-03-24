@@ -105,7 +105,12 @@ export default function ExploreShelf(props: any) {
   }
 
   const requestAudiobooksFromAPI = () => {
-    const searchQuery = encodeURIComponent(searchBarInputSubmitted);
+    let searchQuery;
+    if (searchBarInputSubmitted === "defaultTitleSearch") {
+      searchQuery = "";
+    } else {
+      searchQuery = encodeURIComponent(searchBarInputSubmitted);
+    }
     const amountOfAudiobooks = encodeURIComponent(requestAudiobookAmount);
     const librivoxAudiobooksAPI = encodeURI(
       "https://librivox.org/api/feed/audiobooks"

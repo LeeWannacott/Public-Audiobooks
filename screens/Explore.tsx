@@ -16,7 +16,7 @@ import { Suggestion } from "../types";
 import { LinearProgress } from "@rneui/themed";
 import Fuse from "fuse.js";
 
-function Search(props: any) {
+export default function Explore(props: any) {
   const colorScheme = useColorScheme();
   const currentColorScheme = Colors[colorScheme];
   const [search, setSearch] = useState("");
@@ -51,7 +51,7 @@ function Search(props: any) {
             userSearchTitleRetrieved
               ? (setSearch(userSearchTitleRetrieved),
                 setUserInputEntered(userSearchTitleRetrieved))
-              : (setSearch(""), setUserInputEntered(""));
+              : (setSearch(""), setUserInputEntered("defaultTitleSearch"));
           });
           break;
         case "genre":
@@ -168,8 +168,8 @@ function Search(props: any) {
     switch (searchBy) {
       case "genre":
         setSearch(item?.item);
-        storeSearchText("userSearchGenre", item?.item);
         setUserInputEntered(item?.item);
+        storeSearchText("userSearchGenre", item?.item);
         break;
       case "author":
         setSearch(item?.item?.first_name + " " + item?.item?.last_name);
@@ -414,7 +414,6 @@ function Search(props: any) {
           data={suggestions}
           renderItem={renderSuggestions}
           keyExtractor={(item) => item.refIndex}
-          initialNumToRender={32}
           extraData={suggestions}
         />
       ) : undefined}
@@ -434,7 +433,6 @@ function Search(props: any) {
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-export default Search;
 
 const styles = StyleSheet.create({
   searchStyle: {
