@@ -14,6 +14,7 @@ import * as NavigationBar from "expo-navigation-bar";
 import { useNavigation } from "@react-navigation/native";
 import { Suggestion } from "../types";
 import { LinearProgress } from "@rneui/themed";
+import { FlashList } from "@shopify/flash-list";
 import Fuse from "fuse.js";
 
 export default function Explore(props: any) {
@@ -139,8 +140,6 @@ export default function Explore(props: any) {
       }
     }
     makeFuse();
-
-    // console.log(fuse);
   }, []);
 
   const updateSearch = (search: string) => {
@@ -164,7 +163,6 @@ export default function Explore(props: any) {
   };
 
   function submitUserInput(item: Suggestion) {
-    console.log(item?.item);
     switch (searchBy) {
       case "genre":
         setSearch(item?.item);
@@ -195,7 +193,8 @@ export default function Explore(props: any) {
       <>
         <Text
           style={{
-            color: selectedSuggestionID === index ? "#2aa198" : "white",
+            color: Colors[colorScheme].text,
+            opacity: selectedSuggestionID === index ? 0.3 : 1,
             backgroundColor: "black",
             fontSize: 20,
             paddingLeft: 5,
@@ -208,7 +207,7 @@ export default function Explore(props: any) {
             }, 1000);
           }}
         >
-          {searchBy == "author"
+          {searchBy === "author"
             ? item.item.first_name + " " + item.item.last_name
             : item.item}
         </Text>
@@ -292,9 +291,6 @@ export default function Explore(props: any) {
               style={{
                 backgroundColor: currentColorScheme.buttonBackgroundColor,
                 height: 55,
-                // Should the button have a border :thinking?
-                // borderColor: Colors[colorScheme].bookshelfPickerBorderColor,
-                // borderWidth: 1,
               }}
             >
               <MaterialCommunityIcons
@@ -409,13 +405,15 @@ export default function Explore(props: any) {
         </Overlay>
       </View>
       {suggestionVisible ? (
-        <FlatList
-          style={styles.suggestionStyle}
-          data={suggestions}
-          renderItem={renderSuggestions}
-          keyExtractor={(item) => item.refIndex}
-          extraData={suggestions}
-        />
+        <View style={styles.suggestionStyle}>
+          <FlashList
+            data={suggestions}
+            renderItem={renderSuggestions}
+            estimatedItemSize={27}
+            keyExtractor={(item) => item.refIndex}
+            extraData={suggestions}
+          />
+        </View>
       ) : undefined}
       <View style={styles.scrollStyle}>
         <ExploreShelf
@@ -450,8 +448,8 @@ const styles = StyleSheet.create({
     top: 80,
     left: 10,
     zIndex: 1000,
-    height: windowHeight - 200,
-    width: windowWidth - 20,
+    height: windowHeight - 480,
+    width: windowWidth - 90,
     backgroundColor: "black",
   },
   titleOrAuthorStringFlexbox: {
