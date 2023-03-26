@@ -26,6 +26,7 @@ import {
   storeAsyncData,
   updateIfBookShelvedDB,
 } from "../db/database_functions";
+import AudiobookCover from "./AudiobookCoverHistoryAndBookshelf";
 
 const db = openDatabase();
 
@@ -123,113 +124,17 @@ export default function BookShelfAndHistoryShelf(props: any) {
 
   const renderItem = ({ item, index }: any) => (
     <View>
-      <ListItem
-        topDivider
-        containerStyle={[
-          { backgroundColor: Colors[colorScheme].colorAroundAudiobookImage },
-        ]}
-      >
-        <View
-          style={[
-            styles.ImageContainer,
-            { backgroundColor: Colors[colorScheme].audiobookBackgroundColor },
-          ]}
-        >
-          <Pressable
-            accessibilityLabel={`${item?.audiobook_title}`}
-            style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1.0 }]}
-            onPress={() => {
-              if (avatarOnPressEnabled) {
-                navigation.navigate("Audio", {
-                  audioBookId: item?.audiobook_id,
-                  urlRss: item?.audiobook_rss_url,
-                  coverImage: item?.audiobook_image,
-                  title: item?.audiobook_title,
-                  authorFirstName: item?.audiobook_author_first_name,
-                  authorLastName: item?.audiobook_author_last_name,
-                  totalTime: item?.audiobook_total_time,
-                  totalTimeSecs: item?.audiobook_total_time_secs,
-                  copyrightYear: item?.audiobook_copyright_year,
-                  genres: JSON.parse(item?.audiobook_genres),
-                  language: item?.audiobook_language,
-                  urlReview: item?.audiobook_review_url,
-                  numSections: item?.audiobook_num_sections,
-                  urlTextSource: item?.audiobook_ebook_url,
-                  urlZipFile: item?.audiobook_zip,
-                  urlProject: item?.audiobook_project_url,
-                  urlLibrivox: item?.audiobook_librivox_url,
-                  urlIArchive: item?.audiobook_iarchive_url,
-                });
-              }
-              setAvatarOnPressEnabled(false);
-              setTimeout(() => {
-                setAvatarOnPressEnabled(true);
-              }, 2000);
-            }}
-          >
-            <Image
-              source={{ uri: item?.audiobook_image }}
-              style={{
-                width: resizeCoverImageWidth,
-                height: resizeCoverImageHeight,
-              }}
-            />
-
-            <Button
-              key={item.id}
-              accessibilityLabel={`Shelve audiobook: ${item.title} currently ${
-                "shelved" + "not shelved"
-              }`}
-              mode="text"
-              onPress={() => {
-                const audiobook_id = item?.audiobook_id;
-                if (audiobooksProgress[item?.audiobook_id]) {
-                  const isShelved =
-                    audiobooksProgress[item?.audiobook_id]?.audiobook_shelved;
-                  const audiobookItem = audiobooksProgress[audiobook_id];
-                  audiobookItem.audiobook_shelved = !isShelved;
-                  updateIfBookShelvedDB(db, audiobook_id, !isShelved);
-                  setAudiobooksProgress((audiobooksProgress) => ({
-                    ...audiobooksProgress,
-                    audiobook_id: {
-                      audiobookItem,
-                    },
-                  }));
-                }
-              }}
-              style={{
-                margin: 0,
-                position: "absolute",
-                top: 0,
-                right: 0,
-                width: 30,
-                height: 60,
-              }}
-            >
-              <MaterialCommunityIcons
-                key={item.id}
-                name={
-                  audiobooksProgress[item?.audiobook_id]?.audiobook_shelved
-                    ? "star"
-                    : "star-outline"
-                }
-                size={30}
-                color={Colors[colorScheme].shelveAudiobookIconColor}
-              />
-            </Button>
-          </Pressable>
-
-          <LinearProgress
-            color={Colors[colorScheme].audiobookProgressColor}
-            value={
-              audiobooksProgress[item.audiobook_id]?.listening_progress_percent
-            }
-            variant="determinate"
-            trackColor={Colors[colorScheme].audiobookProgressTrackColor}
-            animation={false}
-          />
-        </View>
-      </ListItem>
+      <AudiobookCover
+        item={item}
+        index={index}
+        db={db}
+        audiobooksProgress={audiobooksProgress}
+        setAudiobooksProgress={setAudiobooksProgress}
+        resizeCoverImageWidth={resizeCoverImageWidth}
+        resizeCoverImageHeight={resizeCoverImageHeight}
+        windowWidth={windowWidth}
+        windowHeight={windowHeight}
+      />
       {audiobooksProgress[item.audiobook_id]?.audiobook_id ==
         item.audiobook_id &&
       audiobooksProgress[item.audiobook_id]?.audiobook_rating > 0 ? (
