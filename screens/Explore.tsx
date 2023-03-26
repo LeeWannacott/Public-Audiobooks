@@ -193,9 +193,9 @@ export default function Explore(props: any) {
       <>
         <Text
           style={{
-            color: Colors[colorScheme].text,
+            color: Colors[colorScheme].suggestionsText,
             opacity: selectedSuggestionID === index ? 0.3 : 1,
-            backgroundColor: "black",
+            backgroundColor: Colors[colorScheme].suggestionsBGColor,
             fontSize: 20,
             paddingLeft: 5,
           }}
@@ -405,7 +405,12 @@ export default function Explore(props: any) {
         </Overlay>
       </View>
       {suggestionVisible ? (
-        <View style={styles.suggestionStyle}>
+        <View
+          style={{
+            ...styles.suggestionStyle,
+            backgroundColor: Colors[colorScheme].suggestionsBGColor,
+          }}
+        >
           <FlashList
             data={suggestions}
             renderItem={renderSuggestions}
@@ -450,7 +455,6 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     height: windowHeight - 480,
     width: windowWidth - 90,
-    backgroundColor: "black",
   },
   titleOrAuthorStringFlexbox: {
     display: "flex",

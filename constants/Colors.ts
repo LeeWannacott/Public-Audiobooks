@@ -34,7 +34,9 @@ const niceGrey = "#263238"
 export default {
   light: {
     text: "#000",
+    suggestionsText: "#00008B",
     background: "#331800",
+    suggestionsBGColor: boneWhite,
     audiotracksBGColor: darkGray,
     tint: tintColorLight,
     statusBarBackground: boneWhite,
@@ -113,7 +115,9 @@ export default {
   },
   dark: {
     text: boneWhite,
+    suggestionsText: boneWhite,
     background: Base03,
+    suggestionsBGColor: darkGray,
     audiotracksBGColor: darkGray,
     tint: tintColorDark,
     statusBarBackground: darkGray,
