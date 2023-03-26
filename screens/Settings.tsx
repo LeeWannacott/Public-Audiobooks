@@ -6,8 +6,8 @@ import Colors from "../constants/Colors";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { storeAsyncData, getAsyncData } from "../db/database_functions";
-// import { openDatabase } from "../db/utils";
-// const db = openDatabase();
+import { openDatabase } from "../db/utils";
+const db = openDatabase();
 
 const UserSettings = () => {
   const colorScheme = useColorScheme();
@@ -56,23 +56,23 @@ const UserSettings = () => {
     });
   }
 
-  // function playThroughEarpieceAndroidToggle() {
-  // setAudioModeSettings({
-  // ...audioModeSettings,
-  // playThroughEarpieceAndroid: !audioModeSettings.playThroughEarpieceAndroid,
-  // });
-  // storeAudioModeSettings({
-  // ...audioModeSettings,
-  // playThroughEarpieceAndroid: !audioModeSettings.playThroughEarpieceAndroid,
-  // });
-  // }
+  function playThroughEarpieceAndroidToggle() {
+    setAudioModeSettings({
+      ...audioModeSettings,
+      playThroughEarpieceAndroid: !audioModeSettings.playThroughEarpieceAndroid,
+    });
+    storeAudioModeSettings({
+      ...audioModeSettings,
+      playThroughEarpieceAndroid: !audioModeSettings.playThroughEarpieceAndroid,
+    });
+  }
 
-  // const deleteAudiobookHistory = (db: any) => {
-  // deleteAudiobookHistoryDB(db);
-  // };
-  // const deleteAudiobookProgress = (db: any) => {
-  // deleteAudiobookProgressDB(db);
-  // };
+  const deleteAudiobookHistory = (db: any) => {
+    deleteAudiobookHistoryDB(db);
+  };
+  const deleteAudiobookProgress = (db: any) => {
+    deleteAudiobookProgressDB(db);
+  };
 
   return (
     <View style={styles.container}>
@@ -119,7 +119,7 @@ const UserSettings = () => {
             hasSwitch={false}
           />*/}
           <SettingsList.Item
-            titleStyle={{ color: currentColorScheme.settingsListText }}
+            titleStyle={{color:currentColorScheme.settingsListText}}
             icon={
               <MaterialCommunityIcons
                 name="run-fast"
@@ -147,7 +147,7 @@ const UserSettings = () => {
             }
           />
           <SettingsList.Item
-            titleStyle={{ color: currentColorScheme.settingsListText }}
+            titleStyle={{color:currentColorScheme.settingsListText}}
             icon={
               <MaterialCommunityIcons
                 name="duck"
@@ -164,7 +164,7 @@ const UserSettings = () => {
             onPress={() =>
               Alert.alert(
                 "Duck Audio",
-                "Select if your audio should be lowered in volume (duck); when audio from another app interrupts your experience. When off, audio from other apps will pause your audio. Default: On",
+                "Select if your experience's audio should automatically be lowered in volume (duck), if audio from another app interrupts your experience. If false, audio from other apps will pause your audio. Default: On",
                 [
                   {
                     text: "Close",
@@ -174,8 +174,8 @@ const UserSettings = () => {
               )
             }
           />
-          {/*<SettingsList.Item
-            titleStyle={{ color: currentColorScheme.settingsListText }}
+          <SettingsList.Item
+            titleStyle={{color:currentColorScheme.settingsListText}}
             icon={
               <MaterialCommunityIcons
                 name="headset"
@@ -201,7 +201,7 @@ const UserSettings = () => {
                 ]
               )
             }
-          />*/}
+          />
 
           {/*<SettingsList.Item
             icon={
@@ -269,7 +269,7 @@ const UserSettings = () => {
             ]}
           />
           <SettingsList.Item
-            titleStyle={{ color: currentColorScheme.settingsListText }}
+            titleStyle={{color:currentColorScheme.settingsListText}}
             icon={
               <MaterialCommunityIcons
                 name="information-variant"
@@ -277,13 +277,13 @@ const UserSettings = () => {
                 color={"green"}
               />
             }
-            titleInfo="1.6.0"
+            titleInfo="1.5.0"
             hasNavArrow={false}
             title="Version: "
           />
           <SettingsList.Item
             hasNavArrow={true}
-            titleStyle={{ color: currentColorScheme.settingsListText }}
+            titleStyle={{color:currentColorScheme.settingsListText}}
             icon={
               <MaterialCommunityIcons
                 name="github"
@@ -313,7 +313,7 @@ const UserSettings = () => {
             }
           />
           <SettingsList.Item
-            titleStyle={{ color: currentColorScheme.text }}
+            titleStyle={{color:currentColorScheme.text}}
             hasNavArrow={true}
             icon={
               <MaterialCommunityIcons
