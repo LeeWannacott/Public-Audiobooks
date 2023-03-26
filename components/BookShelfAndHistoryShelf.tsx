@@ -6,10 +6,10 @@ import { Rating } from "react-native-ratings";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
+import { Button } from "react-native-paper";
 
 import {
   FlatList,
-  // ActivityIndicator,
   Dimensions,
   Image,
   Pressable,
@@ -24,13 +24,14 @@ import {
   audiobookProgressTableName,
   getAsyncData,
   storeAsyncData,
+  updateIfBookShelvedDB,
 } from "../db/database_functions";
 
 const db = openDatabase();
 
 export default function BookShelfAndHistoryShelf(props: any) {
   const colorScheme = useColorScheme();
-  const [audioBookInfo, setAudioBookInfo] = useState({});
+  const [audiobooksProgress, setAudiobooksProgress] = useState({});
   const [avatarOnPressEnabled, setAvatarOnPressEnabled] = useState(true);
 
   const [pickerAndQueryState, setPickerAndQueryState] = useState<any>({
@@ -97,11 +98,12 @@ export default function BookShelfAndHistoryShelf(props: any) {
       case 1:
         return item?.audiobook_title;
       case 2:
-        return audioBookInfo[item?.audiobook_id]?.audiobook_rating;
+        return audiobooksProgress[item?.audiobook_id]?.audiobook_rating;
       case 3:
         return (
           roundNumberTwoDecimal(
-            audioBookInfo[item?.audiobook_id]?.listening_progress_percent * 100
+            audiobooksProgress[item?.audiobook_id]?.listening_progress_percent *
+              100
           ) + "%"
         );
       case 4:
@@ -166,48 +168,78 @@ export default function BookShelfAndHistoryShelf(props: any) {
             }}
           >
             <Image
-              source={{ uri: item.audiobook_image }}
+              source={{ uri: item?.audiobook_image }}
               style={{
                 width: resizeCoverImageWidth,
                 height: resizeCoverImageHeight,
               }}
             />
 
-            <MaterialCommunityIcons
-              name={
-                audioBookInfo[item.audiobook_id]?.audiobook_shelved
-                  ? "star"
-                  : undefined
-              }
-              size={30}
-              color={Colors[colorScheme].shelveAudiobookIconColor}
+            <Button
+              key={item.id}
+              accessibilityLabel={`Shelve audiobook: ${item.title} currently ${
+                "shelved" + "not shelved"
+              }`}
+              mode="text"
+              onPress={() => {
+                const audiobook_id = item?.audiobook_id;
+                if (audiobooksProgress[item?.audiobook_id]) {
+                  const isShelved =
+                    audiobooksProgress[item?.audiobook_id]?.audiobook_shelved;
+                  const audiobookItem = audiobooksProgress[audiobook_id];
+                  audiobookItem.audiobook_shelved = !isShelved;
+                  updateIfBookShelvedDB(db, audiobook_id, !isShelved);
+                  setAudiobooksProgress((audiobooksProgress) => ({
+                    ...audiobooksProgress,
+                    audiobook_id: {
+                      audiobookItem,
+                    },
+                  }));
+                }
+              }}
               style={{
-                margin: 5,
+                margin: 0,
                 position: "absolute",
                 top: 0,
                 right: 0,
-                width: 27,
-                height: 55,
+                width: 30,
+                height: 60,
               }}
-            />
+            >
+              <MaterialCommunityIcons
+                key={item.id}
+                name={
+                  audiobooksProgress[item?.audiobook_id]?.audiobook_shelved
+                    ? "star"
+                    : "star-outline"
+                }
+                size={30}
+                color={Colors[colorScheme].shelveAudiobookIconColor}
+              />
+            </Button>
           </Pressable>
 
           <LinearProgress
             color={Colors[colorScheme].audiobookProgressColor}
-            value={audioBookInfo[item.audiobook_id]?.listening_progress_percent}
+            value={
+              audiobooksProgress[item.audiobook_id]?.listening_progress_percent
+            }
             variant="determinate"
             trackColor={Colors[colorScheme].audiobookProgressTrackColor}
             animation={false}
           />
         </View>
       </ListItem>
-      {audioBookInfo[item.audiobook_id]?.audiobook_id == item.audiobook_id &&
-      audioBookInfo[item.audiobook_id]?.audiobook_rating > 0 ? (
+      {audiobooksProgress[item.audiobook_id]?.audiobook_id ==
+        item.audiobook_id &&
+      audiobooksProgress[item.audiobook_id]?.audiobook_rating > 0 ? (
         <Rating
           showRating={false}
           imageSize={20}
           ratingCount={5}
-          startingValue={audioBookInfo[item.audiobook_id]?.audiobook_rating}
+          startingValue={
+            audiobooksProgress[item.audiobook_id]?.audiobook_rating
+          }
           readonly={true}
           tintColor={Colors[colorScheme].ratingBackgroundColor}
         />
@@ -241,7 +273,7 @@ export default function BookShelfAndHistoryShelf(props: any) {
                 return (audioProgressData[row.audiobook_id] = row);
               });
               // console.log(audioProgressData);
-              setAudioBookInfo(audioProgressData);
+              setAudiobooksProgress(audioProgressData);
             }
           );
         }, null);
