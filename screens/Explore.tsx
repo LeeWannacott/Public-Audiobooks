@@ -204,7 +204,7 @@ export default function Explore(props: any) {
             submitUserInput(item);
             setTimeout(() => {
               suggestionTimeout();
-            }, 1000);
+            }, 500);
           }}
         >
           {searchBy === "author"
