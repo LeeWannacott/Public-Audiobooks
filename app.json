@@ -4,11 +4,11 @@
     "slug": "libriaudire",
     "version": "1.5.0",
     "orientation": "portrait",
-    "icon": "./assets/images/LibriAudireIcon.png",
+    "icon": "./assets/images/PublicAudiobooksIcon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/PublicAudiobooksSplash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -21,7 +21,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/LibriAudireIcon.png",
+        "foregroundImage": "./assets/images/PublicAudiobooksIcon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.leewannacott.libriaudire"
