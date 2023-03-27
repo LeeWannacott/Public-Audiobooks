@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "libriaudire",
-    "slug": "libriaudire",
-    "version": "1.5.0",
+    "name": "Public Audiobooks",
+    "slug": "PublicAudiobooks",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/PublicAudiobooksIcon.png",
     "scheme": "myapp",
@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/images/PublicAudiobooksSplash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -22,7 +22,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/PublicAudiobooksIcon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#000000"
       },
       "package": "com.leewannacott.libriaudire"
     },
