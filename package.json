@@ -1,6 +1,6 @@
 {
   "name": "libriaudire",
-  "version": "1.5.0",
+  "version": "2.0.0",
   "scripts": {
     "start": "expo start --dev-client",
     "android": "expo run:android",
@@ -23,7 +23,7 @@
     "@react-navigation/native-stack": "^6.1.0",
     "@rneui/base": "^4.0.0-rc.5",
     "@rneui/themed": "^4.0.0-rc.5",
-    "@shopify/flash-list": "^1.4.2",
+    "@shopify/flash-list": "1.4.0",
     "deprecated-react-native-prop-types": "^4.0.0",
     "expo": "^48.0.9",
     "expo-asset": "~8.9.1",
@@ -40,7 +40,7 @@
     "fuse.js": "^6.6.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-native": "0.71.3",
+    "react-native": "0.71.4",
     "react-native-pager-view": "6.1.2",
     "react-native-paper": "^4.11.2",
     "react-native-rss-parser": "^1.5.1",
