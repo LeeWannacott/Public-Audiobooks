@@ -179,7 +179,7 @@ export function updateAudiobookRatingDB(
   });
 }
 
-export function initialAudioBookStoreDB(db: any, initialAudiobook: any) {
+export function initialAudioBookProgressStoreDB(db: any, initialAudiobook: any) {
   db.transaction((tx: any) => {
     tx.executeSql(
       `insert into ${audiobookProgressTableName}(${audiobookId}, ${audiotrackProgressBars}, ${currentAudiotrackPositions}, ${audiobookShelved}, ${audiobookRating}) values(?,?,?,?,?)`,

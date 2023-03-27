@@ -20,7 +20,7 @@ import {
   createAudioBookDataTable,
   addAudiobookToHistoryDB,
   audiobookProgressTableName,
-  initialAudioBookStoreDB,
+  initialAudioBookProgressStoreDB,
 } from "../db/database_functions";
 import useColorScheme from "../hooks/useColorScheme";
 import Colors from "../constants/Colors";
@@ -279,7 +279,6 @@ export default function ExploreShelf(props: any) {
             getAverageAudiobookReview(index)
               .then((avgReview) => {
                 if (avgReview) {
-                  console.log(item?.id);
                   const initAudioBookData = {
                     audiobook_id: item?.id,
                     audiotrack_progress_bars: JSON.stringify(
@@ -292,14 +291,15 @@ export default function ExploreShelf(props: any) {
                     audiobook_rating: avgReview,
                   };
                   audiobooksProgress[item?.id] = initAudioBookData;
-                  initialAudioBookStoreDB(db, initAudioBookData);
                   setAudiobooksProgress((audiobooksProgress) => ({
                     ...audiobooksProgress,
                     audiobook_id: {
                       initAudioBookData,
                     },
                   }));
+                  initialAudioBookProgressStoreDB(db, initAudioBookData);
                 } else {
+                  console.log("no review found")
                   // no review found logic
                 }
               })

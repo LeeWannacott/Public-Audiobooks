@@ -29,7 +29,6 @@ import {
   audiobookHistoryTableName,
   audiobookProgressTableName,
 } from "../db/database_functions";
-// import { getAsyncData } from "../db/database_functions";
 import authorsListJson from "../assets/resources/audiobookAuthorsList.json";
 import { genreList } from "../assets/resources/audiobookGenreList";
 

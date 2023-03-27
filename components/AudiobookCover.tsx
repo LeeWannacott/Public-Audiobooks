@@ -9,7 +9,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Review } from "../types.js";
 
 import {
-  initialAudioBookStoreDB,
+  initialAudioBookProgressStoreDB,
   updateIfBookShelvedDB,
 } from "../db/database_functions";
 
@@ -109,6 +109,7 @@ export default function AudiobookCover(props) {
                     audiobookItem,
                   },
                 }));
+                addAudiobookToHistory(index, item);
               } else {
                 addAudiobookToHistory(index, item);
                 let initialAudioBookSections = new Array(
@@ -134,7 +135,7 @@ export default function AudiobookCover(props) {
                         initAudioBookData,
                       },
                     }));
-                    initialAudioBookStoreDB(db, initAudioBookData);
+                    initialAudioBookProgressStoreDB(db, initAudioBookData);
                   })
                   .catch((error) => console.error(error));
               }

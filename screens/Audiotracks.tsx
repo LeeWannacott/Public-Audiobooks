@@ -23,7 +23,7 @@ const db = openDatabase();
 import {
   updateAudioTrackPositionsDB,
   updateIfBookShelvedDB,
-  initialAudioBookStoreDB,
+  initialAudioBookProgressStoreDB,
   updateAudiobookRatingDB,
   updateAudioTrackIndexDB,
   audiobookProgressTableName,
@@ -360,7 +360,7 @@ function Audiotracks(props: any) {
       });
       // will only happen if no row in db already.
 
-      initialAudioBookStoreDB(db, {
+      initialAudioBookProgressStoreDB(db, {
         audiobook_id: audioBookId,
         audiotrack_progress_bars: JSON.stringify(initialAudioBookSections),
         current_audiotrack_positions: JSON.stringify(initialAudioBookSections),
