@@ -303,7 +303,7 @@ export default function Explore(props: any) {
         </View>
         {loadingAudiobookAmount || gettingAverageReview ? (
           <LinearProgress
-            color={Colors[colorScheme].audiobookProgressColor}
+            color={Colors[colorScheme].linearLoadingBarColor}
             value={100}
             style={{ width: windowWidth, marginBottom: 2 }}
             variant="indeterminate"
@@ -312,7 +312,7 @@ export default function Explore(props: any) {
           />
         ) : (
           <LinearProgress
-            color={Colors[colorScheme].audiobookProgressColor}
+            color={Colors[colorScheme].linearLoadingBarColor}
             value={0}
             style={{ width: windowWidth, marginBottom: 2 }}
             variant="indeterminate"
