@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Public Audiobooks",
-    "slug": "PublicAudiobooks",
+    "slug": "libriaudire",
     "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/PublicAudiobooksIcon.png",
@@ -26,14 +26,15 @@
         "foregroundImage": "./assets/images/PublicAudiobooksIcon.png",
         "backgroundColor": "#000000"
       },
-      "package": "com.leewannacott.libriaudire"
+      "package": "com.leewannacott.libriaudire",
+      "versionCode": 8
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "4ceea444-ca84-45e1-a253-bfa54ca3abd1"
+        "projectId": "1a40bd57-722a-4009-a172-e9ba1afb8cf3"
       }
     }
   }
