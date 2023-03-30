@@ -74,7 +74,7 @@ export default function Explore(props: any) {
             (userInputAuthorRetrieved) => {
               userInputAuthorRetrieved
                 ? setUserInputEntered(userInputAuthorRetrieved)
-                : setUserInputEntered("Fyodor Dostoyevsky");
+                : setUserInputEntered("Dostoyevsky");
             }
           );
           break;
